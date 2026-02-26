@@ -1,0 +1,78 @@
+/* ─── Custom properties ─────────────────────────────────────────────────────
+   Colors: placeholder values — owner to provide final palette.
+   All --color-* vars are defined here so the palette can be swapped in one place.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Colors */
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
+  --color-border: #e5e5e5;
+  --color-muted: #666666;
+
+  /* Typography */
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --line-height-base: 1.6;
+  --line-height-heading: 1.2;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+}
+
+/* ─── Reset ──────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: var(--line-height-heading);
+  margin: 0 0 var(--space-md);
+}
+
+p {
+  margin: 0 0 var(--space-md);
+}
+
+a {
+  color: inherit;
+}
+
+ul,
+ol {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}

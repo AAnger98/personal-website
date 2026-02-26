@@ -1,0 +1,118 @@
+---
+import { siteConfig } from '../config';
+---
+
+<header class="site-header">
+  <a href="/" class="site-name">{siteConfig.name}</a>
+
+  <button
+    id="nav-toggle"
+    class="nav-toggle"
+    aria-label="Toggle navigation"
+    aria-expanded="false"
+    aria-controls="site-nav"
+  >
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+
+  <nav id="site-nav" class="site-nav">
+    <ul>
+      {siteConfig.nav.map((link) => (
+        <li><a href={link.href}>{link.label}</a></li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('site-nav');
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = nav?.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', String(isOpen ?? false));
+  });
+</script>
+
+<style>
+  .site-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .site-name {
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: auto;
+  }
+
+  /* ── Hamburger button ── */
+  .nav-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-xs);
+  }
+
+  .bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: currentColor;
+  }
+
+  /* ── Mobile nav (hidden by default) ── */
+  @media (max-width: 767px) {
+    .site-nav {
+      display: none;
+      width: 100%;
+    }
+
+    .site-nav.is-open {
+      display: block;
+    }
+
+    .site-nav ul {
+      padding: var(--space-sm) 0 var(--space-sm);
+    }
+
+    .site-nav li {
+      padding: var(--space-xs) 0;
+    }
+
+    .site-nav a {
+      text-decoration: none;
+    }
+  }
+
+  /* ── Desktop nav ── */
+  @media (min-width: 768px) {
+    .nav-toggle {
+      display: none;
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+    }
+
+    .site-nav ul {
+      display: flex;
+      gap: var(--space-lg);
+    }
+
+    .site-nav a {
+      text-decoration: none;
+      font-size: var(--font-size-sm);
+    }
+  }
+</style>

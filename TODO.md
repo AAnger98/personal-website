@@ -7,25 +7,25 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 ## Phase 1 — Project Setup & Infrastructure
 
 ### 1.1 Tooling & Environment
-- [ ] Initialize Astro project (`npm create astro@latest`)
-- [ ] Configure TypeScript strict mode (`tsconfig.json`)
-- [ ] Set up Prettier with agreed-upon config
-- [ ] Set up ESLint for TypeScript + Astro
-- [ ] Add `.gitignore` (node_modules, dist, .env, playwright artifacts)
-- [ ] Initialize git repository
-- [ ] Create initial commit
+- [x] Initialize Astro project (`npm create astro@latest`)
+- [x] Configure TypeScript strict mode (`tsconfig.json`)
+- [x] Set up Prettier with agreed-upon config
+- [x] Set up ESLint for TypeScript + Astro
+- [x] Add `.gitignore` (node_modules, dist, .env, playwright artifacts)
+- [x] Initialize git repository
+- [x] Create initial commit
 
 ### 1.2 Testing Infrastructure
-- [ ] Install and configure Playwright (`npm init playwright@latest`)
-- [ ] Write a smoke test: home page returns 200 and has a `<title>`
-- [ ] Confirm `npx playwright test` runs and passes
-- [ ] Add test script to `package.json`
-- [ ] Document how to run tests in README
+- [x] Install and configure Playwright (`npm init playwright@latest`)
+- [x] Write a smoke test: home page returns 200 and has a `<title>`
+- [x] Confirm `npx playwright test` runs and passes
+- [x] Add test script to `package.json`
+- [x] Document how to run tests in README
 
 ### 1.3 Project Structure
-- [ ] Establish folder structure (`src/components/`, `src/pages/`, `src/styles/`, `tests/`)
-- [ ] Create base layout component (`src/layouts/BaseLayout.astro`)
-- [ ] Create site config file (`src/config.ts`) for name, tagline, nav links, contact info
+- [x] Establish folder structure (`src/components/`, `src/pages/`, `src/styles/`, `tests/`)
+- [x] Create base layout component (`src/layouts/BaseLayout.astro`)
+- [x] Create site config file (`src/config.ts`) for name, tagline, nav links, contact info
 
 ---
 
