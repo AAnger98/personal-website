@@ -1,0 +1,22 @@
+---
+import { siteConfig } from '../config';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const pageTitle = `${title} — ${siteConfig.name}`;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
