@@ -1,0 +1,42 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div class:list={['deco-border', className]}>
+  <span class="corner corner-tl" aria-hidden="true">◆</span>
+  <span class="corner corner-tr" aria-hidden="true">◆</span>
+  <div class="deco-content">
+    <slot />
+  </div>
+  <span class="corner corner-bl" aria-hidden="true">◆</span>
+  <span class="corner corner-br" aria-hidden="true">◆</span>
+</div>
+
+<style>
+  .deco-border {
+    position: relative;
+    border: 4px double var(--color-gold);
+    padding: var(--space-lg);
+  }
+
+  .corner {
+    position: absolute;
+    color: var(--color-gold);
+    font-size: 0.9rem;
+    line-height: 1;
+    background: var(--color-bg);
+    padding: 0 2px;
+  }
+
+  .corner-tl { top: -0.65rem; left: var(--space-sm); }
+  .corner-tr { top: -0.65rem; right: var(--space-sm); }
+  .corner-bl { bottom: -0.65rem; left: var(--space-sm); }
+  .corner-br { bottom: -0.65rem; right: var(--space-sm); }
+
+  .deco-content {
+    position: relative;
+  }
+</style>
