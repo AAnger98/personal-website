@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageTitle from '../components/PageTitle.astro';
+import AsciiDivider from '../components/AsciiDivider.astro';
+
+// COPY PLACEHOLDER — owner to provide real entries and approve
+const workEntries = [
+  {
+    title: 'Role Title',
+    org: 'Organization Name',
+    period: '20XX – 20XX',
+    description: 'Brief description of the role and key accomplishments. 1–3 sentences.',
+  },
+  {
+    title: 'Role Title',
+    org: 'Organization Name',
+    period: '20XX – 20XX',
+    description: 'Brief description of the role and key accomplishments. 1–3 sentences.',
+  },
+];
+---
+
+<BaseLayout title="Work">
+  <section class="work-page">
+    <PageTitle title="Work" />
+
+    <AsciiDivider />
+
+    <ul class="work-list">
+      {workEntries.map((entry) => (
+        <li class="work-entry">
+          <div class="work-header">
+            <span class="work-title">{entry.title}</span>
+            <span class="work-period">{entry.period}</span>
+          </div>
+          <div class="work-org">{entry.org}</div>
+          <p class="work-description">{entry.description}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .work-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .work-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .work-entry {
+    border-left: 4px solid var(--color-gold);
+    padding-left: var(--space-md);
+  }
+
+  .work-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xs);
+  }
+
+  .work-title {
+    font-family: var(--font-display);
+    font-size: var(--font-size-lg);
+    color: var(--color-text);
+  }
+
+  .work-period {
+    font-family: var(--font-mono-accent);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-blue);
+  }
+
+  .work-org {
+    font-family: var(--font-mono-accent);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-gold);
+    margin-bottom: var(--space-sm);
+  }
+
+  .work-description {
+    margin: 0;
+    line-height: var(--line-height-base);
+    color: var(--color-text);
+  }
+</style>

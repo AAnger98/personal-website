@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 
 // ─── About page ──────────────────────────────────────────────────────────────
 
+
 test.describe('About page', () => {
   test('loads without error and has a heading', async ({ page }) => {
     const response = await page.goto('/about');
@@ -13,5 +14,21 @@ test.describe('About page', () => {
     await page.goto('/about');
     const mainText = await page.locator('main').textContent();
     expect(mainText?.trim().length).toBeGreaterThan(50);
+  });
+});
+
+// ─── Work page ───────────────────────────────────────────────────────────────
+
+test.describe('Work page', () => {
+  test('loads without error and has a heading', async ({ page }) => {
+    const response = await page.goto('/work');
+    expect(response?.status()).toBe(200);
+    await expect(page.locator('h1')).toBeVisible();
+  });
+
+  test('has at least one work entry', async ({ page }) => {
+    await page.goto('/work');
+    const count = await page.locator('.work-entry').count();
+    expect(count).toBeGreaterThanOrEqual(1);
   });
 });
