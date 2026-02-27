@@ -7,7 +7,7 @@ test.describe('About page', () => {
   test('loads without error and has a heading', async ({ page }) => {
     const response = await page.goto('/about');
     expect(response?.status()).toBe(200);
-    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('.page-title')).toBeVisible();
   });
 
   test('has body content (not an empty page)', async ({ page }) => {
@@ -23,7 +23,7 @@ test.describe('Work page', () => {
   test('loads without error and has a heading', async ({ page }) => {
     const response = await page.goto('/work');
     expect(response?.status()).toBe(200);
-    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('.page-title')).toBeVisible();
   });
 
   test('has at least one work entry', async ({ page }) => {
