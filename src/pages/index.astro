@@ -1,7 +1,71 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageTitle from '../components/PageTitle.astro';
+import DecoBorder from '../components/DecoBorder.astro';
+import AsciiDivider from '../components/AsciiDivider.astro';
 ---
 
 <BaseLayout title="Home">
-  <h1>Welcome</h1>
+  <section class="home-hero">
+    <PageTitle title="Your Name" />
+
+    <p class="home-tagline">
+      {/* COPY PLACEHOLDER — owner approval required */}
+      Strategy. Operations. Getting things done.
+    </p>
+
+    <AsciiDivider />
+
+    <DecoBorder>
+      <p class="home-intro">
+        {/* COPY PLACEHOLDER — owner approval required */}
+        Brief intro — 2–3 sentences about who this person is and what they bring to
+        the table. Warm but professional. Let the work speak.
+      </p>
+      <a href="/contact" class="cta-link">Get in touch ›</a>
+    </DecoBorder>
+  </section>
 </BaseLayout>
+
+<style>
+  .home-hero {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-md);
+    text-align: center;
+  }
+
+  .home-tagline {
+    font-family: var(--font-mono-accent);
+    font-size: var(--font-size-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-blue);
+    margin-bottom: var(--space-lg);
+  }
+
+  .home-intro {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    color: var(--color-text);
+    margin-bottom: var(--space-lg);
+  }
+
+  .cta-link {
+    display: inline-block;
+    font-family: var(--font-mono-accent);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-gold);
+    border: 2px double var(--color-gold);
+    padding: var(--space-sm) var(--space-lg);
+    text-decoration: none;
+    transition: all steps(4) 0.15s;
+  }
+
+  .cta-link:hover {
+    background: var(--color-gold);
+    color: var(--color-bg);
+  }
+</style>

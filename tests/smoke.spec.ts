@@ -10,3 +10,11 @@ test('home page returns 200 and has a non-empty <title>', async ({ page }) => {
   const titleText = await page.title();
   expect(titleText.trim().length).toBeGreaterThan(0);
 });
+
+test('home page has a heading and a contact CTA link', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('h1')).toBeVisible();
+  const ctaLink = page.locator('a[href="/contact"]');
+  await expect(ctaLink).toHaveCount(1);
+  await expect(ctaLink).toBeVisible();
+});
