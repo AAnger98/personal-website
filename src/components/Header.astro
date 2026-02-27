@@ -41,13 +41,17 @@ import { siteConfig } from '../config';
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    padding: var(--space-sm) var(--space-md);
-    border-bottom: 1px solid var(--color-gold);
+    padding: var(--space-sm) var(--space-lg);
+    border-bottom: 4px double var(--color-gold);
   }
 
   .site-name {
     text-decoration: none;
-    font-weight: 600;
+    font-family: var(--font-display);
+    font-size: var(--font-size-xl);
+    color: var(--color-text);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     margin-right: auto;
   }
 
@@ -61,16 +65,17 @@ import { siteConfig } from '../config';
     border: none;
     cursor: pointer;
     padding: var(--space-xs);
+    color: var(--color-gold);
   }
 
   .bar {
     display: block;
     width: 22px;
     height: 2px;
-    background: currentColor;
+    background: var(--color-gold);
   }
 
-  /* ── Mobile nav (hidden by default) ── */
+  /* ── Mobile nav ── */
   @media (max-width: 767px) {
     .site-nav {
       display: none;
@@ -82,7 +87,9 @@ import { siteConfig } from '../config';
     }
 
     .site-nav ul {
-      padding: var(--space-sm) 0 var(--space-sm);
+      padding: var(--space-sm) 0;
+      border-top: 1px solid var(--color-gold);
+      margin-top: var(--space-sm);
     }
 
     .site-nav li {
@@ -90,7 +97,12 @@ import { siteConfig } from '../config';
     }
 
     .site-nav a {
+      font-family: var(--font-mono-accent);
+      font-size: var(--font-size-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
       text-decoration: none;
+      color: var(--color-text);
     }
   }
 
@@ -107,12 +119,24 @@ import { siteConfig } from '../config';
 
     .site-nav ul {
       display: flex;
-      gap: var(--space-lg);
+      gap: var(--space-md);
     }
 
     .site-nav a {
-      text-decoration: none;
+      font-family: var(--font-mono-accent);
       font-size: var(--font-size-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      text-decoration: none;
+      color: var(--color-text);
+      border: 2px double transparent;
+      padding: var(--space-xs) var(--space-sm);
+      transition: all steps(4) 0.15s;
+    }
+
+    .site-nav a:hover {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
     }
   }
 </style>
