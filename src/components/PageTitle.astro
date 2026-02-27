@@ -9,8 +9,15 @@ const { title } = Astro.props;
 
 <style>
   .page-title {
+    font-family: var(--font-display);
     font-size: var(--font-size-2xl);
-    font-weight: 600;
-    margin-bottom: var(--space-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text);
+    text-shadow:
+      2px 2px 0 var(--color-gold),
+      4px 4px 0 rgba(212, 175, 55, 0.25);
+    margin: 0 0 var(--space-lg);
+    line-height: var(--line-height-heading);
   }
 </style>
