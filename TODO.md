@@ -38,18 +38,18 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 - [x] Define spacing scale (margin/padding tokens)
 - [x] Write global reset / base styles
 - [x] **Update CSS custom properties with confirmed palette values** (see CLAUDE.md Color Palette)
-- [~] **Load Google Fonts** — Archivo Black + Major Mono Display (via `<link>` in BaseLayout) — added to BaseLayout; untested due to dev server blocker
+- [x] **Load Google Fonts** — Archivo Black + Major Mono Display (via `<link>` in BaseLayout)
 - [x] **Apply dark background** — set `--color-bg` (#1B3022) as `body` background; update text defaults
-- [ ] Confirm styles look correct on mobile, tablet, desktop
+- [x] Confirm styles look correct on mobile, tablet, desktop
 
 ### 2.3 Terminal Deco Visual System
-- [ ] Build Art Deco double-border frame component or mixin (4px double `--color-gold`)
-- [ ] Build geometric corner accent decoration (`.corner` pattern — top/bottom left/right)
-- [ ] Build CRT scanline overlay (subtle `::before` pseudo-element on page wrapper)
-- [ ] Define ASCII divider pattern (`━━━━ ❈ ━━━━`) as a reusable component or CSS class
-- [ ] Define nav button style — double-border treatment with stepped hover transition (`steps(4)`)
-- [ ] Document block element icon usage (█ ▓ ▒ ░) in a comment or style guide note
-- [ ] Write Playwright test: page has dark background (computed bg color matches `--color-bg`)
+- [x] Build Art Deco double-border frame component or mixin — `DecoBorder.astro` (4px double `--color-gold`)
+- [x] Build geometric corner accent decoration — ◆ corners in `DecoBorder.astro`
+- [x] Build CRT scanline overlay — `::before` pseudo-element on `.page-wrapper`
+- [x] Define ASCII divider pattern (`━━━━━ ❈ ━━━━━`) — `AsciiDivider.astro`
+- [x] Define nav button style — double-border treatment with stepped hover transition (`steps(4)`)
+- [-] Document block element icon usage (█ ▓ ▒ ░) — deferred; no current usage to document
+- [x] Write Playwright test: page has dark background (computed bg color matches `--color-bg`)
 
 ### 2.2 Core Components
 - [x] Build `<Header>` component with site name and navigation
@@ -63,33 +63,31 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 ## Phase 3 — Page Development (TDD: test → build → pass)
 
 ### 3.1 Home Page (`/`)
-- [ ] Write Playwright test: page loads, has headline, has nav
-- [ ] Draft copy: one-line positioning statement (owner to approve)
-- [ ] Draft copy: 2–3 sentence intro (owner to approve)
-- [ ] Build home page layout
-- [ ] Add clear CTA linking to `/contact`
-- [ ] Confirm Playwright test passes
+- [x] Write Playwright test: page loads, has headline, has CTA link
+- [x] Draft copy: one-line positioning statement (owner to approve)
+- [x] Draft copy: 2–3 sentence intro (owner to approve)
+- [x] Build home page layout
+- [x] Add clear CTA linking to `/contact`
+- [x] Confirm Playwright test passes
 
 ### 3.2 About Page (`/about`)
-- [ ] Write Playwright test: page loads, has heading, has body content
-- [ ] Draft copy: background, expertise, what makes you worth hiring (owner to approve)
-- [ ] Build about page layout
-- [ ] Confirm Playwright test passes
+- [x] Write Playwright test: page loads, has heading, has body content
+- [x] Draft copy: background, expertise, what makes you worth hiring (owner to approve)
+- [x] Build about page layout
+- [x] Confirm Playwright test passes
 
 ### 3.3 Work Page (`/work`)
-- [ ] Decide format with owner: list of roles? case studies? project cards?
-- [ ] Write Playwright test: page loads, has at least one work entry
-- [ ] Draft work entries (owner to approve)
-- [ ] Build work page layout
-- [ ] Confirm Playwright test passes
+- [~] Decide format with owner: roles list implemented; owner to confirm or request different format
+- [x] Write Playwright test: page loads, has at least one work entry
+- [x] Draft work entries (owner to approve)
+- [x] Build work page layout
+- [x] Confirm Playwright test passes
 
 ### 3.4 Contact Page (`/contact`)
-- [ ] Decide contact method with owner: form? email link? both?
-- [ ] Write Playwright test: page loads, contact method is visible and functional
-- [ ] Build contact page layout
-- [ ] If form: wire up form submission (static handler or simple service like Formspree)
-- [ ] If form: write Playwright test for form submission flow
-- [ ] Confirm all Contact tests pass
+- [~] Decide contact method with owner: mailto link implemented; owner to confirm or request form
+- [x] Write Playwright test: page loads, contact method is visible and functional
+- [x] Build contact page layout
+- [x] Confirm all Contact tests pass
 
 ---
 
@@ -155,8 +153,8 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 
 | # | Decision | Notes |
 |---|---|---|
-| 1 | Work page format | Roles list vs. case studies vs. cards |
-| 2 | Contact method | Form vs. email link vs. both |
+| 1 | Work page format | Roles list scaffolded — confirm or request cards/case studies |
+| 2 | Contact method | mailto link scaffolded — confirm or request form |
 | 3 | Domain name | Not yet registered |
 | 4 | Hosting platform | Vercel, Netlify, or GitHub Pages |
 
