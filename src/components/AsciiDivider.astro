@@ -1,0 +1,20 @@
+---
+interface Props {
+  symbol?: string;
+}
+const { symbol = '❈' } = Astro.props;
+---
+
+<div class="ascii-divider" aria-hidden="true">━━━━━ {symbol} ━━━━━</div>
+
+<style>
+  .ascii-divider {
+    text-align: center;
+    color: var(--color-gold);
+    font-family: var(--font-mono-accent);
+    letter-spacing: 0.2em;
+    font-size: var(--font-size-sm);
+    margin: var(--space-lg) 0;
+    user-select: none;
+  }
+</style>
