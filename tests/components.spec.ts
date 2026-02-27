@@ -9,11 +9,11 @@ test.describe('Header', () => {
   });
 
   test('header element is visible', async ({ page }) => {
-    await expect(page.locator('header')).toBeVisible();
+    await expect(page.locator('.site-header')).toBeVisible();
   });
 
   test('site name is visible in the header', async ({ page }) => {
-    await expect(page.locator('header')).toContainText(siteConfig.name);
+    await expect(page.locator('.site-header')).toContainText(siteConfig.name);
   });
 
   test('all nav links are present with correct hrefs', async ({ page }) => {

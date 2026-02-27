@@ -22,7 +22,7 @@ for (const vp of viewports) {
 
     test('header is visible', async ({ page }) => {
       await page.goto('/');
-      await expect(page.locator('header')).toBeVisible();
+      await expect(page.locator('.site-header')).toBeVisible();
     });
   });
 }
