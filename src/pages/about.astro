@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageTitle from '../components/PageTitle.astro';
+import DecoBorder from '../components/DecoBorder.astro';
+import AsciiDivider from '../components/AsciiDivider.astro';
+---
+
+<BaseLayout title="About">
+  <article class="about-page">
+    <PageTitle title="About" />
+
+    <AsciiDivider />
+
+    <DecoBorder>
+      <section class="about-section">
+        <h2 class="section-label">Background</h2>
+        {/* COPY PLACEHOLDER — owner approval required */}
+        <p>
+          A few sentences about background and career arc. Where did this person
+          come from? What domains have they worked in? Keep it brief — visitors
+          already have a name; they're here for context.
+        </p>
+      </section>
+
+      <section class="about-section">
+        <h2 class="section-label">Expertise</h2>
+        {/* COPY PLACEHOLDER — owner approval required */}
+        <p>
+          What does this person actually do? What problems do they solve? Be
+          specific — generic buzzwords undercut credibility.
+        </p>
+      </section>
+
+      <section class="about-section">
+        <h2 class="section-label">Why work together</h2>
+        {/* COPY PLACEHOLDER — owner approval required */}
+        <p>
+          What makes this person worth hiring or collaborating with? One honest
+          paragraph. No jargon.
+        </p>
+      </section>
+    </DecoBorder>
+  </article>
+</BaseLayout>
+
+<style>
+  .about-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .about-section {
+    margin-bottom: var(--space-lg);
+  }
+
+  .about-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-label {
+    font-family: var(--font-mono-accent);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-gold);
+    margin: 0 0 var(--space-sm);
+  }
+</style>
