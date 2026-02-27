@@ -32,19 +32,31 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 ## Phase 2 — Design System & Foundations
 
 ### 2.1 CSS Foundation
-- [ ] Define CSS custom properties for color palette (owner to provide values)
-- [ ] Define typography scale (font sizes, line heights, weights)
-- [ ] Choose and load typeface(s) — prefer system fonts or a single well-chosen web font
-- [ ] Define spacing scale (margin/padding tokens)
-- [ ] Write global reset / base styles
+- [x] Define CSS custom properties for color palette (owner to provide values)
+- [x] Define typography scale (font sizes, line heights, weights)
+- [x] Choose and load typeface(s) — using system font stack; owner to confirm or swap
+- [x] Define spacing scale (margin/padding tokens)
+- [x] Write global reset / base styles
+- [x] **Update CSS custom properties with confirmed palette values** (see CLAUDE.md Color Palette)
+- [~] **Load Google Fonts** — Archivo Black + Major Mono Display (via `<link>` in BaseLayout) — added to BaseLayout; untested due to dev server blocker
+- [x] **Apply dark background** — set `--color-bg` (#1B3022) as `body` background; update text defaults
 - [ ] Confirm styles look correct on mobile, tablet, desktop
 
+### 2.3 Terminal Deco Visual System
+- [ ] Build Art Deco double-border frame component or mixin (4px double `--color-gold`)
+- [ ] Build geometric corner accent decoration (`.corner` pattern — top/bottom left/right)
+- [ ] Build CRT scanline overlay (subtle `::before` pseudo-element on page wrapper)
+- [ ] Define ASCII divider pattern (`━━━━ ❈ ━━━━`) as a reusable component or CSS class
+- [ ] Define nav button style — double-border treatment with stepped hover transition (`steps(4)`)
+- [ ] Document block element icon usage (█ ▓ ▒ ░) in a comment or style guide note
+- [ ] Write Playwright test: page has dark background (computed bg color matches `--color-bg`)
+
 ### 2.2 Core Components
-- [ ] Build `<Header>` component with site name and navigation
-- [ ] Build `<Footer>` component with minimal info (name, year, optional links)
-- [ ] Build `<PageTitle>` component for consistent heading style across pages
-- [ ] Write Playwright tests for Header (nav links present and correct)
-- [ ] Write Playwright tests for Footer (renders, no broken links)
+- [x] Build `<Header>` component with site name and navigation
+- [x] Build `<Footer>` component with minimal info (name, year, optional links)
+- [x] Build `<PageTitle>` component for consistent heading style across pages
+- [x] Write Playwright tests for Header (nav links present and correct)
+- [x] Write Playwright tests for Footer (renders, no broken links)
 
 ---
 
@@ -143,9 +155,19 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 
 | # | Decision | Notes |
 |---|---|---|
-| 1 | Color palette | CSS custom properties ready; values TBD |
-| 2 | Typeface selection | Pending design direction |
-| 3 | Work page format | Roles list vs. case studies vs. cards |
-| 4 | Contact method | Form vs. email link vs. both |
-| 5 | Domain name | Not yet registered |
-| 6 | Hosting platform | Vercel, Netlify, or GitHub Pages |
+| 1 | Work page format | Roles list vs. case studies vs. cards |
+| 2 | Contact method | Form vs. email link vs. both |
+| 3 | Domain name | Not yet registered |
+| 4 | Hosting platform | Vercel, Netlify, or GitHub Pages |
+
+## Decisions Resolved
+
+| Decision | Resolution |
+|---|---|
+| Mobile navigation pattern | Hamburger toggle at < 768px — implemented and tested |
+| Design aesthetic direction | "Terminal Deco" — Art Deco geometry + '90s terminal aesthetic; dark bg |
+| Color palette — all values | Confirmed — 6 custom properties locked in CLAUDE.md |
+| Typeface — display | Archivo Black (Google Fonts) |
+| Typeface — accent/UI | Major Mono Display (Google Fonts) |
+| Typeface — body | Courier New (system monospace) |
+| Background treatment | Dark site — deep forest green (#1B3022) base |

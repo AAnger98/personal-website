@@ -23,22 +23,71 @@ This is a personal website for a business and strategy professional. The primary
 
 ## Design Aesthetic
 
-**Inspiration:** Berkshire Hathaway corporate site — the *spirit*, not the literal execution.
+**Concept name:** "Terminal Deco" — Art Deco elegance rendered through the lens of '90s digital aesthetics. The reference document calls this "Summit & Script."
+
+**Inspiration:** Berkshire Hathaway corporate site meets early '90s web — the *spirit* of both, not literal execution of either. Think: the structural authority of BRK.com crossed with the stark, text-forward feel of Web 1.0. Art Deco geometry (upward-reaching, symmetrical, framed) filtered through ASCII/terminal culture.
 
 **Core principles:**
-- Old-school shell with modern internals: looks restrained and timeless at a glance, but has clean contemporary UX patterns underneath
+- Dark background site — base is deep forest green, not white or light grey
 - Typography-led — hierarchy through type, not decoration
 - No hero images, no carousels, no animations unless they serve a clear purpose
 - Content loads fast and reads well with no JavaScript if possible
-- White space is intentional, not an accident
+- Wide gutters, symmetrical alignment — characteristic of Art Deco posters and early HTML table layouts
 - Mobile-first responsive layout
+
+**Visual system — what to embrace:**
+- Art Deco double-line borders as the primary frame (`border: 4px double`)
+- Geometric corner accent decorations at container corners
+- ASCII art for decorative elements (mountain ranges, dividers, logo areas)
+- Block element characters (█, ▓, ▒, ░) for iconography and dithered gradients
+- Decorative dividers using Unicode box-drawing characters (e.g. `━━━━ ❈ ━━━━`)
+- CRT scanline effect via a subtle `::before` pseudo-element overlay
+- Stepped transitions (`transition: steps(4)`) — intentionally non-smooth for the terminal feel
+- Monospace type everywhere except display headings
+- Link underlines preserved — do not strip them globally
+- Stark contrast; no softening with shadows or blur
+- The feel of a document, not a product landing page
 
 **What to avoid:**
 - Trendy design patterns that will feel dated in 2 years
-- Gradients, drop shadows, or effects used decoratively
+- Gradients or drop shadows used decoratively (scanlines are structural, not decorative)
 - Anything that feels like a portfolio template
+- The *bad* parts of the '90s web: garish colors, blinking text, clip art, busy backgrounds
+- Light or white backgrounds
 
-**Color palette:** To be defined by the owner. Do not introduce colors without explicit approval. Use CSS custom properties (`--color-*`) so the palette can be swapped cleanly.
+---
+
+## Color Palette — CONFIRMED
+
+All values are locked. Do not use hardcoded hex values in component or page files — always reference the CSS custom property.
+
+| Custom Property | Hex | Role |
+|---|---|---|
+| `--color-bg` | `#1B3022` | Page background (deep forest green) |
+| `--color-green` | `#4F772D` | Primary brand green (mountain slopes) |
+| `--color-blue` | `#8EA8C3` | Accent — alpine sky (muted blue-grey) |
+| `--color-peach` | `#E29578` | Accent — sunset peak (warm terracotta) |
+| `--color-gold` | `#D4AF37` | Deco accent — borders, corner details |
+| `--color-text` | `#E5E5E5` | Primary text (off-white / "ascii-white") |
+
+---
+
+## Typography — CONFIRMED
+
+Fonts are loaded via Google Fonts. This is an approved external dependency (adds one render-blocking request; self-hosting is an option if performance warrants it later).
+
+| Role | Font | Source |
+|---|---|---|
+| Display / headlines | Archivo Black | Google Fonts |
+| Monospace accent / UI | Major Mono Display | Google Fonts |
+| Body / default | Courier New, Courier, monospace | System fallback |
+
+**Usage rules:**
+- Archivo Black: large headlines and name treatment only
+- Major Mono Display: subtitles, labels, footer text, nav accents
+- Courier New: all body copy and general UI text
+- Text shadow stacking is on the table for display headings (Art Deco layered depth effect)
+- `text-transform: uppercase` with wide `letter-spacing` for Major Mono Display contexts
 
 ---
 
@@ -120,6 +169,24 @@ npx playwright test
 6. **Ask before destructive actions.** Deleting files, clearing content, or structural changes to the site require confirmation.
 7. **Tests gate completion.** A feature is not done until its Playwright test passes.
 8. **Stack consistency.** Do not introduce a new framework, library, or tool without explicit discussion.
+
+---
+
+## Decisions Made
+
+These were open questions that have been explicitly resolved by the owner. Do not re-open them without a good reason.
+
+| Decision | Resolution |
+|---|---|
+| Mobile navigation | Hamburger toggle menu — nav collapses at < 768px, toggle button shows/hides |
+| Color palette — direction | Cool greens — locked |
+| Color palette — specific values | All 6 values confirmed — see Color Palette section above |
+| Design aesthetic | "Terminal Deco" — Art Deco geometry through a '90s terminal lens; dark bg; see Design Aesthetic section |
+| Typeface — display | Archivo Black via Google Fonts |
+| Typeface — accent/UI | Major Mono Display via Google Fonts |
+| Typeface — body | Courier New (system monospace) |
+| Google Fonts dependency | Approved — Archivo Black + Major Mono Display |
+| Background color | Dark site — `--color-bg` (#1B3022) as page background |
 
 ---
 
