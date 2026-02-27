@@ -77,3 +77,27 @@ ol {
   margin: 0;
   list-style: none;
 }
+
+/* ─── CRT scanline overlay ───────────────────────────────────────────────────
+   Creates subtle horizontal scan lines across the full viewport.
+   pointer-events: none ensures it doesn't block clicks or hover.
+   ─────────────────────────────────────────────────────────────────────────── */
+.page-wrapper {
+  position: relative;
+  min-height: 100vh;
+}
+
+.page-wrapper::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.06) 3px,
+    rgba(0, 0, 0, 0.06) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
