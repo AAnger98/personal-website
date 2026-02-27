@@ -79,15 +79,16 @@ Fonts are loaded via Google Fonts. This is an approved external dependency (adds
 | Role | Font | Source |
 |---|---|---|
 | Display / headlines | Archivo Black | Google Fonts |
-| Monospace accent / UI | Major Mono Display | Google Fonts |
-| Body / default | Courier New, Courier, monospace | System fallback |
+| Body / default / all UI | Courier New, Courier, monospace | System fallback |
 
 **Usage rules:**
-- Archivo Black: large headlines and name treatment only
-- Major Mono Display: subtitles, labels, footer text, nav accents
-- Courier New: all body copy and general UI text
-- Text shadow stacking is on the table for display headings (Art Deco layered depth effect)
-- `text-transform: uppercase` with wide `letter-spacing` for Major Mono Display contexts
+- Archivo Black: large headlines and name treatment only (`--font-display`)
+- Courier New: everything else — body copy, nav links, buttons, labels, footer, dividers (`--font-body`)
+- Nav links and buttons: Courier New + `font-weight: bold` + `text-transform: uppercase`
+- Tagline / engraved label style: Courier New + `text-transform: uppercase` + wide `letter-spacing` (0.35–0.4em) + `--color-gold`
+- Text shadow stacking for display headings (Art Deco layered depth effect)
+
+**Major Mono Display was removed (2026-02-27):** Too stylized for readable UI text. The alternating cap heights that define the font become noise at sentence length. Do not reintroduce it for nav, labels, or any text that needs to be read — decorative use only if ever brought back.
 
 ---
 
@@ -183,10 +184,11 @@ These were open questions that have been explicitly resolved by the owner. Do no
 | Color palette — specific values | All 6 values confirmed — see Color Palette section above |
 | Design aesthetic | "Terminal Deco" — Art Deco geometry through a '90s terminal lens; dark bg; see Design Aesthetic section |
 | Typeface — display | Archivo Black via Google Fonts |
-| Typeface — accent/UI | Major Mono Display via Google Fonts |
-| Typeface — body | Courier New (system monospace) |
-| Google Fonts dependency | Approved — Archivo Black + Major Mono Display |
+| Typeface — all UI / body | Courier New (system monospace) — used everywhere except display headings |
+| Typeface — Major Mono Display | Removed — too stylized for readable UI text; do not reintroduce |
+| Google Fonts dependency | Archivo Black only — Major Mono Display removed as unused |
 | Background color | Dark site — `--color-bg` (#1B3022) as page background |
+| Tagline treatment | Option 5: Courier New, uppercase, gold, ~0.38em letter-spacing — "engraved label" feel |
 
 ---
 
