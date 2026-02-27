@@ -32,3 +32,21 @@ test.describe('Work page', () => {
     expect(count).toBeGreaterThanOrEqual(1);
   });
 });
+
+// ─── Contact page ─────────────────────────────────────────────────────────────
+
+test.describe('Contact page', () => {
+  test('loads without error and has a heading', async ({ page }) => {
+    const response = await page.goto('/contact');
+    expect(response?.status()).toBe(200);
+    await expect(page.locator('.page-title')).toBeVisible();
+  });
+
+  test('has a visible contact link', async ({ page }) => {
+    await page.goto('/contact');
+    const contactLink = page.locator('a[href^="mailto:"]');
+    await expect(contactLink).toBeVisible();
+    const href = await contactLink.getAttribute('href');
+    expect(href).toMatch(/^mailto:.+@.+\..+/);
+  });
+});

@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageTitle from '../components/PageTitle.astro';
+import DecoBorder from '../components/DecoBorder.astro';
+import AsciiDivider from '../components/AsciiDivider.astro';
+import { siteConfig } from '../config';
+---
+
+<BaseLayout title="Contact">
+  <section class="contact-page">
+    <PageTitle title="Contact" />
+
+    <AsciiDivider />
+
+    <DecoBorder>
+      {/* COPY PLACEHOLDER — owner approval required */}
+      <p class="contact-intro">
+        The best way to reach me is by email. I try to respond within a business day.
+      </p>
+      <a href={`mailto:${siteConfig.contact.email}`} class="contact-link">
+        {siteConfig.contact.email}
+      </a>
+    </DecoBorder>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-md);
+    text-align: center;
+  }
+
+  .contact-intro {
+    margin-bottom: var(--space-lg);
+    line-height: var(--line-height-base);
+    color: var(--color-text);
+  }
+
+  .contact-link {
+    display: inline-block;
+    font-family: var(--font-mono-accent);
+    font-size: var(--font-size-lg);
+    text-transform: lowercase;
+    letter-spacing: 0.08em;
+    color: var(--color-gold);
+    border-bottom: 2px solid var(--color-gold);
+    text-decoration: none;
+    padding-bottom: 2px;
+    transition: color steps(4) 0.15s;
+  }
+
+  .contact-link:hover {
+    color: var(--color-peach);
+    border-color: var(--color-peach);
+  }
+</style>
