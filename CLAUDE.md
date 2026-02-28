@@ -8,6 +8,32 @@ This is a personal website for a business and strategy professional. The primary
 
 ---
 
+## Owner Profile
+
+**Name:** Adam Angerami
+**LinkedIn:** https://www.linkedin.com/in/adam-angerami/
+
+**Professional identity:** Strategist and advisor — helps organizations work through hard problems.
+
+**Industry background:** Tech / software · Finance / investment · Consumer / retail / media
+
+**Work this site should attract:**
+- Consulting and advisory engagements
+- Full-time executive / senior roles
+- Board seats and advisory board positions
+
+**Contact:** Email + LinkedIn link. No contact form, no phone.
+
+**Photo policy:** Text-only site — no headshot at launch or planned.
+
+**Copy voice:** Balanced — neither notably warm nor notably formal. Credible without being stiff, approachable without being casual. Consistent across all pages.
+
+**Sensitive entries:** Some past roles may need anonymization (confidential client treatment). Owner will flag during content session.
+
+**Resume status:** Not yet ready — content population session is blocked on this. Owner will share when optimized.
+
+---
+
 ## Tech Stack
 
 - **Framework:** Astro — content-first, ships minimal JavaScript, fits the static/low-JS aesthetic
@@ -99,9 +125,9 @@ Only these pages ship at launch:
 | Route | Purpose |
 |---|---|
 | `/` | Home — brief statement of who this person is and what they do |
-| `/about` | Expanded bio — background, expertise, what makes this person worth hiring |
-| `/work` | Work / portfolio — past roles, projects, or engagements (format TBD by owner) |
-| `/contact` | Contact — simple, direct form or contact instructions |
+| `/about` | Expanded bio — Background / Expertise / Why work together (3 confirmed sections) |
+| `/work` | Chronological roles with bullet-point accomplishments + separate Advisory/Projects section |
+| `/contact` | Email link + LinkedIn link — no form |
 
 A `/writing` route may be added in a future version. Do not scaffold it at launch.
 
@@ -189,6 +215,10 @@ These were open questions that have been explicitly resolved by the owner. Do no
 | Google Fonts dependency | Archivo Black only — Major Mono Display removed as unused |
 | Background color | Dark site — `--color-bg` (#1B3022) as page background |
 | Tagline treatment | Option 5: Courier New, uppercase, gold, ~0.38em letter-spacing — "engraved label" feel |
+| Work page format | Roles with bullet-point accomplishments + separate Advisory/Projects section |
+| Contact method | Email + LinkedIn link — no contact form |
+| Photo | No headshot — text-only site |
+| Copy voice | Balanced — middle of warm/professional spectrum, consistent across all pages |
 
 ---
 
