@@ -13,6 +13,8 @@ export interface ContactConfig {
 export interface SiteConfig {
   name: string;
   tagline: string;
+  siteUrl: string;
+  description: string;
   nav: NavLink[];
   contact: ContactConfig;
 }
@@ -20,6 +22,8 @@ export interface SiteConfig {
 export const siteConfig: SiteConfig = {
   name: 'Your Name',
   tagline: 'Business strategy and operations.',
+  siteUrl: 'https://example.com', // PLACEHOLDER — owner to replace with real domain
+  description: 'PLACEHOLDER — owner to provide a 1–2 sentence site description.',
   nav: [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },

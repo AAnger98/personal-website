@@ -20,17 +20,18 @@ const workEntries = [
 ];
 ---
 
-<BaseLayout title="Work">
+<BaseLayout title="Work" description="PLACEHOLDER — owner to provide work page meta description.">
   <section class="work-page">
     <PageTitle title="Work" />
 
     <AsciiDivider />
 
+    <h2 class="visually-hidden">Work History</h2>
     <ul class="work-list">
       {workEntries.map((entry) => (
         <li class="work-entry">
           <div class="work-header">
-            <span class="work-title">{entry.title}</span>
+            <h3 class="work-title">{entry.title}</h3>
             <span class="work-period">{entry.period}</span>
           </div>
           <div class="work-org">{entry.org}</div>
@@ -71,10 +72,24 @@ const workEntries = [
     margin-bottom: var(--space-xs);
   }
 
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .work-title {
     font-family: var(--font-display);
     font-size: var(--font-size-lg);
     color: var(--color-text);
+    /* Override global h3 reset so layout is unchanged */
+    margin: 0;
   }
 
   .work-period {

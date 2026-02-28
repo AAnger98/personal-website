@@ -6,10 +6,14 @@ import '../styles/global.css';
 
 interface Props {
   title: string;
+  description?: string;  // falls back to siteConfig.description
+  canonical?: string;    // falls back to siteConfig.siteUrl + Astro.url.pathname
 }
 
-const { title } = Astro.props;
+const { title, description, canonical } = Astro.props;
 const pageTitle = `${title} — ${siteConfig.name}`;
+const metaDescription = description ?? siteConfig.description;
+const canonicalUrl = canonical ?? `${siteConfig.siteUrl}${Astro.url.pathname}`;
 ---
 
 <html lang="en">
@@ -24,14 +28,45 @@ const pageTitle = `${title} — ${siteConfig.name}`;
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{pageTitle}</title>
+    <meta name="description" content={metaDescription} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={siteConfig.name} />
   </head>
   <body>
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
     <div class="page-wrapper">
       <Header />
-      <main>
+      <main id="main-content">
         <slot />
       </main>
       <Footer />
     </div>
   </body>
 </html>
+
+<style>
+  .skip-to-content {
+    position: absolute;
+    top: -100%;
+    left: var(--space-sm);
+    z-index: 10000; /* above CRT overlay at z-index 9999 */
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-bg);
+    color: var(--color-gold);
+    border: 4px double var(--color-gold);
+    font-family: var(--font-body);
+    font-weight: bold;
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+  }
+
+  .skip-to-content:focus {
+    top: var(--space-sm);
+  }
+</style>
