@@ -8,6 +8,7 @@ export interface NavLink {
 
 export interface ContactConfig {
   email: string;
+  linkedin: string;
 }
 
 export interface SiteConfig {
@@ -20,17 +21,17 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: 'Your Name',
-  tagline: 'Business strategy and operations.',
+  name: 'Adam Angerami',
+  tagline: 'Business Operations Leader.',
   siteUrl: 'https://example.com', // PLACEHOLDER — owner to replace with real domain
   description: 'PLACEHOLDER — owner to provide a 1–2 sentence site description.',
   nav: [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'Work', href: '/work' },
-    { label: 'Contact', href: '/contact' },
   ],
   contact: {
-    email: 'hello@example.com',
+    email: 'adam.angerami@gmail.com',
+    linkedin: 'https://www.linkedin.com/in/adam-angerami/',
   },
 };

@@ -3,26 +3,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageTitle from '../components/PageTitle.astro';
 import DecoBorder from '../components/DecoBorder.astro';
 import AsciiDivider from '../components/AsciiDivider.astro';
+import { siteConfig } from '../config';
 ---
 
-<BaseLayout title="Home" description="PLACEHOLDER — owner to provide home page meta description.">
+<BaseLayout title="Home" description="Adam Angerami — operations and strategy executive. Former Army Major, startup operator, Cornell MBA. Available for senior executive roles.">
   <section class="home-hero">
-    <PageTitle title="Your Name" />
+    <PageTitle title="Adam Angerami" />
 
     <p class="home-tagline">
-      {/* COPY PLACEHOLDER — owner approval required */}
-      Strategy. Operations. Getting things done.
+      Business Operations Leader.
     </p>
 
     <AsciiDivider />
 
     <DecoBorder>
       <p class="home-intro">
-        {/* COPY PLACEHOLDER — owner approval required */}
-        Brief intro — 2–3 sentences about who this person is and what they bring to
-        the table. Warm but professional. Let the work speak.
+        Former U.S. Army Major. First Head of Operations at a $1 billion startup. Now looking for the next hard problem.
       </p>
-      <a href="/contact" class="cta-link">Get in touch ›</a>
+      <p class="home-intro">
+        I build the operating systems that help organizations scale — the team structures, process frameworks, and data infrastructure that turn growth from chaotic into sustainable.
+      </p>
+      <a href={`mailto:${siteConfig.contact.email}`} class="cta-link">Get in touch ›</a>
     </DecoBorder>
   </section>
 </BaseLayout>

@@ -3,9 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageTitle from '../components/PageTitle.astro';
 import DecoBorder from '../components/DecoBorder.astro';
 import AsciiDivider from '../components/AsciiDivider.astro';
+import ContactButtons from '../components/ContactButtons.astro';
 ---
 
-<BaseLayout title="About" description="PLACEHOLDER — owner to provide about page meta description.">
+<BaseLayout title="About" description="Background, expertise, and approach. Former U.S. Army Major and startup operator with a track record in operations, strategy, and organizational scaling.">
   <article class="about-page">
     <PageTitle title="About" />
 
@@ -14,32 +15,39 @@ import AsciiDivider from '../components/AsciiDivider.astro';
     <DecoBorder>
       <section class="about-section">
         <h2 class="section-label">Background</h2>
-        {/* COPY PLACEHOLDER — owner approval required */}
         <p>
-          A few sentences about background and career arc. Where did this person
-          come from? What domains have they worked in? Keep it brief — visitors
-          already have a name; they're here for context.
+          West Point graduate and former U.S. Army Major. Five years commanding soldiers across three continents before redirecting into business — Cornell for an MBA and an M.Eng., then a startup in Stamford, then a turnaround at an industrial conglomerate in Connecticut.
+        </p>
+        <p>
+          The thread throughout: walking into complicated situations and building the structures that make them work.
         </p>
       </section>
 
       <section class="about-section">
         <h2 class="section-label">Expertise</h2>
-        {/* COPY PLACEHOLDER — owner approval required */}
         <p>
-          What does this person actually do? What problems do they solve? Be
-          specific — generic buzzwords undercut credibility.
+          Operations and strategy for organizations in motion. Building the operating model when there isn't one. Scaling teams through the stage where informal systems stop holding. Rescuing programs that are ready to be canceled.
+        </p>
+        <p>
+          The work typically involves P&amp;L accountability, cross-functional team leadership, program governance, and data infrastructure for executive decisions. Industries: technology and software, logistics, consumer and retail, defense, and industrial manufacturing.
         </p>
       </section>
 
       <section class="about-section">
         <h2 class="section-label">Why work together</h2>
-        {/* COPY PLACEHOLDER — owner approval required */}
         <p>
-          What makes this person worth hiring or collaborating with? One honest
-          paragraph. No jargon.
+          The organizations I do my best work with are usually at the moment where the team that got them here isn't going to get them to the next stage — not because the people are wrong, but because the operating infrastructure hasn't caught up.
+        </p>
+        <p>
+          I'm direct, I run toward hard problems, and I have a tolerance for ambiguity built from years of making operational decisions in real time with incomplete information. If that sounds like what you need, I'd like to hear about what you're building.
         </p>
       </section>
     </DecoBorder>
+
+    <div class="page-cta">
+      <AsciiDivider />
+      <ContactButtons />
+    </div>
   </article>
 </BaseLayout>
 
@@ -56,6 +64,15 @@ import AsciiDivider from '../components/AsciiDivider.astro';
 
   .about-section:last-child {
     margin-bottom: 0;
+  }
+
+  .about-section p {
+    word-spacing: 0.1em;
+  }
+
+  .page-cta {
+    margin-top: var(--space-xl);
+    text-align: center;
   }
 
   .section-label {

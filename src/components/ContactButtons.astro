@@ -1,0 +1,45 @@
+---
+import { siteConfig } from '../config';
+---
+
+<div class="contact-buttons">
+  <a href={`mailto:${siteConfig.contact.email}`} class="contact-btn">
+    Email
+  </a>
+  <a
+    href={siteConfig.contact.linkedin}
+    class="contact-btn"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    LinkedIn
+  </a>
+</div>
+
+<style>
+  .contact-buttons {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .contact-btn {
+    font-family: var(--font-body);
+    font-weight: bold;
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-gold);
+    border: 2px double var(--color-gold);
+    padding: var(--space-xs) var(--space-sm);
+    text-decoration: none;
+    transition: all steps(4) 0.15s;
+    white-space: nowrap;
+  }
+
+  .contact-btn:hover {
+    background: var(--color-gold);
+    color: var(--color-bg);
+  }
+</style>

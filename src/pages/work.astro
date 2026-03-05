@@ -2,25 +2,76 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageTitle from '../components/PageTitle.astro';
 import AsciiDivider from '../components/AsciiDivider.astro';
+import ContactButtons from '../components/ContactButtons.astro';
 
-// COPY PLACEHOLDER — owner to provide real entries and approve
-const workEntries = [
+const workEntries: { title: string; org: string; period: string; bullets: string[] }[] = [
   {
-    title: 'Role Title',
-    org: 'Organization Name',
-    period: '20XX – 20XX',
-    description: 'Brief description of the role and key accomplishments. 1–3 sentences.',
+    title: 'New Product Development Manager',
+    org: 'Emerson Electric / Branson Ultrasonics',
+    period: 'Feb 2023 – Present',
+    bullets: [
+      'Rescued a twice-canceled $25M product platform (Polaris series, 9+ SKUs) by establishing cross-functional governance, forcing executive decisions at the CEO/COO level, and delivering to market with zero additional headcount.',
+      'Sole PMO for Branson Ultrasonics division; own all NPD budgeting, vendor management, and contracting across a $100M+ product pipeline.',
+      'Built the division\'s first Agile PMO from scratch, unifying product development and support processes and monetizing three new aftermarket verticals.',
+      'Created a Portfolio Management Database in Microsoft Dynamics and Power BI, giving C-suite real-time visibility into the NPD pipeline for the first time.',
+    ],
   },
   {
-    title: 'Role Title',
-    org: 'Organization Name',
-    period: '20XX – 20XX',
-    description: 'Brief description of the role and key accomplishments. 1–3 sentences.',
+    title: 'Senior Director, Business Performance & Operations',
+    org: 'Point Pickup Technologies',
+    period: 'Oct 2020 – Jan 2022',
+    bullets: [
+      'First Head of Business Operations at a $1B-valued Series B startup; inherited a 100-person org with no standardized processes and built every operational system from scratch, halting a cycle of failed restructurings and stabilizing 250+ employees.',
+      'Scaled the organization from 100 to 300+ people and revenue from $50M to $150M ARR in under 18 months; owned $10M P&L reporting directly to the COO; contributed to Series B fundraise.',
+      'Reduced operational costs by 54% ($7M annually) through SaaS consolidation, infrastructure optimization, and team restructuring.',
+      'Designed business requirements for dynamic pricing algorithms; built real-time KPI dashboards in Domo for C-suite and investor use; led $42M GrocerKey acquisition integration.',
+    ],
+  },
+  {
+    title: 'MBA Consultant',
+    org: 'Verizon',
+    period: 'Sep 2019 – Dec 2019',
+    bullets: [
+      'Evaluated the competitive smart city landscape and developed go-to-market strategies for intersection technologies.',
+      'Built an opportunity funnel across 50+ municipalities; delivered GTM strategy to senior leadership.',
+    ],
+  },
+  {
+    title: 'M.Eng. Consultant',
+    org: 'IBM',
+    period: 'Jan 2019 – May 2019',
+    bullets: [
+      'Led an interdisciplinary team designing hardware and ML training sets for computer vision accuracy measurement.',
+      'Pioneered research into AI/ML algorithms for specular material classification; client became a long-term academic partner.',
+    ],
+  },
+  {
+    title: 'Major | Commander and Operations Director',
+    org: 'United States Army',
+    period: 'May 2010 – Aug 2018',
+    bullets: [
+      'Led a 270-soldier detachment across three continents with a $3M budget; selected above peers to fill a position normally reserved for 10+ year veterans.',
+      'Pioneered data-driven decision frameworks recognized by the Secretary of Defense and adopted as a pilot program across the Department of the Army.',
+      'Devised strategic plans enabling Iraqi forces to capture Ramadi and Mosul from ISIS, liberating over 2M people; served as primary operational planner for a 715-soldier battalion.',
+    ],
+  },
+];
+
+const advisoryEntries: { title: string; org: string; period: string }[] = [
+  {
+    title: 'Commissioner',
+    org: 'Newtown Parks and Recreation Commission',
+    period: '2023 – Present',
+  },
+  {
+    title: 'Commissioner',
+    org: 'Newtown Economic Development Commission',
+    period: '2026 – Present',
   },
 ];
 ---
 
-<BaseLayout title="Work" description="PLACEHOLDER — owner to provide work page meta description.">
+<BaseLayout title="Work" description="Work history — roles in operations, strategy, program management, and organizational leadership across startups, enterprise, and the U.S. military.">
   <section class="work-page">
     <PageTitle title="Work" />
 
@@ -35,10 +86,34 @@ const workEntries = [
             <span class="work-period">{entry.period}</span>
           </div>
           <div class="work-org">{entry.org}</div>
-          <p class="work-description">{entry.description}</p>
+          <ul class="work-bullets">
+            {entry.bullets.map((bullet) => (
+              <li class="work-bullet">{bullet}</li>
+            ))}
+          </ul>
         </li>
       ))}
     </ul>
+
+    <AsciiDivider />
+
+    <h2 class="section-label">Advisory &amp; Projects</h2>
+    <ul class="work-list advisory-list">
+      {advisoryEntries.map((entry) => (
+        <li class="work-entry">
+          <div class="work-header">
+            <h3 class="work-title">{entry.title}</h3>
+            <span class="work-period">{entry.period}</span>
+          </div>
+          <div class="work-org">{entry.org}</div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="page-cta">
+      <AsciiDivider />
+      <ContactButtons />
+    </div>
   </section>
 </BaseLayout>
 
@@ -56,6 +131,10 @@ const workEntries = [
     display: flex;
     flex-direction: column;
     gap: var(--space-lg);
+  }
+
+  .advisory-list {
+    margin-top: var(--space-md);
   }
 
   .work-entry {
@@ -84,11 +163,19 @@ const workEntries = [
     border: 0;
   }
 
+  .section-label {
+    font-family: var(--font-body);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-gold);
+    margin: 0 0 var(--space-md);
+  }
+
   .work-title {
     font-family: var(--font-display);
     font-size: var(--font-size-lg);
     color: var(--color-text);
-    /* Override global h3 reset so layout is unchanged */
     margin: 0;
   }
 
@@ -109,8 +196,20 @@ const workEntries = [
     margin-bottom: var(--space-sm);
   }
 
-  .work-description {
+  .work-bullets {
     margin: 0;
+    padding-left: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .page-cta {
+    margin-top: var(--space-xl);
+    text-align: center;
+  }
+
+  .work-bullet {
     line-height: var(--line-height-base);
     color: var(--color-text);
   }

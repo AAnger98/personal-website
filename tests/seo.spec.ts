@@ -4,7 +4,6 @@ const pages = [
   { path: '/', label: 'Home' },
   { path: '/about', label: 'About' },
   { path: '/work', label: 'Work' },
-  { path: '/contact', label: 'Contact' },
 ];
 
 // ─── Meta description ────────────────────────────────────────────────────────

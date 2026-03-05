@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Body Font Options — Personal Website</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&family=Inconsolata:wght@400;700&family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;1,400&family=Roboto+Mono:ital,wght@0,400;0,700;1,400&family=Fira+Mono:wght@400;700&family=PT+Mono&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Site palette ── */
+    :root {
+      --color-bg:    #1B3022;
+      --color-green: #4F772D;
+      --color-blue:  #8EA8C3;
+      --color-peach: #E29578;
+      --color-gold:  #D4AF37;
+      --color-text:  #E5E5E5;
+
+      --font-display: 'Archivo Black', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      padding: 48px 32px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      color: var(--color-gold);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .page-subtitle {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: var(--color-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 48px;
+    }
+
+    /* ── Font option card ── */
+    .option {
+      border: 4px double var(--color-gold);
+      padding: 32px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .option-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--color-green);
+      padding-bottom: 12px;
+    }
+
+    .option-number {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--color-gold);
+      flex-shrink: 0;
+    }
+
+    .option-name {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: var(--color-blue);
+    }
+
+    .option-tag {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-peach);
+      margin-left: auto;
+    }
+
+    /* ── Sample text blocks ── */
+    .sample-label {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--color-gold);
+      opacity: 0.7;
+      margin-bottom: 6px;
+    }
+
+    .sample-section {
+      margin-bottom: 20px;
+    }
+
+    /* Body copy sample */
+    .sample-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--color-text);
+    }
+
+    /* Nav / label sample */
+    .sample-nav {
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-text);
+      display: flex;
+      gap: 24px;
+      border-top: 1px solid var(--color-green);
+      border-bottom: 1px solid var(--color-green);
+      padding: 8px 0;
+    }
+
+    /* Section label sample */
+    .sample-section-label {
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--color-gold);
+    }
+
+    /* CTA button sample */
+    .sample-cta {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-gold);
+      border: 2px double var(--color-gold);
+      padding: 6px 14px;
+      text-decoration: none;
+    }
+
+    /* Bullet list sample */
+    .sample-bullets {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--color-text);
+      padding-left: 20px;
+    }
+    .sample-bullets li {
+      margin-bottom: 6px;
+    }
+
+    /* ── Notes ── */
+    .option-notes {
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid var(--color-green);
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--color-blue);
+      line-height: 1.6;
+    }
+
+    /* ── Individual font families ── */
+    .font-courier-new     { font-family: 'Courier New', Courier, monospace; }
+    .font-courier-prime   { font-family: 'Courier Prime', 'Courier New', monospace; }
+    .font-ibm-plex        { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
+    .font-jetbrains       { font-family: 'JetBrains Mono', 'Courier New', monospace; }
+    .font-inconsolata     { font-family: 'Inconsolata', 'Courier New', monospace; }
+    .font-source-code-pro { font-family: 'Source Code Pro', 'Courier New', monospace; }
+    .font-space-mono      { font-family: 'Space Mono', 'Courier New', monospace; }
+    .font-roboto-mono     { font-family: 'Roboto Mono', 'Courier New', monospace; }
+    .font-fira-mono       { font-family: 'Fira Mono', 'Courier New', monospace; }
+    .font-pt-mono         { font-family: 'PT Mono', 'Courier New', monospace; }
+  </style>
+</head>
+<body>
+
+  <h1>Body Font Options</h1>
+  <p class="page-subtitle">10 candidates · same palette · same size · pick one</p>
+
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <!-- OPTION 1 — Courier New (current) -->
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <div class="option">
+    <div class="option-header">
+      <span class="option-number">01</span>
+      <span class="option-name">Courier New — current</span>
+      <span class="option-tag">System · no load cost</span>
+    </div>
+
+    <div class="sample-section font-courier-new">
+      <div class="sample-label">Nav</div>
+      <div class="sample-nav">
+        <span>Home</span><span>About</span><span>Work</span>
+      </div>
+    </div>
+
+    <div class="sample-section font-courier-new">
+      <div class="sample-label">Section label</div>
+      <div class="sample-section-label">Background</div>
+    </div>
+
+    <div class="sample-section font-courier-new">
+      <div class="sample-label">Body copy</div>
+      <p class="sample-body">West Point graduate and former U.S. Army Major. Five years commanding soldiers across three continents before redirecting into business — Cornell for an MBA and an M.Eng., then a startup in Stamford, then a turnaround at an industrial conglomerate in Connecticut.</p>
+    </div>
+
+    <div class="sample-section font-courier-new">
+      <div class="sample-label">Bullet list</div>
+      <ul class="sample-bullets">
+        <li>Rescued a twice-canceled $25M product platform by establishing cross-functional governance.</li>
+        <li>Scaled the organization from 100 to 300+ people and revenue from $50M to $150M ARR in under 18 months.</li>
+      </ul>
+    </div>
+
+    <div class="sample-section font-courier-new">
+      <div class="sample-label">CTA button</div>
+      <a class="sample-cta">Email</a>&nbsp;&nbsp;<a class="sample-cta">LinkedIn</a>
+    </div>
+
+    <div class="option-notes">
+      The baseline. Classic typewriter feel. Thin, slightly fragile strokes at body size on modern screens. Strongest Deco authenticity — it reads as genuinely old.
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <!-- OPTION 2 — Courier Prime -->
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <div class="option">
+    <div class="option-header">
+      <span class="option-number">02</span>
+      <span class="option-name">Courier Prime</span>
+      <span class="option-tag">Google Fonts · 1 request</span>
+    </div>
+
+    <div class="sample-section font-courier-prime">
+      <div class="sample-label">Nav</div>
+      <div class="sample-nav">
+        <span>Home</span><span>About</span><span>Work</span>
+      </div>
+    </div>
+
+    <div class="sample-section font-courier-prime">
+      <div class="sample-label">Section label</div>
+      <div class="sample-section-label">Background</div>
+    </div>
+
+    <div class="sample-section font-courier-prime">
+      <div class="sample-label">Body copy</div>
+      <p class="sample-body">West Point graduate and former U.S. Army Major. Five years commanding soldiers across three continents before redirecting into business — Cornell for an MBA and an M.Eng., then a startup in Stamford, then a turnaround at an industrial conglomerate in Connecticut.</p>
+    </div>
+
+    <div class="sample-section font-courier-prime">
+      <div class="sample-label">Bullet list</div>
+      <ul class="sample-bullets">
+        <li>Rescued a twice-canceled $25M product platform by establishing cross-functional governance.</li>
+        <li>Scaled the organization from 100 to 300+ people and revenue from $50M to $150M ARR in under 18 months.</li>
+      </ul>
+    </div>
+
+    <div class="sample-section font-courier-prime">
+      <div class="sample-label">CTA button</div>
+      <a class="sample-cta">Email</a>&nbsp;&nbsp;<a class="sample-cta">LinkedIn</a>
+    </div>
+
+    <div class="option-notes">
+      Courier New, redrawn for screen and print readability. Slightly heavier strokes, improved spacing. Feels almost identical to 01 but less strain at body size — a drop-in upgrade with no aesthetic cost.
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <!-- OPTION 3 — IBM Plex Mono -->
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <div class="option">
+    <div class="option-header">
+      <span class="option-number">03</span>
+      <span class="option-name">IBM Plex Mono</span>
+      <span class="option-tag">Google Fonts · 1 request</span>
+    </div>
+
+    <div class="sample-section font-ibm-plex">
+      <div class="sample-label">Nav</div>
+      <div class="sample-nav">
+        <span>Home</span><span>About</span><span>Work</span>
+      </div>
+    </div>
+
+    <div class="sample-section font-ibm-plex">
+      <div class="sample-label">Section label</div>
+      <div class="sample-section-label">Background</div>
+    </div>
+
+    <div class="sample-section font-ibm-plex">
+      <div class="sample-label">Body copy</div>
+      <p class="sample-body">West Point graduate and former U.S. Army Major. Five years commanding soldiers across three continents before redirecting into business — Cornell for an MBA and an M.Eng., then a startup in Stamford, then a turnaround at an industrial conglomerate in Connecticut.</p>
+    </div>
+
+    <div class="sample-section font-ibm-plex">
+      <div class="sample-label">Bullet list</div>
+      <ul class="sample-bullets">
+        <li>Rescued a twice-canceled $25M product platform by establishing cross-functional governance.</li>
+        <li>Scaled the organization from 100 to 300+ people and revenue from $50M to $150M ARR in under 18 months.</li>
+      </ul>
+    </div>
+
+    <div class="sample-section font-ibm-plex">
+      <div class="sample-label">CTA button</div>
+      <a class="sample-cta">Email</a>&nbsp;&nbsp;<a class="sample-cta">LinkedIn</a>
+    </div>
+
+    <div class="option-notes">
+      IBM's humanist monospace — warmer than most, clearly legible. Slightly modern feel that pairs well with Archivo Black. Less typewriter, more terminal operator. Good balance between character and readability.
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <!-- OPTION 4 — JetBrains Mono -->
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <div class="option">
+    <div class="option-header">
+      <span class="option-number">04</span>
+      <span class="option-name">JetBrains Mono</span>
+      <span class="option-tag">Google Fonts · 1 request</span>
+    </div>
+
+    <div class="sample-section font-jetbrains">
+      <div class="sample-label">Nav</div>
+      <div class="sample-nav">
+        <span>Home</span><span>About</span><span>Work</span>
+      </div>
+    </div>
+
+    <div class="sample-section font-jetbrains">
+      <div class="sample-label">Section label</div>
+      <div class="sample-section-label">Background</div>
+    </div>
+
+    <div class="sample-section font-jetbrains">
+      <div class="sample-label">Body copy</div>
+      <p class="sample-body">West Point graduate and former U.S. Army Major. Five years commanding soldiers across three continents before redirecting into business — Cornell for an MBA and an M.Eng., then a startup in Stamford, then a turnaround at an industrial conglomerate in Connecticut.</p>
+    </div>
+
+    <div class="sample-section font-jetbrains">
+      <div class="sample-label">Bullet list</div>
+      <ul class="sample-bullets">
+        <li>Rescued a twice-canceled $25M product platform by establishing cross-functional governance.</li>
+        <li>Scaled the organization from 100 to 300+ people and revenue from $50M to $150M ARR in under 18 months.</li>
+      </ul>
+    </div>
+
+    <div class="sample-section font-jetbrains">
+      <div class="sample-label">CTA button</div>
+      <a class="sample-cta">Email</a>&nbsp;&nbsp;<a class="sample-cta">LinkedIn</a>
+    </div>
+
+    <div class="option-notes">
+      Engineered specifically for long-read legibility. Slightly taller x-height, wider proportions. Very readable at body size — probably the easiest to read in this list. Lean modern; less ambient Deco aesthetic, more clean terminal.
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <!-- OPTION 5 — Inconsolata -->
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <div class="option">
+    <div class="option-header">
+      <span class="option-number">05</span>
+      <span class="option-name">Inconsolata</span>
+      <span class="option-tag">Google Fonts · 1 request</span>
+    </div>
+
+    <div class="sample-section font-inconsolata">
+      <div class="sample-label">Nav</div>
+      <div class="sample-nav">
+        <span>Home</span><span>About</span><span>Work</span>
+      </div>
+    </div>
+
+    <div class="sample-section font-inconsolata">
+      <div class="sample-label">Section label</div>
+      <div class="sample-section-label">Background</div>
+    </div>
+
+    <div class="sample-section font-inconsolata">
+      <div class="sample-label">Body copy</div>
+      <p class="sample-body">West Point graduate and former U.S. Army Major. Five years commanding soldiers across three continents before redirecting into business — Cornell for an MBA and an M.Eng., then a startup in Stamford, then a turnaround at an industrial conglomerate in Connecticut.</p>
+    </div>
+
+    <div class="sample-section font-inconsolata">
+      <div class="sample-label">Bullet list</div>
+      <ul class="sample-bullets">
+        <li>Rescued a twice-canceled $25M product platform by establishing cross-functional governance.</li>
+        <li>Scaled the organization from 100 to 300+ people and revenue from $50M to $150M ARR in under 18 months.</li>
+      </ul>
+    </div>
+
+    <div class="sample-section font-inconsolata">
+      <div class="sample-label">CTA button</div>
+      <a class="sample-cta">Email</a>&nbsp;&nbsp;<a class="sample-cta">LinkedIn</a>
+    </div>
+
+    <div class="option-notes">
+      Elegant and compact. Narrower than most — fits more text per line. Classical feel that leans toward engraved precision. Pairs well with the Deco framing. Slightly condensed can make long paragraphs feel dense.
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <!-- OPTION 6 — Source Code Pro -->
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <div class="option">
+    <div class="option-header">
+      <span class="option-number">06</span>
+      <span class="option-name">Source Code Pro</span>
+      <span class="option-tag">Google Fonts · 1 request</span>
+    </div>
+
+    <div class="sample-section font-source-code-pro">
+      <div class="sample-label">Nav</div>
+      <div class="sample-nav">
+        <span>Home</span><span>About</span><span>Work</span>
+      </div>
+    </div>
+
+    <div class="sample-section font-source-code-pro">
+      <div class="sample-label">Section label</div>
+      <div class="sample-section-label">Background</div>
+    </div>
+
+    <div class="sample-section font-source-code-pro">
+      <div class="sample-label">Body copy</div>
+      <p class="sample-body">West Point graduate and former U.S. Army Major. Five years commanding soldiers across three continents before redirecting into business — Cornell for an MBA and an M.Eng., then a startup in Stamford, then a turnaround at an industrial conglomerate in Connecticut.</p>
+    </div>
+
+    <div class="sample-section font-source-code-pro">
+      <div class="sample-label">Bullet list</div>
+      <ul class="sample-bullets">
+        <li>Rescued a twice-canceled $25M product platform by establishing cross-functional governance.</li>
+        <li>Scaled the organization from 100 to 300+ people and revenue from $50M to $150M ARR in under 18 months.</li>
+      </ul>
+    </div>
+
+    <div class="sample-section font-source-code-pro">
+      <div class="sample-label">CTA button</div>
+      <a class="sample-cta">Email</a>&nbsp;&nbsp;<a class="sample-cta">LinkedIn</a>
+    </div>
+
+    <div class="option-notes">
+      Adobe's take on a screen-optimized monospace. Clean, neutral, highly legible. Slightly modern but not flashy. The "no surprises" option — won't excite anyone but won't tire anyone's eyes either.
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <!-- OPTION 7 — Space Mono -->
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <div class="option">
+    <div class="option-header">
+      <span class="option-number">07</span>
+      <span class="option-name">Space Mono</span>
+      <span class="option-tag">Google Fonts · 1 request</span>
+    </div>
+
+    <div class="sample-section font-space-mono">
+      <div class="sample-label">Nav</div>
+      <div class="sample-nav">
+        <span>Home</span><span>About</span><span>Work</span>
+      </div>
+    </div>
+
+    <div class="sample-section font-space-mono">
+      <div class="sample-label">Section label</div>
+      <div class="sample-section-label">Background</div>
+    </div>
+
+    <div class="sample-section font-space-mono">
+      <div class="sample-label">Body copy</div>
+      <p class="sample-body">West Point graduate and former U.S. Army Major. Five years commanding soldiers across three continents before redirecting into business — Cornell for an MBA and an M.Eng., then a startup in Stamford, then a turnaround at an industrial conglomerate in Connecticut.</p>
+    </div>
+
+    <div class="sample-section font-space-mono">
+      <div class="sample-label">Bullet list</div>
+      <ul class="sample-bullets">
+        <li>Rescued a twice-canceled $25M product platform by establishing cross-functional governance.</li>
+        <li>Scaled the organization from 100 to 300+ people and revenue from $50M to $150M ARR in under 18 months.</li>
+      </ul>
+    </div>
+
+    <div class="sample-section font-space-mono">
+      <div class="sample-label">CTA button</div>
+      <a class="sample-cta">Email</a>&nbsp;&nbsp;<a class="sample-cta">LinkedIn</a>
+    </div>
+
+    <div class="option-notes">
+      Strong personality. Geometric letterforms with a retrofuturist edge that fits the Terminal Deco concept well. Feels like a mission control terminal. The character can read as heavy at small sizes — works best if paired with more breathing room in line-height.
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <!-- OPTION 8 — Roboto Mono -->
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <div class="option">
+    <div class="option-header">
+      <span class="option-number">08</span>
+      <span class="option-name">Roboto Mono</span>
+      <span class="option-tag">Google Fonts · 1 request</span>
+    </div>
+
+    <div class="sample-section font-roboto-mono">
+      <div class="sample-label">Nav</div>
+      <div class="sample-nav">
+        <span>Home</span><span>About</span><span>Work</span>
+      </div>
+    </div>
+
+    <div class="sample-section font-roboto-mono">
+      <div class="sample-label">Section label</div>
+      <div class="sample-section-label">Background</div>
+    </div>
+
+    <div class="sample-section font-roboto-mono">
+      <div class="sample-label">Body copy</div>
+      <p class="sample-body">West Point graduate and former U.S. Army Major. Five years commanding soldiers across three continents before redirecting into business — Cornell for an MBA and an M.Eng., then a startup in Stamford, then a turnaround at an industrial conglomerate in Connecticut.</p>
+    </div>
+
+    <div class="sample-section font-roboto-mono">
+      <div class="sample-label">Bullet list</div>
+      <ul class="sample-bullets">
+        <li>Rescued a twice-canceled $25M product platform by establishing cross-functional governance.</li>
+        <li>Scaled the organization from 100 to 300+ people and revenue from $50M to $150M ARR in under 18 months.</li>
+      </ul>
+    </div>
+
+    <div class="sample-section font-roboto-mono">
+      <div class="sample-label">CTA button</div>
+      <a class="sample-cta">Email</a>&nbsp;&nbsp;<a class="sample-cta">LinkedIn</a>
+    </div>
+
+    <div class="option-notes">
+      Clean and neutral — the most invisible monospace in the list. Very easy to read, no personality that might conflict with the design. Risk: may feel too Google / Android adjacent, which can undercut the Terminal Deco feel.
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <!-- OPTION 9 — Fira Mono -->
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <div class="option">
+    <div class="option-header">
+      <span class="option-number">09</span>
+      <span class="option-name">Fira Mono</span>
+      <span class="option-tag">Google Fonts · 1 request</span>
+    </div>
+
+    <div class="sample-section font-fira-mono">
+      <div class="sample-label">Nav</div>
+      <div class="sample-nav">
+        <span>Home</span><span>About</span><span>Work</span>
+      </div>
+    </div>
+
+    <div class="sample-section font-fira-mono">
+      <div class="sample-label">Section label</div>
+      <div class="sample-section-label">Background</div>
+    </div>
+
+    <div class="sample-section font-fira-mono">
+      <div class="sample-label">Body copy</div>
+      <p class="sample-body">West Point graduate and former U.S. Army Major. Five years commanding soldiers across three continents before redirecting into business — Cornell for an MBA and an M.Eng., then a startup in Stamford, then a turnaround at an industrial conglomerate in Connecticut.</p>
+    </div>
+
+    <div class="sample-section font-fira-mono">
+      <div class="sample-label">Bullet list</div>
+      <ul class="sample-bullets">
+        <li>Rescued a twice-canceled $25M product platform by establishing cross-functional governance.</li>
+        <li>Scaled the organization from 100 to 300+ people and revenue from $50M to $150M ARR in under 18 months.</li>
+      </ul>
+    </div>
+
+    <div class="sample-section font-fira-mono">
+      <div class="sample-label">CTA button</div>
+      <a class="sample-cta">Email</a>&nbsp;&nbsp;<a class="sample-cta">LinkedIn</a>
+    </div>
+
+    <div class="option-notes">
+      Mozilla's humanist monospace — open letterforms, well-balanced. Falls between IBM Plex Mono and Source Code Pro in feel: more character than 06, more neutral than 03. Solid all-rounder. Slightly warm undertone.
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <!-- OPTION 10 — PT Mono -->
+  <!-- ──────────────────────────────────────────────────────────── -->
+  <div class="option">
+    <div class="option-header">
+      <span class="option-number">10</span>
+      <span class="option-name">PT Mono</span>
+      <span class="option-tag">Google Fonts · 1 request</span>
+    </div>
+
+    <div class="sample-section font-pt-mono">
+      <div class="sample-label">Nav</div>
+      <div class="sample-nav">
+        <span>Home</span><span>About</span><span>Work</span>
+      </div>
+    </div>
+
+    <div class="sample-section font-pt-mono">
+      <div class="sample-label">Section label</div>
+      <div class="sample-section-label">Background</div>
+    </div>
+
+    <div class="sample-section font-pt-mono">
+      <div class="sample-label">Body copy</div>
+      <p class="sample-body">West Point graduate and former U.S. Army Major. Five years commanding soldiers across three continents before redirecting into business — Cornell for an MBA and an M.Eng., then a startup in Stamford, then a turnaround at an industrial conglomerate in Connecticut.</p>
+    </div>
+
+    <div class="sample-section font-pt-mono">
+      <div class="sample-label">Bullet list</div>
+      <ul class="sample-bullets">
+        <li>Rescued a twice-canceled $25M product platform by establishing cross-functional governance.</li>
+        <li>Scaled the organization from 100 to 300+ people and revenue from $50M to $150M ARR in under 18 months.</li>
+      </ul>
+    </div>
+
+    <div class="sample-section font-pt-mono">
+      <div class="sample-label">CTA button</div>
+      <a class="sample-cta">Email</a>&nbsp;&nbsp;<a class="sample-cta">LinkedIn</a>
+    </div>
+
+    <div class="option-notes">
+      Paratype's monospace — designed for government and formal document contexts. Upright, authoritative, traditional. Has a slightly official feel that fits the credentialing purpose of the site. Closer to Courier family than IBM or JetBrains.
+    </div>
+  </div>
+
+</body>
+</html>

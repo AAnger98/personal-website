@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const allPages = ['/', '/about', '/work', '/contact'];
+const allPages = ['/', '/about', '/work'];
 
 // ─── HTML lang attribute ─────────────────────────────────────────────────────
 

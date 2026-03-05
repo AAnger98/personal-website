@@ -33,20 +33,30 @@ test.describe('Work page', () => {
   });
 });
 
-// ─── Contact page ─────────────────────────────────────────────────────────────
+// ─── Contact CTAs (header + footer present on every page) ────────────────────
 
-test.describe('Contact page', () => {
-  test('loads without error and has a heading', async ({ page }) => {
-    const response = await page.goto('/contact');
-    expect(response?.status()).toBe(200);
-    await expect(page.locator('.page-title')).toBeVisible();
+test.describe('Contact CTAs', () => {
+  test('header has a visible email link on home page', async ({ page }) => {
+    await page.goto('/');
+    const emailLink = page.locator('.site-header a[href^="mailto:"]');
+    await expect(emailLink).toBeVisible();
   });
 
-  test('has a visible contact link', async ({ page }) => {
-    await page.goto('/contact');
-    const contactLink = page.locator('a[href^="mailto:"]');
-    await expect(contactLink).toBeVisible();
-    const href = await contactLink.getAttribute('href');
-    expect(href).toMatch(/^mailto:.+@.+\..+/);
+  test('header has a visible LinkedIn link on home page', async ({ page }) => {
+    await page.goto('/');
+    const linkedinLink = page.locator('.site-header a[href*="linkedin.com"]');
+    await expect(linkedinLink).toBeVisible();
+  });
+
+  test('footer has a visible email link', async ({ page }) => {
+    await page.goto('/');
+    const emailLink = page.locator('.site-footer a[href^="mailto:"]');
+    await expect(emailLink).toBeVisible();
+  });
+
+  test('footer has a visible LinkedIn link', async ({ page }) => {
+    await page.goto('/');
+    const linkedinLink = page.locator('.site-footer a[href*="linkedin.com"]');
+    await expect(linkedinLink).toBeVisible();
   });
 });

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tagline Options — Terminal Deco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Major+Mono+Display&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --color-bg:    #1b3022;
+      --color-green: #4f772d;
+      --color-blue:  #8ea8c3;
+      --color-peach: #e29578;
+      --color-gold:  #d4af37;
+      --color-text:  #e5e5e5;
+      --color-muted: rgba(229, 229, 229, 0.45);
+
+      --font-display:     'Archivo Black', 'Arial Black', sans-serif;
+      --font-mono-accent: 'Major Mono Display', monospace;
+      --font-body:        'Courier New', Courier, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      padding: 3rem 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .page-heading {
+      font-family: var(--font-mono-accent);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--color-gold);
+      border-bottom: 4px double var(--color-gold);
+      padding-bottom: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .option {
+      margin-bottom: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .option:last-child {
+      border-bottom: none;
+    }
+
+    .option-label {
+      font-family: var(--font-mono-accent);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--color-gold);
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    /* ── Site name (context) ── */
+    .site-name {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-text);
+      text-shadow:
+        2px 2px 0 var(--color-gold),
+        4px 4px 0 rgba(212, 175, 55, 0.25);
+      margin-bottom: 0.75rem;
+      line-height: 1.2;
+    }
+
+    /* ─── Option 1 — current (broken, for reference) ─── */
+    .tagline-1 {
+      font-family: var(--font-mono-accent);
+      font-size: 1.125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-blue);
+    }
+
+    /* ─── Option 2 — Courier New, sentence case ─── */
+    .tagline-2 {
+      font-family: var(--font-body);
+      font-size: 1.125rem;
+      letter-spacing: 0.06em;
+      color: var(--color-blue);
+    }
+
+    /* ─── Option 3 — Archivo Black subtitle ─── */
+    .tagline-3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--color-blue);
+    }
+
+    /* ─── Option 4 — Major Mono, mixed case, tight ─── */
+    .tagline-4 {
+      font-family: var(--font-mono-accent);
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      color: var(--color-blue);
+    }
+
+    /* ─── Option 5 — Courier New, gold, engraved label ─── */
+    .tagline-5 {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.38em;
+      color: var(--color-gold);
+    }
+
+    /* ─── Option 6 — Courier New, muted, sentence case ─── */
+    .tagline-6 {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      letter-spacing: 0.03em;
+      color: var(--color-muted);
+      font-style: italic;
+    }
+
+    /* ─── Option 7 — Archivo Black, sentence case, peach ─── */
+    .tagline-7 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      letter-spacing: 0.01em;
+      color: var(--color-peach);
+    }
+
+    /* ─── Option 8 — middot separators, Major Mono mixed case ─── */
+    .tagline-8 {
+      font-family: var(--font-mono-accent);
+      font-size: 0.875rem;
+      letter-spacing: 0.06em;
+      color: var(--color-blue);
+    }
+    .tagline-8 .sep {
+      color: var(--color-gold);
+      margin: 0 0.4em;
+    }
+
+    .note {
+      font-size: 0.75rem;
+      color: var(--color-muted);
+      margin-top: 0.75rem;
+      letter-spacing: 0.03em;
+    }
+  </style>
+</head>
+<body>
+
+  <p class="page-heading">━━━━━ ❈ ━━━━━ &nbsp; Tagline options &nbsp; ━━━━━ ❈ ━━━━━</p>
+
+  <!-- 1 -->
+  <div class="option">
+    <p class="option-label">Option 1 — Current (reference, broken)</p>
+    <p class="site-name">Your Name</p>
+    <p class="tagline-1">Strategy. Operations. Getting things done.</p>
+    <p class="note">Major Mono Display + uppercase + 0.15em tracking — alternating cap heights make it a wall of noise</p>
+  </div>
+
+  <!-- 2 -->
+  <div class="option">
+    <p class="option-label">Option 2 — Courier New, sentence case</p>
+    <p class="site-name">Your Name</p>
+    <p class="tagline-2">Strategy. Operations. Getting things done.</p>
+    <p class="note">Body font, no transformation, gentle tracking — clean and legible, feels typed</p>
+  </div>
+
+  <!-- 3 -->
+  <div class="option">
+    <p class="option-label">Option 3 — Archivo Black, all caps, wide tracking</p>
+    <p class="site-name">Your Name</p>
+    <p class="tagline-3">Strategy. Operations. Getting things done.</p>
+    <p class="note">Display font scaled down as a subtitle — Archivo Black handles all-caps cleanly; strong hierarchy</p>
+  </div>
+
+  <!-- 4 -->
+  <div class="option">
+    <p class="option-label">Option 4 — Major Mono, sentence case, tight</p>
+    <p class="site-name">Your Name</p>
+    <p class="tagline-4">Strategy. Operations. Getting things done.</p>
+    <p class="note">Keeps the quirky terminal font but drops uppercase — alternating heights become texture, not noise</p>
+  </div>
+
+  <!-- 5 -->
+  <div class="option">
+    <p class="option-label">Option 5 — Courier New, gold, engraved label</p>
+    <p class="site-name">Your Name</p>
+    <p class="tagline-5">Strategy. Operations. Getting things done.</p>
+    <p class="note">Small, wide-spaced gold caps — reads like an engraved plate or Art Deco signage</p>
+  </div>
+
+  <!-- 6 -->
+  <div class="option">
+    <p class="option-label">Option 6 — Courier New, italic, muted</p>
+    <p class="site-name">Your Name</p>
+    <p class="tagline-6">Strategy. Operations. Getting things done.</p>
+    <p class="note">Understated and warm — whispered rather than stated; works if the name is doing the heavy lifting</p>
+  </div>
+
+  <!-- 7 -->
+  <div class="option">
+    <p class="option-label">Option 7 — Archivo Black, sentence case, peach</p>
+    <p class="site-name">Your Name</p>
+    <p class="tagline-7">Strategy. Operations. Getting things done.</p>
+    <p class="note">Display font in the terracotta accent — more conversational than all-caps; warm and confident</p>
+  </div>
+
+  <!-- 8 -->
+  <div class="option">
+    <p class="option-label">Option 8 — Major Mono, middot separators, mixed case</p>
+    <p class="site-name">Your Name</p>
+    <p class="tagline-8">Strategy<span class="sep">·</span>Operations<span class="sep">·</span>Getting things done</p>
+    <p class="note">Drops the periods in favour of gold middots — breaks the sentence into discrete units, more scannable</p>
+  </div>
+
+</body>
+</html>
