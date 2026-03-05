@@ -97,8 +97,8 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 - [x] Add `lang` attribute to `<html>`
 - [-] Ensure all images have `alt` text — no images on site at launch
 - [x] Verify heading hierarchy is correct on all pages (h1 → h2 → h3)
-- [ ] Check color contrast ratios meet WCAG AA — manual / post-deploy Lighthouse
-- [ ] Confirm keyboard navigation works across all pages — manual testing
+- [x] Check color contrast ratios meet WCAG AA — Lighthouse 100
+- [x] Confirm keyboard navigation works across all pages — manual testing
 - [x] Add skip-to-content link
 
 ### 4.2 Performance
@@ -115,85 +115,35 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 
 ## Phase 4.5 — Content Population
 
-### Pre-session: what you need to have ready
-- [ ] Resume finalized and ready to share
-- [ ] Real name confirmed (for `config.ts` and home page title)
-- [ ] Real email confirmed (for `config.ts` and contact page)
-- [ ] LinkedIn URL — captured: `https://www.linkedin.com/in/adam-angerami/`
-- [ ] Domain name decided (needed to replace placeholder `siteUrl` in `config.ts` and `robots.txt`)
-- [ ] List of roles to include — with notes on which need to be anonymized
-- [ ] List of advisory/project entries to include (if any)
+**Status: COMPLETE (2026-03-05)**
 
-### Session — Config & wiring
-- [ ] Update `config.ts`: real name, email, tagline, `siteUrl`, site `description`
-- [ ] Add LinkedIn URL field to `config.ts` (used by contact page and footer)
-- [ ] Update `robots.txt` sitemap URL once domain is set
-
-### Session — Code changes (structure, not copy)
-- [ ] Update Work page entry data structure to support bullet-point accomplishments
-- [ ] Update Work page template to render accomplishment bullets
-- [ ] Add Advisory / Projects section below roles on Work page
-- [ ] Add LinkedIn link to Contact page alongside email
-- [ ] Update Playwright tests for structural changes to Work and Contact pages
-
-### Session — Copy: Home page
-- [ ] Write tagline (1-line positioning statement — gold uppercase under name)
-- [ ] Write intro paragraph (2–3 sentences — who you are and what you bring)
-- [ ] Update home page `PageTitle` from "Your Name" to real name
-- [ ] Write home meta description (SEO)
-- [ ] **Owner approval: home copy**
-
-### Session — Copy: About page
-- [ ] Write Background section (career arc, domains — tech / finance / consumer)
-- [ ] Write Expertise section (what problems you solve as a strategist / advisor)
-- [ ] Write "Why work together" section (honest paragraph, no jargon)
-- [ ] Write about meta description (SEO)
-- [ ] **Owner approval: about copy**
-
-### Session — Copy: Work page
-- [ ] Write each role entry: title, org, period, 2–4 bullet accomplishments
-- [ ] Flag and anonymize any sensitive entries (confidential client treatment)
-- [ ] Write each Advisory / Projects entry: title, org/context, period, brief description
-- [ ] Decide final cut — curated highlights vs. full history
-- [ ] Write work meta description (SEO)
-- [ ] **Owner approval: work copy**
-
-### Session — Copy: Contact page
-- [ ] Write contact intro copy (1–2 sentences above the links)
-- [ ] Write contact meta description (SEO)
-- [ ] **Owner approval: contact copy**
-
-### Post-session review
-- [ ] Read every page out loud — check for typos and awkward phrasing
-- [ ] Verify name appears consistently everywhere (header, footer, page titles, OG tags)
-- [ ] Run full Playwright test suite — confirm all tests pass
-- [ ] Commit all content changes
+All pre-session inputs received, config wired, copy written and approved, structural changes built, tests updated, full test suite passing.
 
 ---
 
 ## Phase 5 — Pre-Launch
 
 ### 5.1 Domain & Hosting
-- [ ] Choose and register domain name
-- [ ] Choose hosting platform (Vercel / Netlify / GitHub Pages)
-- [ ] Configure deployment pipeline (push to main → auto deploy)
-- [ ] Point domain DNS to host
-- [ ] Confirm HTTPS is active
+- [x] Choose and register domain name
+- [x] Choose hosting platform — GitHub Pages
+- [x] Configure deployment pipeline (push to main → auto deploy)
+- [x] Point domain DNS to host — Cloudflare DNS only (not proxied)
+- [~] Confirm HTTPS is active — GitHub Pages certificate pending
 
 ### 5.2 Final Review (includes deferred Phase 4.2 performance items)
-- [ ] Audit with Lighthouse: target 95+ on Performance, Accessibility, Best Practices, SEO
-- [ ] Verify fast load on mobile (throttled connection)
-- [ ] Check color contrast ratios meet WCAG AA
-- [ ] Confirm keyboard navigation works across all pages
+- [x] Audit with Lighthouse: target 95+ — **score: 100**
+- [x] Verify fast load on mobile (throttled connection)
+- [x] Check color contrast ratios meet WCAG AA
+- [x] Confirm keyboard navigation works across all pages
 - [ ] Full Playwright test run against production URL
-- [ ] Read every page out loud — check for typos, awkward phrasing
-- [ ] Owner final sign-off on all copy
+- [x] Read every page out loud — check for typos, awkward phrasing
+- [x] Owner final sign-off on all copy
 - [ ] Check site on real mobile device
 - [ ] Check site in Chrome, Firefox, Safari
 
 ### 5.3 Launch
-- [ ] Merge to main / trigger production deploy
-- [ ] Confirm live site loads correctly
+- [x] Merge to main / trigger production deploy
+- [~] Confirm live site loads correctly — blocked on HTTPS
 - [ ] Share with a trusted person for a fresh-eyes review
 
 ---
@@ -212,8 +162,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 
 | # | Decision | Notes |
 |---|---|---|
-| 1 | Domain name | Not yet registered |
-| 2 | Hosting platform | Vercel, Netlify, or GitHub Pages |
+| 1 | HTTPS confirmation | GitHub Pages cert provisioning in progress — Cloudflare DNS only, not proxied |
 
 ## Decisions Resolved
 
@@ -223,7 +172,9 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 | Design aesthetic direction | "Terminal Deco" — Art Deco geometry + '90s terminal aesthetic; dark bg |
 | Color palette — all values | Confirmed — 6 custom properties locked in CLAUDE.md |
 | Typeface — display | Archivo Black (Google Fonts) |
-| Typeface — accent/UI | Major Mono Display (Google Fonts) |
+| Typeface — accent/UI | Major Mono Display removed — too stylized; Courier New used everywhere |
+| Domain name | Registered — pointed to GitHub Pages via Cloudflare DNS only (not proxied) |
+| Hosting platform | GitHub Pages |
 | Typeface — body | Courier New (system monospace) |
 | Background treatment | Dark site — deep forest green (#1B3022) base |
 | Work page format | Roles with bullet-point accomplishments + separate Advisory/Projects section |
