@@ -23,7 +23,7 @@ export interface SiteConfig {
 export const siteConfig: SiteConfig = {
   name: 'Adam Angerami',
   tagline: 'Business Operations Leader.',
-  siteUrl: 'https://example.com', // PLACEHOLDER — owner to replace with real domain
+  siteUrl: 'https://aangerami.com',
   description: 'PLACEHOLDER — owner to provide a 1–2 sentence site description.',
   nav: [
     { label: 'Home', href: '/' },
