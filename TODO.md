@@ -138,8 +138,8 @@ All pre-session inputs received, config wired, copy written and approved, struct
 - [ ] Full Playwright test run against production URL
 - [x] Read every page out loud — check for typos, awkward phrasing
 - [x] Owner final sign-off on all copy
-- [ ] Check site on real mobile device
-- [ ] Check site in Chrome, Firefox, Safari
+- [x] Check site on real mobile device
+- [x] Check site in Chrome, Firefox, Safari
 
 ### 5.3 Launch
 - [x] Merge to main / trigger production deploy
