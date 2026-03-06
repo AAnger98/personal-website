@@ -128,7 +128,7 @@ All pre-session inputs received, config wired, copy written and approved, struct
 - [x] Choose hosting platform — GitHub Pages
 - [x] Configure deployment pipeline (push to main → auto deploy)
 - [x] Point domain DNS to host — Cloudflare DNS only (not proxied)
-- [~] Confirm HTTPS is active — GitHub Pages certificate pending
+- [x] Confirm HTTPS is active
 
 ### 5.2 Final Review (includes deferred Phase 4.2 performance items)
 - [x] Audit with Lighthouse: target 95+ — **score: 100**
@@ -143,7 +143,7 @@ All pre-session inputs received, config wired, copy written and approved, struct
 
 ### 5.3 Launch
 - [x] Merge to main / trigger production deploy
-- [~] Confirm live site loads correctly — blocked on HTTPS
+- [x] Confirm live site loads correctly
 - [ ] Share with a trusted person for a fresh-eyes review
 
 ---
@@ -162,7 +162,7 @@ All pre-session inputs received, config wired, copy written and approved, struct
 
 | # | Decision | Notes |
 |---|---|---|
-| 1 | HTTPS confirmation | GitHub Pages cert provisioning in progress — Cloudflare DNS only, not proxied |
+| 1 | HTTPS | Confirmed active — GitHub Pages + Cloudflare DNS only |
 
 ## Decisions Resolved
 
