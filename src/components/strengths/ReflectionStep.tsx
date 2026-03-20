@@ -104,11 +104,13 @@ export default function ReflectionStep({ selectedWords, onComplete, onBack }: Pr
                     onFocus={() => handleFocus(fieldId)}
                     onBlur={e => handleBlur(fieldId, e.target.value)}
                   />
-                  {showNudge && (
-                    <p className="sr-nudge">
-                      Try to add a bit more detail — {MIN_CHARS - value.trim().length} more characters recommended.
-                    </p>
-                  )}
+                  <div aria-live="polite">
+                    {showNudge && (
+                      <p className="sr-nudge">
+                        Try to add a bit more detail — {MIN_CHARS - value.trim().length} more characters recommended.
+                      </p>
+                    )}
+                  </div>
                 </div>
               );
             })}
