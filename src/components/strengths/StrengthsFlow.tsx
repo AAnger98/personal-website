@@ -1,45 +1,81 @@
-import { useState } from 'react';
+// src/components/strengths/StrengthsFlow.tsx
+import { useState, useEffect } from 'react';
+import { logEvent } from '../../lib/telemetry';
 import WordSelectionStep, { type Word } from './WordSelectionStep';
+import StepProgress from './StepProgress';
 
 interface Props {
   words: Word[];
 }
 
-type Step = 'word-selection' | 'reflection';
+export interface Reflection {
+  why: string;
+  moment: string;
+}
+
+export type Step = 'word-selection' | 'reflection' | 'pitch' | 'pdf' | 'feedback';
+
+const STEP_NUMBER: Record<Step, number> = {
+  'word-selection': 1,
+  'reflection': 2,
+  'pitch': 3,
+  'pdf': 4,
+  'feedback': 5,
+};
 
 export default function StrengthsFlow({ words }: Props) {
   const [step, setStep] = useState<Step>('word-selection');
-  const [selections, setSelections] = useState<string[]>([]);
+  const [selectedWords, setSelectedWords] = useState<string[]>([]);
+  const [reflections, setReflections] = useState<Record<string, Reflection>>({});
+  const [pitch, setPitch] = useState('');
 
-  if (step === 'word-selection') {
-    return (
-      <WordSelectionStep
-        words={words}
-        onComplete={selected => {
-          setSelections(selected);
-          setStep('reflection');
-        }}
-      />
-    );
-  }
+  // Fire flow-started telemetry once on mount — enables abandonment-rate-by-step calculation
+  useEffect(() => {
+    logEvent('strengths_flow_started');
+  }, []);
 
-  // Placeholder — Epic 2 (Reflection) replaces this
+  const handleRestart = () => {
+    logEvent('strengths_flow_started'); // re-fires on each restart session
+    setStep('word-selection');
+    setSelectedWords([]);
+    setReflections({});
+    setPitch('');
+  };
+
   return (
-    <div className="sw-root">
-      <div className="sw-header">
-        <div className="sw-header__left">
-          <span className="sw-label">STEP 2 OF 5</span>
-          <h1 className="sw-title">Your Top Strengths</h1>
-          <p className="sw-desc">Reflection step coming soon.</p>
+    <div>
+      <StepProgress
+        current={STEP_NUMBER[step]}
+        total={5}
+        onRestart={handleRestart}
+      />
+
+      {step === 'word-selection' && (
+        <WordSelectionStep
+          words={words}
+          initialSelected={selectedWords}
+          onComplete={selected => {
+            setSelectedWords(selected);
+            setStep('reflection');
+          }}
+        />
+      )}
+
+      {step === 'reflection' && (
+        <div className="sw-root">
+          <div className="sw-header">
+            <div className="sw-header__left">
+              <h1 className="sw-title">Reflect</h1>
+              <p className="sw-desc">Reflection step — coming soon.</p>
+            </div>
+          </div>
+          <ul className="sw-selections-list">
+            {selectedWords.map(w => (
+              <li key={w} className="sw-chip sw-chip--selected">{w}</li>
+            ))}
+          </ul>
         </div>
-      </div>
-      <ul className="sw-selections-list">
-        {selections.map(w => (
-          <li key={w} className="sw-chip sw-chip--selected">
-            {w}
-          </li>
-        ))}
-      </ul>
+      )}
     </div>
   );
 }

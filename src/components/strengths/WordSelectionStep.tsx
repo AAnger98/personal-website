@@ -8,6 +8,7 @@ export interface Word {
 
 interface Props {
   words: Word[];
+  initialSelected?: string[];
   onComplete: (selected: string[]) => void;
 }
 
@@ -17,8 +18,8 @@ const MAX_WORDS = 5;
 
 type Phase = 'selecting' | 'timeout';
 
-export default function WordSelectionStep({ words, onComplete }: Props) {
-  const [selected, setSelected] = useState<string[]>([]);
+export default function WordSelectionStep({ words, initialSelected = [], onComplete }: Props) {
+  const [selected, setSelected] = useState<string[]>(initialSelected);
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
   const [phase, setPhase] = useState<Phase>('selecting');
 
@@ -119,7 +120,6 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
       {/* Header */}
       <div className="sw-header">
         <div className="sw-header__left">
-          <span className="sw-label">STEP 1 OF 5</span>
           <h1 className="sw-title">Select Your Strengths</h1>
           <p className="sw-desc">
             Choose exactly 5 words that resonate. Don&apos;t overthink it — go with instinct.
