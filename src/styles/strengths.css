@@ -383,3 +383,93 @@
     display: none;
   }
 }
+
+/* ─── Reflection Step ────────────────────────────────────────────────────── */
+
+.sr-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.sr-word-block {
+  border: 1px solid var(--color-green);
+  padding: var(--space-md);
+}
+
+.sr-word-header {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  color: var(--color-gold);
+  margin: 0 0 var(--space-md);
+}
+
+.sr-word-num {
+  color: var(--color-blue);
+}
+
+.sr-field {
+  margin-bottom: var(--space-md);
+}
+
+.sr-field:last-child {
+  margin-bottom: 0;
+}
+
+.sr-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text);
+  opacity: 0.8;
+  margin-bottom: var(--space-xs);
+}
+
+.sr-textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid var(--color-green);
+  padding: var(--space-sm);
+  resize: vertical;
+  line-height: var(--line-height-base);
+  transition: border-color steps(2);
+}
+
+.sr-textarea:focus {
+  outline: none;
+  border-color: var(--color-blue);
+}
+
+.sr-textarea::placeholder {
+  color: var(--color-text);
+  opacity: 0.35;
+}
+
+.sr-nudge {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: var(--color-peach);
+  margin: var(--space-xs) 0 0;
+  opacity: 0.85;
+}
+
+.sw-footer--with-back {
+  justify-content: space-between;
+}
+
+.sw-btn--ghost {
+  border-color: var(--color-green);
+  color: var(--color-green);
+}
+
+.sw-btn--ghost:hover {
+  background-color: var(--color-green);
+  color: var(--color-bg);
+}

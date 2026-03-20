@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { logEvent } from '../../lib/telemetry';
 import WordSelectionStep, { type Word } from './WordSelectionStep';
 import StepProgress from './StepProgress';
+import ReflectionStep from './ReflectionStep';
 
 interface Props {
   words: Word[];
@@ -62,19 +63,14 @@ export default function StrengthsFlow({ words }: Props) {
       )}
 
       {step === 'reflection' && (
-        <div className="sw-root">
-          <div className="sw-header">
-            <div className="sw-header__left">
-              <h1 className="sw-title">Reflect</h1>
-              <p className="sw-desc">Reflection step — coming soon.</p>
-            </div>
-          </div>
-          <ul className="sw-selections-list">
-            {selectedWords.map(w => (
-              <li key={w} className="sw-chip sw-chip--selected">{w}</li>
-            ))}
-          </ul>
-        </div>
+        <ReflectionStep
+          selectedWords={selectedWords}
+          onComplete={data => {
+            setReflections(data);
+            setStep('pitch');
+          }}
+          onBack={() => setStep('word-selection')}
+        />
       )}
     </div>
   );
