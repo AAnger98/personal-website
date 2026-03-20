@@ -4,6 +4,7 @@ import { logEvent } from '../../lib/telemetry';
 import WordSelectionStep, { type Word } from './WordSelectionStep';
 import StepProgress from './StepProgress';
 import ReflectionStep from './ReflectionStep';
+import PitchStep from './PitchStep';
 
 interface Props {
   words: Word[];
@@ -70,6 +71,17 @@ export default function StrengthsFlow({ words }: Props) {
             setStep('pitch');
           }}
           onBack={() => setStep('word-selection')}
+        />
+      )}
+
+      {step === 'pitch' && (
+        <PitchStep
+          topWord={selectedWords[0]}
+          onComplete={text => {
+            setPitch(text);
+            setStep('pdf');
+          }}
+          onBack={() => setStep('reflection')}
         />
       )}
     </div>

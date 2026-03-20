@@ -473,3 +473,66 @@
   background-color: var(--color-green);
   color: var(--color-bg);
 }
+
+/* ─── Pitch Step ─────────────────────────────────────────────────────────── */
+
+.spi-anchor {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
+  border: 4px double var(--color-gold);
+}
+
+.spi-anchor-label {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  color: var(--color-gold);
+}
+
+.spi-anchor-word {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  color: var(--color-text);
+}
+
+.spi-field {
+  margin-bottom: var(--space-lg);
+}
+
+.spi-textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid var(--color-green);
+  padding: var(--space-sm);
+  resize: vertical;
+  line-height: var(--line-height-base);
+  transition: border-color steps(2);
+}
+
+.spi-textarea:focus {
+  outline: none;
+  border-color: var(--color-blue);
+}
+
+.spi-textarea::placeholder {
+  color: var(--color-text);
+  opacity: 0.35;
+}
+
+.spi-char-count {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  opacity: 0.5;
+  margin: var(--space-xs) 0 0;
+  text-align: right;
+}

@@ -78,6 +78,40 @@ test.describe('Strengths flow — reflection step', () => {
   test('advancing to step 3 shows pitch step', async ({ page }) => {
     await goToReflection(page);
     await page.getByRole('button', { name: /CONTINUE/i }).click();
-    await expect(page.getByText('3 of 5')).toBeVisible();
+    await expect(page.getByText('3 of 5', { exact: true })).toBeVisible();
+  });
+});
+
+test.describe('Strengths flow — pitch step', () => {
+  async function goToPitch(page: Page) {
+    await page.goto('/strengths');
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 5; i++) {
+      await chips.nth(i).click();
+    }
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+  }
+
+  test('pitch step shows #1 strength word prominently', async ({ page }) => {
+    await goToPitch(page);
+    await expect(page.locator('.spi-anchor-word')).toBeVisible();
+  });
+
+  test('pitch step has a textarea', async ({ page }) => {
+    await goToPitch(page);
+    await expect(page.locator('.spi-textarea')).toBeVisible();
+  });
+
+  test('character count is displayed', async ({ page }) => {
+    await goToPitch(page);
+    await page.locator('.spi-textarea').fill('Hello world');
+    await expect(page.locator('.spi-char-count')).toContainText('11');
+  });
+
+  test('continue advances to step 4', async ({ page }) => {
+    await goToPitch(page);
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('4 of 5')).toBeVisible();
   });
 });
