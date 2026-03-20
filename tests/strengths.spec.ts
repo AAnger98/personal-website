@@ -11,7 +11,7 @@ test.describe('Strengths flow — progress indicator', () => {
 
   test('shows step 2 of 5 after word selection', async ({ page }) => {
     await page.goto('/strengths');
-    const chips = page.locator('.sw-chip');
+    const chips = page.locator('.sw-grid .sw-chip');
     for (let i = 0; i < 5; i++) {
       await chips.nth(i).click();
     }
@@ -23,7 +23,7 @@ test.describe('Strengths flow — progress indicator', () => {
 test.describe('Strengths flow — restart', () => {
   test('restart button resets to step 1', async ({ page }) => {
     await page.goto('/strengths');
-    const chips = page.locator('.sw-chip');
+    const chips = page.locator('.sw-grid .sw-chip');
     for (let i = 0; i < 5; i++) {
       await chips.nth(i).click();
     }

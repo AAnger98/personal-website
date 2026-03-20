@@ -30,6 +30,12 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
   const selectedRef = useRef<string[]>([]);
   selectedRef.current = selected;
 
+  // Sync with parent-driven resets (e.g., restart from StrengthsFlow)
+  useEffect(() => {
+    setSelected(initialSelected);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialSelected.length]);
+
   useEffect(() => {
     if (phase !== 'selecting') return;
 
