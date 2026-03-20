@@ -112,6 +112,40 @@ test.describe('Strengths flow — pitch step', () => {
   test('continue advances to step 4', async ({ page }) => {
     await goToPitch(page);
     await page.getByRole('button', { name: /CONTINUE/i }).click();
-    await expect(page.getByText('4 of 5')).toBeVisible();
+    await expect(page.getByText('4 of 5', { exact: true })).toBeVisible();
+  });
+});
+
+test.describe('Strengths flow — PDF step', () => {
+  async function goToPdf(page: Page) {
+    await page.goto('/strengths');
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 5; i++) {
+      await chips.nth(i).click();
+    }
+    await page.getByRole('button', { name: /CONTINUE/i }).click(); // → reflection
+    await page.getByRole('button', { name: /CONTINUE/i }).click(); // → pitch
+    await page.getByRole('button', { name: /CONTINUE/i }).click(); // → pdf
+  }
+
+  test('PDF step shows download button', async ({ page }) => {
+    await goToPdf(page);
+    await expect(page.getByRole('button', { name: /DOWNLOAD/i })).toBeVisible();
+  });
+
+  test('PDF step shows print button', async ({ page }) => {
+    await goToPdf(page);
+    await expect(page.getByRole('button', { name: /PRINT/i })).toBeVisible();
+  });
+
+  test('PDF step shows the 5 selected words', async ({ page }) => {
+    await goToPdf(page);
+    await expect(page.locator('.spdf-words-list li')).toHaveCount(5);
+  });
+
+  test('continue advances to step 5', async ({ page }) => {
+    await goToPdf(page);
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('5 of 5')).toBeVisible();
   });
 });

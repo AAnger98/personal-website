@@ -5,6 +5,7 @@ import WordSelectionStep, { type Word } from './WordSelectionStep';
 import StepProgress from './StepProgress';
 import ReflectionStep from './ReflectionStep';
 import PitchStep from './PitchStep';
+import PdfDownloadStep from './PdfDownloadStep';
 
 interface Props {
   words: Word[];
@@ -82,6 +83,16 @@ export default function StrengthsFlow({ words }: Props) {
             setStep('pdf');
           }}
           onBack={() => setStep('reflection')}
+        />
+      )}
+
+      {step === 'pdf' && (
+        <PdfDownloadStep
+          selectedWords={selectedWords}
+          reflections={reflections}
+          pitch={pitch}
+          onComplete={() => setStep('feedback')}
+          onBack={() => setStep('pitch')}
         />
       )}
     </div>
