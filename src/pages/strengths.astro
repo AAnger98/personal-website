@@ -1,0 +1,31 @@
+---
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StrengthsFlow from '../components/strengths/StrengthsFlow';
+import '../styles/strengths.css';
+
+const csvPath = fileURLToPath(new URL('../../strengths_temp/wordlist.csv', import.meta.url));
+const csvContent = readFileSync(csvPath, 'utf-8');
+
+const words = csvContent
+  .split('\n')
+  .slice(1) // skip header row
+  .filter(line => line.trim())
+  .map(line => {
+    const commaIdx = line.indexOf(',');
+    const word = line.slice(0, commaIdx).trim();
+    const rawDef = line.slice(commaIdx + 1).trim();
+    const definition = rawDef.startsWith('"') && rawDef.endsWith('"')
+      ? rawDef.slice(1, -1)
+      : rawDef;
+    return { word, definition };
+  });
+---
+
+<BaseLayout
+  title="Strengths Identifier"
+  description="Discover your core strengths through an instinct-driven word selection exercise."
+>
+  <StrengthsFlow words={words} client:load />
+</BaseLayout>

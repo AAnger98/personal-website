@@ -1,0 +1,283 @@
+/* ─── Strengths Identifier — Step UI ──────────────────────────────────────── */
+
+.sw-root {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
+}
+
+/* ─── Header row ─────────────────────────────────────────────────────────── */
+
+.sw-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 4px double var(--color-gold);
+}
+
+.sw-header__left {
+  flex: 1;
+}
+
+.sw-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.38em;
+  color: var(--color-gold);
+  margin-bottom: var(--space-sm);
+}
+
+.sw-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  color: var(--color-text);
+  margin: 0 0 var(--space-sm);
+}
+
+.sw-desc {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* ─── Timer ──────────────────────────────────────────────────────────────── */
+
+.sw-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.sw-timer__label {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-blue);
+}
+
+.sw-timer__display {
+  font-family: var(--font-body);
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--color-blue);
+  letter-spacing: 0.05em;
+  transition: color steps(1);
+}
+
+.sw-timer--warn .sw-timer__label,
+.sw-timer--warn .sw-timer__display {
+  color: var(--color-peach);
+}
+
+.sw-timer__warning {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: var(--color-peach);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ─── Selection counter ──────────────────────────────────────────────────── */
+
+.sw-counter {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-text);
+  opacity: 0.7;
+  margin-bottom: var(--space-md);
+}
+
+.sw-counter__num {
+  font-weight: bold;
+  font-size: var(--font-size-base);
+  color: var(--color-blue);
+}
+
+.sw-counter__num--full {
+  color: var(--color-gold);
+}
+
+/* ─── Word grid ──────────────────────────────────────────────────────────── */
+
+.sw-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+/* ─── Chip ────────────────────────────────────────────────────────────────── */
+
+.sw-chip {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid var(--color-green);
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  transition: border-color steps(2), color steps(2), background-color steps(2);
+  user-select: none;
+}
+
+.sw-chip:hover:not(:disabled) {
+  border-color: var(--color-blue);
+  color: var(--color-blue);
+}
+
+.sw-chip--selected {
+  border: 2px solid var(--color-gold);
+  color: var(--color-gold);
+  font-weight: bold;
+  background-color: rgba(212, 175, 55, 0.08);
+}
+
+.sw-chip--selected:hover {
+  border-color: var(--color-peach);
+  color: var(--color-peach);
+  background-color: rgba(226, 149, 120, 0.08);
+}
+
+.sw-chip--disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ─── Footer / actions ───────────────────────────────────────────────────── */
+
+.sw-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--space-md);
+  border-top: 4px double var(--color-gold);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+
+.sw-btn {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border: 2px solid var(--color-gold);
+  background: transparent;
+  color: var(--color-gold);
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  transition: background-color steps(2), color steps(2);
+}
+
+.sw-btn:hover {
+  background-color: var(--color-gold);
+  color: var(--color-bg);
+}
+
+.sw-btn--inactive {
+  border-color: var(--color-green);
+  color: var(--color-green);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sw-btn--inactive:hover {
+  background-color: transparent;
+  color: var(--color-green);
+}
+
+/* ─── Timeout wall ───────────────────────────────────────────────────────── */
+
+.sw-timeout {
+  max-width: 40rem;
+  margin: var(--space-xl) auto;
+  padding: var(--space-lg) var(--space-md);
+  display: flex;
+  justify-content: center;
+}
+
+.sw-timeout__frame {
+  border: 4px double var(--color-peach);
+  padding: var(--space-lg);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.sw-timeout__title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  color: var(--color-peach);
+  margin: 0;
+  letter-spacing: 0.1em;
+}
+
+.sw-timeout__message {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.sw-timeout__sub {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  opacity: 0.7;
+  margin: 0;
+}
+
+/* ─── Placeholder selections list (step 2 placeholder) ──────────────────── */
+
+.sw-selections-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding: 0;
+  margin: var(--space-lg) 0;
+  list-style: none;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .sw-header {
+    flex-direction: column;
+  }
+
+  .sw-timer {
+    align-items: flex-start;
+  }
+
+  .sw-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .sw-timer__display {
+    font-size: 2rem;
+  }
+
+  .sw-footer {
+    justify-content: center;
+  }
+
+  .sw-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
