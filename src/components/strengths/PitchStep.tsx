@@ -39,7 +39,7 @@ export default function PitchStep({ topWord, onComplete, onBack }: Props) {
       </div>
 
       <div className="spi-field">
-        <label className="sr-label" htmlFor="pitch-input">
+        <label className="spi-label" htmlFor="pitch-input">
           Using <em>{topWord}</em> as your foundation, describe who you are professionally in 3–5 sentences.
         </label>
         <textarea

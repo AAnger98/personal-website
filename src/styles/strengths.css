@@ -505,6 +505,18 @@
   margin-bottom: var(--space-lg);
 }
 
+.spi-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text);
+  opacity: 0.8;
+  margin-bottom: var(--space-xs);
+}
+
 .spi-textarea {
   width: 100%;
   font-family: var(--font-body);

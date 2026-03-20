@@ -74,9 +74,9 @@ export default function StrengthsFlow({ words }: Props) {
         />
       )}
 
-      {step === 'pitch' && (
+      {step === 'pitch' && selectedWords.length > 0 && (
         <PitchStep
-          topWord={selectedWords[0]}
+          topWord={selectedWords[0]!}
           onComplete={text => {
             setPitch(text);
             setStep('pdf');
