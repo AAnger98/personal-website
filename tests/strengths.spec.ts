@@ -146,6 +146,48 @@ test.describe('Strengths flow — PDF step', () => {
   test('continue advances to step 5', async ({ page }) => {
     await goToPdf(page);
     await page.getByRole('button', { name: /CONTINUE/i }).click();
-    await expect(page.getByText('5 of 5')).toBeVisible();
+    await expect(page.getByText('5 of 5', { exact: true })).toBeVisible();
+  });
+});
+
+test.describe('Strengths flow — feedback step', () => {
+  async function goToFeedback(page: Page) {
+    await page.goto('/strengths');
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 5; i++) {
+      await chips.nth(i).click();
+    }
+    // word selection → reflection → pitch → pdf → feedback
+    for (let i = 0; i < 4; i++) {
+      await page.getByRole('button', { name: /CONTINUE/i }).click();
+    }
+  }
+
+  test('feedback step shows 1–5 rating buttons', async ({ page }) => {
+    await goToFeedback(page);
+    await expect(page.locator('.sfb-rating-btn')).toHaveCount(5);
+  });
+
+  test('feedback step has optional free-text field', async ({ page }) => {
+    await goToFeedback(page);
+    await expect(page.locator('.sfb-textarea')).toBeVisible();
+  });
+
+  test('skip button is always available', async ({ page }) => {
+    await goToFeedback(page);
+    await expect(page.getByRole('button', { name: /SKIP/i })).toBeVisible();
+  });
+
+  test('submitting feedback shows completion state', async ({ page }) => {
+    await goToFeedback(page);
+    await page.locator('.sfb-rating-btn').nth(3).click(); // rating 4
+    await page.getByRole('button', { name: /SUBMIT/i }).click();
+    await expect(page.locator('.sfb-complete')).toBeVisible();
+  });
+
+  test('skip also shows completion state', async ({ page }) => {
+    await goToFeedback(page);
+    await page.getByRole('button', { name: /SKIP/i }).click();
+    await expect(page.locator('.sfb-complete')).toBeVisible();
   });
 });

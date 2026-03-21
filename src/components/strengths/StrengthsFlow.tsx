@@ -6,6 +6,7 @@ import StepProgress from './StepProgress';
 import ReflectionStep from './ReflectionStep';
 import PitchStep from './PitchStep';
 import PdfDownloadStep from './PdfDownloadStep';
+import FeedbackStep from './FeedbackStep';
 
 interface Props {
   words: Word[];
@@ -94,6 +95,10 @@ export default function StrengthsFlow({ words }: Props) {
           onComplete={() => setStep('feedback')}
           onBack={() => setStep('pitch')}
         />
+      )}
+
+      {step === 'feedback' && (
+        <FeedbackStep onComplete={handleRestart} />
       )}
     </div>
   );
