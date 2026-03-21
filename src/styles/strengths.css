@@ -162,7 +162,7 @@
 
 .sw-chip--maxed {
   opacity: 0.5;
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .sw-chip--maxed:hover {

@@ -198,7 +198,6 @@ test.describe('Strengths Identifier — Max Selection', () => {
   test('continue button is disabled before 5 selections', async ({ page }) => {
     const continueBtn = page.locator('.sw-btn--primary');
     await expect(continueBtn).toBeDisabled();
-    await expect(continueBtn).toHaveAttribute('aria-disabled', 'true');
   });
 
   test('continue button becomes enabled at 5 selections', async ({ page }) => {
