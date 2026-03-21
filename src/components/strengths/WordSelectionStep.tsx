@@ -145,16 +145,20 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
       <div className="sw-grid" role="group" aria-label="Strength words">
         {words.map(({ word }) => {
           const isSelected = selected.includes(word);
-          const isDisabled = !isSelected && maxReached;
+          const isMaxed = !isSelected && maxReached;
           return (
             <button
               key={word}
-              className={`sw-chip${isSelected ? ' sw-chip--selected' : ''}${isDisabled ? ' sw-chip--disabled' : ''}`}
-              onClick={() => toggleWord(word)}
-              aria-pressed={isSelected}
-              disabled={isDisabled}
+              role="checkbox"
+              aria-checked={isSelected}
+              aria-disabled={isMaxed || undefined}
+              className={`sw-chip${isSelected ? ' sw-chip--selected' : ''}${isMaxed ? ' sw-chip--maxed' : ''}`}
+              onClick={() => {
+                if (isMaxed) return;
+                toggleWord(word);
+              }}
             >
-              {word}
+              {isSelected ? '☑' : '☐'} {word}
             </button>
           );
         })}
