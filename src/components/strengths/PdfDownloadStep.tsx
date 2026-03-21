@@ -118,11 +118,11 @@ export default function PdfDownloadStep({ selectedWords, reflections, pitch, onC
         )}
       </div>
 
-      {pdfError && <p className="spdf-error">{pdfError}</p>}
+      {pdfError && <p className="spdf-error" role="alert">{pdfError}</p>}
 
       <div className="spdf-actions">
         <button
-          className="sw-btn sw-btn--primary"
+          className="sw-btn"
           onClick={() => generatePdf(selectedWords, reflections, pitch, setPdfError)}
           type="button"
         >
