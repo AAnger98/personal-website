@@ -191,3 +191,111 @@ test.describe('Strengths flow — feedback step', () => {
     await expect(page.locator('.sfb-complete')).toBeVisible();
   });
 });
+
+test.describe('Strengths flow — full journey', () => {
+  test('completes the full 5-step flow without errors', async ({ page }) => {
+    await page.goto('/strengths');
+
+    // Step 1: select 5 words
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 5; i++) {
+      await chips.nth(i).click();
+    }
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('2 of 5', { exact: true })).toBeVisible();
+
+    // Step 2: reflection — click continue without filling fields
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('3 of 5', { exact: true })).toBeVisible();
+
+    // Step 3: pitch — skip
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('4 of 5', { exact: true })).toBeVisible();
+
+    // Step 4: pdf — continue
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('5 of 5', { exact: true })).toBeVisible();
+
+    // Step 5: feedback — skip
+    await page.getByRole('button', { name: /SKIP/i }).click();
+    await expect(page.locator('.sfb-complete')).toBeVisible();
+  });
+
+  test('back navigation from step 2 returns to step 1 with chips still selected', async ({ page }) => {
+    await page.goto('/strengths');
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 5; i++) {
+      await chips.nth(i).click();
+    }
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('2 of 5', { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: /BACK/i }).click();
+    await expect(page.getByText('1 of 5', { exact: true })).toBeVisible();
+    await expect(page.locator('.sw-chip--selected')).toHaveCount(5);
+  });
+
+  test('back navigation from step 3 returns to step 2', async ({ page }) => {
+    await page.goto('/strengths');
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 5; i++) {
+      await chips.nth(i).click();
+    }
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('3 of 5', { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: /BACK/i }).click();
+    await expect(page.getByText('2 of 5', { exact: true })).toBeVisible();
+  });
+
+  test('back navigation from step 4 returns to step 3', async ({ page }) => {
+    await page.goto('/strengths');
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 5; i++) {
+      await chips.nth(i).click();
+    }
+    for (let i = 0; i < 3; i++) {
+      await page.getByRole('button', { name: /CONTINUE/i }).click();
+    }
+    await expect(page.getByText('4 of 5', { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: /BACK/i }).click();
+    await expect(page.getByText('3 of 5', { exact: true })).toBeVisible();
+  });
+
+  test('START OVER from completion screen resets to step 1', async ({ page }) => {
+    await page.goto('/strengths');
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 5; i++) {
+      await chips.nth(i).click();
+    }
+    for (let i = 0; i < 4; i++) {
+      await page.getByRole('button', { name: /CONTINUE/i }).click();
+    }
+    await page.getByRole('button', { name: /SKIP/i }).click();
+    await expect(page.locator('.sfb-complete')).toBeVisible();
+
+    await page.locator('.sfb-complete').getByRole('button', { name: /START OVER/i }).click();
+    await expect(page.getByText('1 of 5', { exact: true })).toBeVisible();
+    await expect(page.locator('.sw-chip--selected')).toHaveCount(0);
+  });
+
+  test('page loads in under 3 seconds', async ({ page }) => {
+    const start = Date.now();
+    await page.goto('/strengths');
+    await page.locator('.sw-grid').waitFor();
+    const elapsed = Date.now() - start;
+    expect(elapsed).toBeLessThan(3000);
+  });
+
+  test('no console errors on load', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
+    await page.goto('/strengths');
+    await page.locator('.sw-grid').waitFor();
+    expect(errors).toHaveLength(0);
+  });
+});
