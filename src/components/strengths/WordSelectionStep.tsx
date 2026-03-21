@@ -243,10 +243,10 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
             Choose exactly 5 words that resonate. Don&apos;t overthink it — go with instinct.
           </p>
         </div>
-        <div className={`sw-timer${isWarning ? ' sw-timer--warn' : ''}`}>
-          <span className="sw-timer__label">TIME REMAINING</span>
-          <span className="sw-timer__display">{formatTime(timeLeft)}</span>
-          {isWarning && <span className="sw-timer__warning">less than 1 minute</span>}
+        <div className={`sw-timer${isWarning ? ' sw-timer--warn' : ''}`} aria-label={`Time remaining: ${formatTime(timeLeft)}`}>
+          <span className="sw-timer__label" aria-hidden="true">TIME REMAINING</span>
+          <span className="sw-timer__display" aria-hidden="true">{formatTime(timeLeft)}</span>
+          {isWarning && <span className="sw-timer__warning" aria-live="polite" role="status">Less than 1 minute remaining</span>}
         </div>
       </div>
 
