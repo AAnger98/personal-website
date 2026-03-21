@@ -827,7 +827,7 @@
   margin-bottom: var(--space-sm);
 }
 
-.sw-island__chip {
+.sw-island__slot--filled {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -837,7 +837,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--color-gold);
-  background-color: rgba(212, 175, 55, 0.08);
+  background-color: color-mix(in srgb, var(--color-green) 25%, transparent);
   border: 2px solid var(--color-gold);
   padding: 0.35rem 0.6rem;
   min-height: 44px;
@@ -847,13 +847,13 @@
   pointer-events: none;
 }
 
-.sw-island__chip-close {
+.sw-island__remove {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-body);
   font-size: var(--font-size-sm);
-  color: var(--color-text);
+  color: inherit;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -864,17 +864,17 @@
   transition: opacity steps(2), color steps(2);
 }
 
-.sw-island__chip-close:focus-visible {
+.sw-island__remove:focus-visible {
   outline: 2px solid var(--color-gold);
   outline-offset: 2px;
 }
 
-.sw-island__chip-close:hover {
+.sw-island__remove:hover {
   opacity: 1;
   color: var(--color-peach);
 }
 
-.sw-island__empty-slot {
+.sw-island__slot--empty {
   display: inline-block;
   min-width: 6rem;
   min-height: 44px;
@@ -888,14 +888,14 @@
   gap: 0.35rem;
 }
 
-.sw-island__progress-bar {
+.sw-island__bar {
   height: 4px;
-  background-color: rgba(79, 119, 45, 0.3);
+  background-color: color-mix(in srgb, var(--color-green) 30%, transparent);
   position: relative;
   overflow: hidden;
 }
 
-.sw-island__progress-bar::after {
+.sw-island__bar::after {
   content: '';
   position: absolute;
   top: 0;
@@ -922,12 +922,12 @@
     gap: 0.35rem;
   }
 
-  .sw-island__chip {
+  .sw-island__slot--filled {
     font-size: 0.75rem;
     padding: 0.25rem 0.4rem;
   }
 
-  .sw-island__empty-slot {
+  .sw-island__slot--empty {
     min-width: 4rem;
   }
 }
