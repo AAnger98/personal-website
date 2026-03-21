@@ -27,3 +27,9 @@ pnpm-debug.log*
 test-results/
 playwright-report/
 playwright/.cache/
+
+# temporary working files
+strengths_temp/
+
+# git worktrees
+.worktrees/

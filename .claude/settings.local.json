@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create:*)",
+      "Bash(npx create-astro@latest:*)",
+      "Bash(npm install:*)",
+      "Bash(npx playwright:*)",
+      "Bash(npx eslint:*)",
+      "Bash(node:*)",
+      "Bash(npx:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git:*)",
+      "Bash(cmd:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(node_modules/.bin/playwright test:*)",
+      "Bash(node_modules/.bin/playwright.cmd test:*)",
+      "Bash(NODE_DEBUG=esm npx astro:*)",
+      "Bash(timeout 10 node:*)",
+      "Bash(timeout 15 npm run:*)",
+      "Bash(mkdir:*)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_install",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4321/)",
+      "WebFetch(domain:www.linkedin.com)",
+      "Bash(python3 -c \":*)",
+      "Bash(python -c \":*)"
+    ]
+  }
+}
