@@ -33,3 +33,4 @@ strengths_temp/
 
 # git worktrees
 .worktrees/
+.claude/worktrees/
