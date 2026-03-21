@@ -1,6 +1,6 @@
 # Project Plan & TODOs
 
-Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` skipped/deferred
+Status legend: `[ ]` not started · `[~]` in progress · `[r]` in review · `[x]` done · `[-]` skipped/deferred
 
 ---
 
@@ -195,6 +195,42 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 - [ ] Merge to main / trigger production deploy
 - [ ] Confirm live site loads correctly
 - [ ] Share with a trusted person for a fresh-eyes review
+
+---
+
+## Phase 5.5 — Strengths Identifier: Word Selection Grid Redesign
+
+> Design doc: `docs/plans/2026-03-21-word-selection-grid-redesign-design.md`
+
+### S1 — Layout & Sizing
+- [r] Rewrite word grid to CSS Grid 4-col / 3-col / 2-col responsive (ATR-16)
+- [r] Resize word buttons — 44px min touch target, body-size font (ATR-15)
+- [r] Increase word grid gap from `space-sm` to `space-md`
+
+### S2 — Word Selection State
+- [r] Remove rank-ordering from selection logic — unordered set (ATR-17)
+- [r] Add `☐/☑` checkbox toggle state on buttons (`role="checkbox"`, `aria-checked`)
+- [r] At-max dimming — unselected buttons 50% opacity, not `disabled`, click no-op
+- [r] `aria-live="polite"` on selection counter
+
+### S3 — Definition Architecture
+- [r] `DefinitionContext.tsx` — `DefinitionProvider`, `useDefinition()`, flat `activeWord`/`activeDefinition`
+- [r] Wire `onMouseEnter`/`onMouseLeave` + mobile long-press (500ms) on word buttons
+- [r] `DefinitionPreviewBar.tsx` — idle/active states, mobile-aware prompt, `aria-live`
+
+### S4 — Selection Island
+- [r] `SelectionIsland.tsx` — sticky top, 5 chip slots (filled + empty), progress bar, counter text
+- [r] Deselect via ✕ chip button
+- [r] Drag-to-reorder chips via HTML5 DnD — ordered `wordOrder` state (ATR-18)
+
+### S5 — Travel Animation
+- [r] Ghost-copy chip animates from word button → island slot on select (300ms ease-out)
+- [r] Island chip fades/shrinks on deselect (200ms)
+
+### S6 — QA & Review (in progress)
+- [~] Playwright E2E — mobile responsive grid, island, at-max behavior (ATR-19)
+- [~] Accessibility pass — aria attrs, focus-visible, contrast audit (ATR-21, ATR-27)
+- [~] Code review — theme isolation, definition architecture (ATR-14)
 
 ---
 
