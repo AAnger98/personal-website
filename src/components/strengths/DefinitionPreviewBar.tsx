@@ -1,15 +1,15 @@
 import { useDefinition } from './DefinitionContext';
 
 export default function DefinitionPreviewBar() {
-  const { activeDefinition } = useDefinition();
+  const { activeWord, activeDefinition } = useDefinition();
 
   return (
     <div className="sw-definition-bar" aria-live="polite">
-      {activeDefinition ? (
+      {activeWord && activeDefinition ? (
         <div className="sw-definition-bar__content sw-definition-bar__content--active">
-          <span className="sw-definition-bar__word">{activeDefinition.word}</span>
+          <span className="sw-definition-bar__word">{activeWord}</span>
           <span className="sw-definition-bar__sep"> — </span>
-          <span className="sw-definition-bar__text">{activeDefinition.definition}</span>
+          <span className="sw-definition-bar__text">{activeDefinition}</span>
         </div>
       ) : (
         <div className="sw-definition-bar__content sw-definition-bar__content--idle">

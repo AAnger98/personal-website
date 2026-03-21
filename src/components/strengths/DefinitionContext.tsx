@@ -1,12 +1,8 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 
-export interface WordDefinition {
-  word: string;
-  definition: string;
-}
-
 export interface DefinitionContextValue {
-  activeDefinition: WordDefinition | null;
+  activeWord: string | null;
+  activeDefinition: string | null;
   showDefinition: (word: string, definition: string) => void;
   hideDefinition: () => void;
 }
@@ -18,18 +14,21 @@ interface DefinitionProviderProps {
 }
 
 export function DefinitionProvider({ children }: DefinitionProviderProps) {
-  const [activeDefinition, setActiveDefinition] = useState<WordDefinition | null>(null);
+  const [activeWord, setActiveWord] = useState<string | null>(null);
+  const [activeDefinition, setActiveDefinition] = useState<string | null>(null);
 
   const showDefinition = useCallback((word: string, definition: string) => {
-    setActiveDefinition({ word, definition });
+    setActiveWord(word);
+    setActiveDefinition(definition);
   }, []);
 
   const hideDefinition = useCallback(() => {
+    setActiveWord(null);
     setActiveDefinition(null);
   }, []);
 
   return (
-    <DefinitionContext.Provider value={{ activeDefinition, showDefinition, hideDefinition }}>
+    <DefinitionContext.Provider value={{ activeWord, activeDefinition, showDefinition, hideDefinition }}>
       {children}
     </DefinitionContext.Provider>
   );

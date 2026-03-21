@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { logEvent } from '../../lib/telemetry';
 import SelectionIsland from './SelectionIsland';
 import DefinitionPreviewBar from './DefinitionPreviewBar';
@@ -107,6 +107,22 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
     return `${m}:${sec.toString().padStart(2, '0')}`;
   };
 
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleTouchStart = useCallback((word: string, definition: string) => {
+    longPressTimer.current = setTimeout(() => {
+      showDefinition(word, definition);
+    }, 500);
+  }, [showDefinition]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (longPressTimer.current !== null) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+    hideDefinition();
+  }, [hideDefinition]);
+
   const isWarning = timeLeft <= WARN_SECONDS && timeLeft > 0;
   const maxReached = selected.size >= MAX_WORDS;
 
@@ -190,6 +206,8 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
               onMouseLeave={() => hideDefinition()}
               onFocus={() => showDefinition(word, definition)}
               onBlur={() => hideDefinition()}
+              onTouchStart={() => handleTouchStart(word, definition)}
+              onTouchEnd={handleTouchEnd}
             >
               {isSelected ? '☑' : '☐'} {word}
             </button>
