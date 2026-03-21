@@ -164,22 +164,10 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
         </div>
       </div>
 
-      {/* Selection counter */}
-      <div className="sw-counter">
-        <span className={maxReached ? 'sw-counter__num sw-counter__num--full' : 'sw-counter__num'}>
-          {selected.size}
-        </span>
-        <span className="sw-counter__sep"> / </span>
-        <span className="sw-counter__total">{MAX_WORDS} selected</span>
-      </div>
-
       {/* Selection island */}
       <SelectionIsland
-        selectedWords={Array.from(selected).map(w => {
-          const match = words.find(entry => entry.word === w);
-          return { word: w, definition: match?.definition ?? '' };
-        })}
-        maxSelections={MAX_WORDS}
+        selectedWords={Array.from(selected)}
+        maxWords={MAX_WORDS}
         onDeselect={toggleWord}
       />
 

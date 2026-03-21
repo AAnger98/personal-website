@@ -780,12 +780,9 @@
   font-family: var(--font-body);
   font-size: var(--font-size-sm);
   color: var(--color-text);
-  animation: sw-def-fadein 150ms steps(3) both;
-}
-
-@keyframes sw-def-fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  transition: opacity 150ms ease;
+  opacity: 1;
+  margin: 0;
 }
 
 .sw-definition-bar__word {
