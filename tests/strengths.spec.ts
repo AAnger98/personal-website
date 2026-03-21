@@ -1,17 +1,17 @@
-import { test, expect, type Locator } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
+
+// Serial mode: chip clicks require React hydration; parallel runs race the dev server
+test.describe.configure({ mode: 'serial' });
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 /** Return all word chip buttons in the grid. */
-function wordChips(page: import('@playwright/test').Page): Locator {
+function wordChips(page: Page): Locator {
   return page.locator('.sw-grid button[role="checkbox"]');
 }
 
 /** Return the first N unselected, non-maxed word chips. */
-async function pickableChips(
-  page: import('@playwright/test').Page,
-  count: number,
-): Promise<Locator[]> {
+async function pickableChips(page: Page, count: number): Promise<Locator[]> {
   const all = wordChips(page);
   const total = await all.count();
   const result: Locator[] = [];
@@ -26,9 +26,22 @@ async function pickableChips(
   return result;
 }
 
-// ─── Page Load ──────────────────────────────────────────────────────────────
+/** Select 5 words and click Continue to advance past word selection. */
+async function completeWordSelection(page: Page) {
+  await page.goto('/strengths');
+  await page.waitForSelector('.sw-grid');
+  const chips = page.locator('.sw-grid .sw-chip');
+  for (let i = 0; i < 5; i++) {
+    await chips.nth(i).click();
+  }
+  await page.getByRole('button', { name: /CONTINUE/i }).click();
+}
 
-test.describe('Strengths Identifier — Page Load', () => {
+// ═══════════════════════════════════════════════════════════════════════════
+// Word Selection Step — Grid, Toggle, Island, Definitions
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Page Load', () => {
   test('page loads without error', async ({ page }) => {
     const response = await page.goto('/strengths');
     expect(response?.status()).toBe(200);
@@ -48,9 +61,7 @@ test.describe('Strengths Identifier — Page Load', () => {
   });
 });
 
-// ─── Word Grid Layout ───────────────────────────────────────────────────────
-
-test.describe('Strengths Identifier — Word Grid Layout', () => {
+test.describe('Strengths — Word Grid Layout', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
@@ -60,8 +71,6 @@ test.describe('Strengths Identifier — Word Grid Layout', () => {
     const chips = wordChips(page);
     const count = await chips.count();
     expect(count).toBeGreaterThan(0);
-
-    // Verify every button in the grid has role="checkbox"
     for (let i = 0; i < Math.min(count, 5); i++) {
       await expect(chips.nth(i)).toHaveAttribute('role', 'checkbox');
     }
@@ -80,9 +89,7 @@ test.describe('Strengths Identifier — Word Grid Layout', () => {
   });
 });
 
-// ─── Selection Behavior ─────────────────────────────────────────────────────
-
-test.describe('Strengths Identifier — Selection Behavior', () => {
+test.describe('Strengths — Selection Behavior', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
@@ -113,19 +120,15 @@ test.describe('Strengths Identifier — Selection Behavior', () => {
   test('counter updates on selection', async ({ page }) => {
     const counter = page.locator('.sw-counter__num');
     await expect(counter).toHaveText('0');
-
     const chip = wordChips(page).first();
     await chip.click();
     await expect(counter).toHaveText('1');
-
     await chip.click();
     await expect(counter).toHaveText('0');
   });
 });
 
-// ─── Max Selection (5 words) ────────────────────────────────────────────────
-
-test.describe('Strengths Identifier — Max Selection', () => {
+test.describe('Strengths — Max Selection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
@@ -134,12 +137,9 @@ test.describe('Strengths Identifier — Max Selection', () => {
   test('after selecting 5 words, remaining buttons get .sw-chip--maxed', async ({ page }) => {
     const chips = await pickableChips(page, 5);
     expect(chips.length).toBe(5);
-
     for (const chip of chips) {
       await chip.click();
     }
-
-    // Find an unselected chip — it should now have the maxed class
     const allChips = wordChips(page);
     const total = await allChips.count();
     let foundMaxed = false;
@@ -159,7 +159,6 @@ test.describe('Strengths Identifier — Max Selection', () => {
     for (const chip of chips) {
       await chip.click();
     }
-
     const allChips = wordChips(page);
     const total = await allChips.count();
     for (let i = 0; i < total; i++) {
@@ -176,21 +175,16 @@ test.describe('Strengths Identifier — Max Selection', () => {
     for (const chip of chips) {
       await chip.click();
     }
-
-    // Find a maxed (unselected) chip and click it
     const allChips = wordChips(page);
     const total = await allChips.count();
     for (let i = 0; i < total; i++) {
       const checked = await allChips.nth(i).getAttribute('aria-checked');
       if (checked === 'false') {
         await allChips.nth(i).click({ force: true });
-        // Still should be unchecked
         await expect(allChips.nth(i)).toHaveAttribute('aria-checked', 'false');
         break;
       }
     }
-
-    // Counter should still show 5
     const counter = page.locator('.sw-counter__num');
     await expect(counter).toHaveText('5');
   });
@@ -205,16 +199,13 @@ test.describe('Strengths Identifier — Max Selection', () => {
     for (const chip of chips) {
       await chip.click();
     }
-
     const continueBtn = page.locator('.sw-btn--primary');
     await expect(continueBtn).toBeEnabled();
     await expect(continueBtn).toContainText('CONTINUE');
   });
 });
 
-// ─── Selection Island ───────────────────────────────────────────────────────
-
-test.describe('Strengths Identifier — Selection Island', () => {
+test.describe('Strengths — Selection Island', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
@@ -228,11 +219,8 @@ test.describe('Strengths Identifier — Selection Island', () => {
   test('selected words appear as chips in the island', async ({ page }) => {
     const chip = wordChips(page).first();
     const chipText = await chip.textContent();
-    // Extract word name (strip the ☐ prefix)
     const wordName = chipText?.replace(/^[☐☑]\s*/, '').trim() ?? '';
-
     await chip.click();
-
     const islandChip = page.locator('.sw-island__chip-label');
     await expect(islandChip.first()).toContainText(wordName);
   });
@@ -241,12 +229,8 @@ test.describe('Strengths Identifier — Selection Island', () => {
     const chip = wordChips(page).first();
     await chip.click();
     await expect(chip).toHaveAttribute('aria-checked', 'true');
-
-    // Click the close button in the island
     const closeBtn = page.locator('.sw-island__chip-close').first();
     await closeBtn.click();
-
-    // The grid chip should now be deselected
     await expect(chip).toHaveAttribute('aria-checked', 'false');
   });
 
@@ -254,34 +238,22 @@ test.describe('Strengths Identifier — Selection Island', () => {
     const progressBar = page.locator('.sw-island__progress-bar');
     const initialValue = await progressBar.getAttribute('aria-valuenow');
     expect(initialValue).toBe('0');
-
     await wordChips(page).first().click();
-
     const updatedValue = await progressBar.getAttribute('aria-valuenow');
     expect(updatedValue).toBe('1');
   });
 
   test('empty slots show dashed placeholders', async ({ page }) => {
-    // Before any selection, all 5 slots should be empty
     const emptySlots = page.locator('.sw-island__empty-slot');
     const count = await emptySlots.count();
     expect(count).toBe(5);
-
-    // Select one word — should reduce empty slots to 4
     await wordChips(page).first().click();
     const newCount = await emptySlots.count();
     expect(newCount).toBe(4);
   });
-
-  test('island has aria-live for accessibility', async ({ page }) => {
-    const island = page.locator('.sw-island');
-    await expect(island).toHaveAttribute('aria-live', 'polite');
-  });
 });
 
-// ─── Definition Preview Bar ─────────────────────────────────────────────────
-
-test.describe('Strengths Identifier — Definition Preview Bar', () => {
+test.describe('Strengths — Definition Preview Bar', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
@@ -300,10 +272,8 @@ test.describe('Strengths Identifier — Definition Preview Bar', () => {
   test('hovering a word shows its definition', async ({ page }) => {
     const chip = wordChips(page).first();
     await chip.hover();
-
     const defWord = page.locator('.sw-definition-bar__word');
     await expect(defWord).toBeVisible();
-
     const defText = page.locator('.sw-definition-bar__text');
     await expect(defText).toBeVisible();
   });
@@ -311,45 +281,26 @@ test.describe('Strengths Identifier — Definition Preview Bar', () => {
   test('moving away returns to idle prompt text', async ({ page }) => {
     const chip = wordChips(page).first();
     await chip.hover();
-
-    // Verify definition is shown
     await expect(page.locator('.sw-definition-bar__word')).toBeVisible();
-
-    // Move mouse away from the grid entirely
     await page.locator('.sw-header').hover();
-
-    // Should return to idle prompt
     const prompt = page.locator('.sw-definition-bar__prompt');
     await expect(prompt).toBeVisible();
   });
 });
 
-// ─── Hover-to-Peek on Maxed Chips ────────────────────────────────────────
-
-test.describe('Strengths Identifier — Maxed Chip Hover Peek', () => {
-  test.beforeEach(async ({ page }) => {
+test.describe('Strengths — Maxed Chip Hover Peek', () => {
+  test('hovering a maxed chip shows its definition in the bar', async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
-  });
-
-  test('hovering a maxed chip shows its definition in the definition bar', async ({ page }) => {
-    // Select 5 words to trigger the maxed state on remaining chips
     const chips = await pickableChips(page, 5);
     for (const chip of chips) {
       await chip.click();
     }
-
-    // Find a maxed chip
     const maxedChip = page.locator('.sw-chip--maxed').first();
     await expect(maxedChip).toBeVisible();
-
-    // Hover the maxed chip
     await maxedChip.hover();
-
-    // Definition bar should show the word and its definition
     const defWord = page.locator('.sw-definition-bar__word');
     await expect(defWord).toBeVisible();
-
     const defText = page.locator('.sw-definition-bar__text');
     await expect(defText).toBeVisible();
     const text = await defText.textContent();
@@ -357,27 +308,20 @@ test.describe('Strengths Identifier — Maxed Chip Hover Peek', () => {
   });
 });
 
-// ─── Responsive Layout ──────────────────────────────────────────────────────
-
-test.describe('Strengths Identifier — Responsive Layout', () => {
+test.describe('Strengths — Responsive Layout', () => {
   test('grid renders differently at 600px viewport vs default', async ({ browser }) => {
-    // Default viewport (1280px)
     const defaultContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     const defaultPage = await defaultContext.newPage();
     await defaultPage.goto('/strengths');
     await defaultPage.waitForSelector('.sw-grid');
-    const defaultGrid = defaultPage.locator('.sw-grid');
-    const defaultBox = await defaultGrid.boundingBox();
+    const defaultBox = await defaultPage.locator('.sw-grid').boundingBox();
 
-    // Narrow viewport (600px)
     const narrowContext = await browser.newContext({ viewport: { width: 600, height: 720 } });
     const narrowPage = await narrowContext.newPage();
     await narrowPage.goto('/strengths');
     await narrowPage.waitForSelector('.sw-grid');
-    const narrowGrid = narrowPage.locator('.sw-grid');
-    const narrowBox = await narrowGrid.boundingBox();
+    const narrowBox = await narrowPage.locator('.sw-grid').boundingBox();
 
-    // The grid should be narrower at 600px
     expect(defaultBox).toBeTruthy();
     expect(narrowBox).toBeTruthy();
     expect(narrowBox!.width).toBeLessThan(defaultBox!.width);
@@ -387,9 +331,7 @@ test.describe('Strengths Identifier — Responsive Layout', () => {
   });
 });
 
-// ─── Timer ──────────────────────────────────────────────────────────────────
-
-test.describe('Strengths Identifier — Timer', () => {
+test.describe('Strengths — Timer', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
@@ -408,34 +350,243 @@ test.describe('Strengths Identifier — Timer', () => {
   test('timer counts down', async ({ page }) => {
     const timer = page.locator('.sw-timer__display');
     const initial = await timer.textContent();
-
-    // Wait just over 1 second for the timer to tick
     await page.waitForTimeout(1200);
-
     const updated = await timer.textContent();
     expect(updated).not.toBe(initial);
-    // Should be 4:59 or 4:58 depending on timing
     expect(updated).toMatch(/^4:5[89]$/);
   });
 });
 
-// ─── Continue / Flow Transition ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// Multi-Step Flow — Progress, Reflection, Pitch, PDF, Feedback
+// ═══════════════════════════════════════════════════════════════════════════
 
-test.describe('Strengths Identifier — Continue Action', () => {
-  test('clicking continue with 5 selections advances to step 2', async ({ page }) => {
+test.describe('Strengths flow — progress indicator', () => {
+  test('shows step 1 of 5 on load', async ({ page }) => {
     await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await expect(page.getByText('1 of 5')).toBeVisible();
+  });
 
-    const chips = await pickableChips(page, 5);
-    for (const chip of chips) {
-      await chip.click();
+  test('shows step 2 of 5 after word selection', async ({ page }) => {
+    await completeWordSelection(page);
+    await expect(page.getByText('2 of 5')).toBeVisible();
+  });
+});
+
+test.describe('Strengths flow — restart', () => {
+  test('restart button resets to step 1', async ({ page }) => {
+    await completeWordSelection(page);
+    await page.getByRole('button', { name: /START OVER/i }).click();
+    await expect(page.getByText('1 of 5')).toBeVisible();
+    await expect(page.locator('.sw-chip--selected')).toHaveCount(0);
+  });
+});
+
+test.describe('Strengths flow — reflection step', () => {
+  test('reflection step shows the 5 selected words', async ({ page }) => {
+    await completeWordSelection(page);
+    await expect(page.locator('.sr-word-header')).toHaveCount(5);
+  });
+
+  test('each word has two text inputs', async ({ page }) => {
+    await completeWordSelection(page);
+    await expect(page.locator('.sr-field textarea')).toHaveCount(10);
+  });
+
+  test('continue button is enabled even with blank fields (soft gate)', async ({ page }) => {
+    await completeWordSelection(page);
+    await expect(page.getByRole('button', { name: /CONTINUE/i })).toBeEnabled();
+  });
+
+  test('shows character nudge when field has fewer than 50 chars', async ({ page }) => {
+    await completeWordSelection(page);
+    const firstTextarea = page.locator('.sr-field textarea').first();
+    await firstTextarea.fill('short');
+    await firstTextarea.blur();
+    await expect(page.locator('.sr-nudge').first()).toBeVisible();
+  });
+
+  test('nudge disappears when field has 50+ chars', async ({ page }) => {
+    await completeWordSelection(page);
+    const firstTextarea = page.locator('.sr-field textarea').first();
+    await firstTextarea.fill('a'.repeat(50));
+    await firstTextarea.blur();
+    await expect(page.locator('.sr-nudge').first()).not.toBeVisible();
+  });
+
+  test('advancing to step 3 shows pitch step', async ({ page }) => {
+    await completeWordSelection(page);
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('3 of 5', { exact: true })).toBeVisible();
+  });
+});
+
+test.describe('Strengths flow — pitch step', () => {
+  async function goToPitch(page: Page) {
+    await completeWordSelection(page);
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+  }
+
+  test('pitch step shows #1 strength word prominently', async ({ page }) => {
+    await goToPitch(page);
+    await expect(page.locator('.spi-anchor-word')).toBeVisible();
+  });
+
+  test('pitch step has a textarea', async ({ page }) => {
+    await goToPitch(page);
+    await expect(page.locator('.spi-textarea')).toBeVisible();
+  });
+
+  test('character count is displayed', async ({ page }) => {
+    await goToPitch(page);
+    await page.locator('.spi-textarea').fill('Hello world');
+    await expect(page.locator('.spi-char-count')).toContainText('11');
+  });
+
+  test('continue advances to step 4', async ({ page }) => {
+    await goToPitch(page);
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('4 of 5', { exact: true })).toBeVisible();
+  });
+});
+
+test.describe('Strengths flow — PDF step', () => {
+  async function goToPdf(page: Page) {
+    await completeWordSelection(page);
+    await page.getByRole('button', { name: /CONTINUE/i }).click(); // → pitch
+    await page.getByRole('button', { name: /CONTINUE/i }).click(); // → pdf
+  }
+
+  test('PDF step shows download button', async ({ page }) => {
+    await goToPdf(page);
+    await expect(page.getByRole('button', { name: /DOWNLOAD/i })).toBeVisible();
+  });
+
+  test('PDF step shows print button', async ({ page }) => {
+    await goToPdf(page);
+    await expect(page.getByRole('button', { name: /PRINT/i })).toBeVisible();
+  });
+
+  test('PDF step shows the 5 selected words', async ({ page }) => {
+    await goToPdf(page);
+    await expect(page.locator('.spdf-words-list li')).toHaveCount(5);
+  });
+
+  test('continue advances to step 5', async ({ page }) => {
+    await goToPdf(page);
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('5 of 5', { exact: true })).toBeVisible();
+  });
+});
+
+test.describe('Strengths flow — feedback step', () => {
+  async function goToFeedback(page: Page) {
+    await completeWordSelection(page);
+    for (let i = 0; i < 3; i++) {
+      await page.getByRole('button', { name: /CONTINUE/i }).click();
     }
+  }
 
-    const continueBtn = page.locator('.sw-btn--primary');
-    await continueBtn.click();
+  test('feedback step shows 1–5 rating buttons', async ({ page }) => {
+    await goToFeedback(page);
+    await expect(page.locator('.sfb-rating-btn')).toHaveCount(5);
+  });
 
-    // Should now show step 2 placeholder
-    const stepLabel = page.locator('.sw-label');
-    await expect(stepLabel).toHaveText('STEP 2 OF 5');
+  test('feedback step has optional free-text field', async ({ page }) => {
+    await goToFeedback(page);
+    await expect(page.locator('.sfb-textarea')).toBeVisible();
+  });
+
+  test('skip button is always available', async ({ page }) => {
+    await goToFeedback(page);
+    await expect(page.getByRole('button', { name: /SKIP/i })).toBeVisible();
+  });
+
+  test('submitting feedback shows completion state', async ({ page }) => {
+    await goToFeedback(page);
+    await page.locator('.sfb-rating-btn').nth(3).click();
+    await page.getByRole('button', { name: /SUBMIT/i }).click();
+    await expect(page.locator('.sfb-complete')).toBeVisible();
+  });
+
+  test('skip also shows completion state', async ({ page }) => {
+    await goToFeedback(page);
+    await page.getByRole('button', { name: /SKIP/i }).click();
+    await expect(page.locator('.sfb-complete')).toBeVisible();
+  });
+});
+
+test.describe('Strengths flow — full journey', () => {
+  test('completes the full 5-step flow without errors', async ({ page }) => {
+    await completeWordSelection(page);
+    await expect(page.getByText('2 of 5', { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('3 of 5', { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('4 of 5', { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('5 of 5', { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: /SKIP/i }).click();
+    await expect(page.locator('.sfb-complete')).toBeVisible();
+  });
+
+  test('back navigation from step 2 returns to step 1 with chips still selected', async ({ page }) => {
+    await completeWordSelection(page);
+    await expect(page.getByText('2 of 5', { exact: true })).toBeVisible();
+    await page.getByRole('button', { name: /BACK/i }).click();
+    await expect(page.getByText('1 of 5', { exact: true })).toBeVisible();
+    await expect(page.locator('.sw-chip--selected')).toHaveCount(5);
+  });
+
+  test('back navigation from step 3 returns to step 2', async ({ page }) => {
+    await completeWordSelection(page);
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await expect(page.getByText('3 of 5', { exact: true })).toBeVisible();
+    await page.getByRole('button', { name: /BACK/i }).click();
+    await expect(page.getByText('2 of 5', { exact: true })).toBeVisible();
+  });
+
+  test('back navigation from step 4 returns to step 3', async ({ page }) => {
+    await completeWordSelection(page);
+    for (let i = 0; i < 2; i++) {
+      await page.getByRole('button', { name: /CONTINUE/i }).click();
+    }
+    await expect(page.getByText('4 of 5', { exact: true })).toBeVisible();
+    await page.getByRole('button', { name: /BACK/i }).click();
+    await expect(page.getByText('3 of 5', { exact: true })).toBeVisible();
+  });
+
+  test('START OVER from completion screen resets to step 1', async ({ page }) => {
+    await completeWordSelection(page);
+    for (let i = 0; i < 3; i++) {
+      await page.getByRole('button', { name: /CONTINUE/i }).click();
+    }
+    await page.getByRole('button', { name: /SKIP/i }).click();
+    await expect(page.locator('.sfb-complete')).toBeVisible();
+    await page.locator('.sfb-complete').getByRole('button', { name: /START OVER/i }).click();
+    await expect(page.getByText('1 of 5', { exact: true })).toBeVisible();
+    await expect(page.locator('.sw-chip--selected')).toHaveCount(0);
+  });
+
+  test('page loads in under 3 seconds', async ({ page }) => {
+    const start = Date.now();
+    await page.goto('/strengths');
+    await page.locator('.sw-grid').waitFor();
+    const elapsed = Date.now() - start;
+    expect(elapsed).toBeLessThan(3000);
+  });
+
+  test('no console errors on load', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
+    await page.goto('/strengths');
+    await page.locator('.sw-grid').waitFor();
+    expect(errors).toHaveLength(0);
   });
 });

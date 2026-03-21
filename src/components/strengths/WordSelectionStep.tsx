@@ -11,6 +11,7 @@ export interface Word {
 
 interface Props {
   words: Word[];
+  initialSelected?: string[];
   onComplete: (selected: string[]) => void;
 }
 
@@ -20,8 +21,8 @@ const MAX_WORDS = 5;
 
 type Phase = 'selecting' | 'timeout';
 
-export default function WordSelectionStep({ words, onComplete }: Props) {
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+export default function WordSelectionStep({ words, initialSelected = [], onComplete }: Props) {
+  const [selected, setSelected] = useState<Set<string>>(new Set(initialSelected));
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
   const [phase, setPhase] = useState<Phase>('selecting');
   const { showDefinition, hideDefinition } = useDefinition();
@@ -30,8 +31,14 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
   const startedAt = useRef(Date.now());
   const firstSelectedAt = useRef<number | null>(null);
   const restarts = useRef(0);
-  const selectedRef = useRef<Set<string>>(new Set());
+  const selectedRef = useRef<Set<string>>(new Set(initialSelected));
   selectedRef.current = selected;
+
+  // Sync with parent-driven resets (e.g., restart from StrengthsFlow)
+  useEffect(() => {
+    setSelected(new Set(initialSelected));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialSelected.length]);
 
   useEffect(() => {
     if (phase !== 'selecting') return;
@@ -129,7 +136,6 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
       {/* Header */}
       <div className="sw-header">
         <div className="sw-header__left">
-          <span className="sw-label">STEP 1 OF 5</span>
           <h1 className="sw-title">Select Your Strengths</h1>
           <p className="sw-desc">
             Choose exactly 5 words that resonate. Don&apos;t overthink it — go with instinct.
