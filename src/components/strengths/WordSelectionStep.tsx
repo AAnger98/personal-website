@@ -34,6 +34,9 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
   const selectedRef = useRef<Set<string>>(new Set(initialSelected));
   selectedRef.current = selected;
 
+  // Button refs for travel animation
+  const buttonRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+
   // Sync with parent-driven resets (e.g., restart from StrengthsFlow)
   useEffect(() => {
     setSelected(new Set(initialSelected));
