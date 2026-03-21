@@ -1,4 +1,28 @@
 /* ─── Strengths Identifier — Step UI ──────────────────────────────────────── */
+/*
+ * ACCESSIBILITY — COLOR CONTRAST AUDIT (WCAG AA requires 4.5:1 for normal text)
+ *
+ * Computed ratios against actual rendered backgrounds:
+ *
+ *   --color-text  (#E5E5E5) on --color-bg  (#1B3022) →  11.17:1  PASS AA ✓
+ *   --color-gold  (#D4AF37) on --color-bg  (#1B3022) →   6.69:1  PASS AA ✓
+ *   --color-blue  (#8EA8C3) on --color-bg  (#1B3022) →   5.72:1  PASS AA ✓
+ *   --color-peach (#E29578) on --color-bg  (#1B3022) →   5.90:1  PASS AA ✓
+ *
+ * Blended backgrounds (color-mix — effective rendered color):
+ *   --color-gold  (#D4AF37) on 25% --color-green over --color-bg  (#284225) → 5.27:1  PASS AA ✓
+ *     — used in: .sw-chip--selected, .sw-island__slot--filled
+ *   --color-peach (#E29578) on 15% --color-green over --color-bg  (#233b24) → 5.11:1  PASS AA ✓
+ *     — used in: .sw-chip--selected:hover
+ *   --color-blue  (#8EA8C3) on  8% --color-blue  over --color-bg            → 4.96:1  PASS AA ✓
+ *     — used in: .sw-chip:hover
+ *   --color-gold  (#D4AF37) on  8% --color-gold  over --color-bg            → 5.78:1  PASS AA ✓
+ *     — used in: .sfb-rating-btn--selected
+ *
+ * Note: --color-gold (#D4AF37) on pure --color-green (#4F772D) = 2.49:1 — FAILS AA.
+ *   This combination is NOT used in practice; all green backgrounds are blended at
+ *   ≤25% opacity over --color-bg, resulting in passing contrast ratios above.
+ */
 
 .sw-root {
   max-width: 72rem;
@@ -206,6 +230,11 @@
   color: var(--color-bg);
 }
 
+.sw-btn:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
 .sw-btn--inactive {
   border-color: var(--color-green);
   color: var(--color-green);
@@ -404,6 +433,11 @@
   opacity: 1;
   border-color: var(--color-peach);
   color: var(--color-peach);
+}
+
+.sp-restart:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
 }
 
 @media (max-width: 600px) {
@@ -838,6 +872,12 @@
   border: 2px solid var(--color-gold);
   padding: 0.35rem 0.6rem;
   min-height: 44px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sw-island__slot--filled:active {
+  cursor: grabbing;
 }
 
 .sw-island__chip-label {

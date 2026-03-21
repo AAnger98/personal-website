@@ -23,6 +23,7 @@ type Phase = 'selecting' | 'timeout';
 
 export default function WordSelectionStep({ words, initialSelected = [], onComplete }: Props) {
   const [selected, setSelected] = useState<Set<string>>(new Set(initialSelected));
+  const [wordOrder, setWordOrder] = useState<string[]>(initialSelected);
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
   const [phase, setPhase] = useState<Phase>('selecting');
   const { showDefinition, hideDefinition } = useDefinition();
@@ -40,6 +41,7 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
   // Sync with parent-driven resets (e.g., restart from StrengthsFlow)
   useEffect(() => {
     setSelected(new Set(initialSelected));
+    setWordOrder(initialSelected);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialSelected.length]);
 
@@ -64,21 +66,101 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
     return () => clearInterval(tick);
   }, [phase]);
 
+  const triggerTravelAnimation = (word: string) => {
+    const btn = buttonRefs.current.get(word);
+    if (!btn) return;
+
+    const srcRect = btn.getBoundingClientRect();
+    // Skip animation if element is not visible/rendered
+    if (srcRect.width === 0 && srcRect.height === 0) return;
+
+    const targetSlot = document.querySelector<HTMLElement>('.sw-island__slot--empty');
+    if (!targetSlot) return;
+
+    const tgtRect = targetSlot.getBoundingClientRect();
+    if (tgtRect.width === 0 && tgtRect.height === 0) return;
+
+    // Create ghost chip at source position
+    const ghost = document.createElement('span');
+    ghost.className = 'sw-ghost-chip';
+    ghost.textContent = `\u2611 ${word}`;
+    ghost.style.left = `${srcRect.left}px`;
+    ghost.style.top = `${srcRect.top}px`;
+    ghost.style.width = `${srcRect.width}px`;
+    ghost.style.height = `${srcRect.height}px`;
+
+    document.body.appendChild(ghost);
+
+    // Calculate delta to target slot
+    const dx = tgtRect.left - srcRect.left;
+    const dy = tgtRect.top - srcRect.top;
+
+    // Force a reflow so initial state is painted before transition starts
+    void ghost.offsetWidth;
+
+    // Apply flying class and inline transform to trigger CSS transition
+    ghost.classList.add('sw-ghost-chip--flying');
+    ghost.style.transform = `translate(${dx}px, ${dy}px)`;
+
+    // Remove ghost after animation completes
+    const onEnd = () => {
+      ghost.removeEventListener('transitionend', onEnd);
+      if (ghost.parentNode) {
+        ghost.parentNode.removeChild(ghost);
+      }
+    };
+    ghost.addEventListener('transitionend', onEnd);
+    // Fallback removal in case transitionend doesn't fire
+    setTimeout(() => {
+      if (ghost.parentNode) {
+        ghost.parentNode.removeChild(ghost);
+      }
+    }, 400);
+  };
+
   const toggleWord = (word: string) => {
-    setSelected(prev => {
-      const isSelected = prev.has(word);
-      if (!isSelected && prev.size >= MAX_WORDS) return prev;
-      if (!isSelected && firstSelectedAt.current === null) {
-        firstSelectedAt.current = Date.now();
-      }
-      const next = new Set(prev);
-      if (isSelected) {
-        next.delete(word);
-      } else {
+    const isCurrentlySelected = selectedRef.current.has(word);
+
+    if (!isCurrentlySelected) {
+      // Word is being ADDED — trigger travel animation before state update
+      triggerTravelAnimation(word);
+    } else {
+      // Word is being REMOVED — apply removing class to island chip
+      const islandChips = document.querySelectorAll<HTMLElement>('.sw-island__slot--filled');
+      islandChips.forEach(chip => {
+        const label = chip.querySelector('.sw-island__chip-label');
+        if (label && label.textContent?.includes(word)) {
+          chip.classList.add('sw-island__chip--removing');
+        }
+      });
+    }
+
+    if (!isCurrentlySelected) {
+      // Adding
+      setSelected(prev => {
+        if (prev.size >= MAX_WORDS) return prev;
+        if (firstSelectedAt.current === null) {
+          firstSelectedAt.current = Date.now();
+        }
+        const next = new Set(prev);
         next.add(word);
-      }
-      return next;
-    });
+        return next;
+      });
+      setWordOrder(prev => {
+        if (prev.length >= MAX_WORDS) return prev;
+        return [...prev, word];
+      });
+    } else {
+      // Removing — delay state update to allow fade-out animation (200ms)
+      setTimeout(() => {
+        setSelected(prev => {
+          const next = new Set(prev);
+          next.delete(word);
+          return next;
+        });
+        setWordOrder(prev => prev.filter(w => w !== word));
+      }, 200);
+    }
   };
 
   const handleContinue = () => {
@@ -91,13 +173,14 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
       timer_expired: timeLeft === 0,
       restart_count: restarts.current,
     });
-    onComplete(Array.from(selected));
+    onComplete(wordOrder);
   };
 
   const handleRestart = () => {
     restarts.current += 1;
     logEvent('strengths_restart', { restart_count: restarts.current });
     setSelected(new Set());
+    setWordOrder([]);
     setTimeLeft(TIMER_SECONDS);
     startedAt.current = Date.now();
     firstSelectedAt.current = null;
@@ -169,9 +252,10 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
 
       {/* Selection island */}
       <SelectionIsland
-        selectedWords={Array.from(selected)}
+        selectedWords={wordOrder}
         maxWords={MAX_WORDS}
         onDeselect={toggleWord}
+        onReorder={setWordOrder}
       />
 
       {/* Definition preview bar */}
@@ -185,6 +269,13 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
           return (
             <button
               key={word}
+              ref={el => {
+                if (el) {
+                  buttonRefs.current.set(word, el);
+                } else {
+                  buttonRefs.current.delete(word);
+                }
+              }}
               role="checkbox"
               aria-checked={isSelected}
               aria-disabled={isMaxed || undefined}
