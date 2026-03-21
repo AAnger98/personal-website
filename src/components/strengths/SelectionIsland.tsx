@@ -21,7 +21,7 @@ export default function SelectionIsland({
         : `${count} of ${maxSelections} selected`;
 
   return (
-    <div className="sw-island" aria-live="polite" aria-label="Selected words">
+    <div className="sw-island" aria-label="Selected words">
       <div className="sw-island__slots">
         {selectedWords.map(({ word }) => (
           <span key={word} className="sw-island__chip">
@@ -50,7 +50,7 @@ export default function SelectionIsland({
           aria-valuemax={maxSelections}
           style={{ '--island-progress': `${progressPct}%` } as React.CSSProperties}
         />
-        <span className="sw-island__progress-text">{progressText}</span>
+        <span className="sw-island__progress-text" aria-live="polite">{progressText}</span>
       </div>
     </div>
   );

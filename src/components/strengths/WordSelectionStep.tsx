@@ -21,7 +21,7 @@ const MAX_WORDS = 5;
 type Phase = 'selecting' | 'timeout';
 
 export default function WordSelectionStep({ words, onComplete }: Props) {
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
   const [phase, setPhase] = useState<Phase>('selecting');
   const { showDefinition, hideDefinition } = useDefinition();
@@ -30,7 +30,7 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
   const startedAt = useRef(Date.now());
   const firstSelectedAt = useRef<number | null>(null);
   const restarts = useRef(0);
-  const selectedRef = useRef<string[]>([]);
+  const selectedRef = useRef<Set<string>>(new Set());
   selectedRef.current = selected;
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(tick);
-          const count = selectedRef.current.length;
+          const count = selectedRef.current.size;
           if (count < MAX_WORDS) {
             setPhase('timeout');
             logEvent('strengths_timer_expired', { selection_count: count });
@@ -56,17 +56,23 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
 
   const toggleWord = (word: string) => {
     setSelected(prev => {
-      const isSelected = prev.includes(word);
-      if (!isSelected && prev.length >= MAX_WORDS) return prev;
+      const isSelected = prev.has(word);
+      if (!isSelected && prev.size >= MAX_WORDS) return prev;
       if (!isSelected && firstSelectedAt.current === null) {
         firstSelectedAt.current = Date.now();
       }
-      return isSelected ? prev.filter(w => w !== word) : [...prev, word];
+      const next = new Set(prev);
+      if (isSelected) {
+        next.delete(word);
+      } else {
+        next.add(word);
+      }
+      return next;
     });
   };
 
   const handleContinue = () => {
-    if (selected.length !== MAX_WORDS) return;
+    if (selected.size !== MAX_WORDS) return;
     logEvent('strengths_selection_complete', {
       total_time_s: Math.round((Date.now() - startedAt.current) / 1000),
       time_to_first_s: firstSelectedAt.current
@@ -75,13 +81,13 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
       timer_expired: timeLeft === 0,
       restart_count: restarts.current,
     });
-    onComplete(selected);
+    onComplete(Array.from(selected));
   };
 
   const handleRestart = () => {
     restarts.current += 1;
     logEvent('strengths_restart', { restart_count: restarts.current });
-    setSelected([]);
+    setSelected(new Set());
     setTimeLeft(TIMER_SECONDS);
     startedAt.current = Date.now();
     firstSelectedAt.current = null;
@@ -95,7 +101,7 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
   };
 
   const isWarning = timeLeft <= WARN_SECONDS && timeLeft > 0;
-  const maxReached = selected.length >= MAX_WORDS;
+  const maxReached = selected.size >= MAX_WORDS;
 
   if (phase === 'timeout') {
     return (
@@ -103,8 +109,8 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
         <div className="sw-timeout__frame">
           <p className="sw-timeout__title">TIME EXPIRED</p>
           <p className="sw-timeout__message">
-            {selected.length < MAX_WORDS
-              ? `You selected ${selected.length} of ${MAX_WORDS} required strengths.`
+            {selected.size < MAX_WORDS
+              ? `You selected ${selected.size} of ${MAX_WORDS} required strengths.`
               : 'Select 5 strengths to continue.'}
           </p>
           <p className="sw-timeout__sub">
@@ -139,7 +145,7 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
       {/* Selection counter */}
       <div className="sw-counter">
         <span className={maxReached ? 'sw-counter__num sw-counter__num--full' : 'sw-counter__num'}>
-          {selected.length}
+          {selected.size}
         </span>
         <span className="sw-counter__sep"> / </span>
         <span className="sw-counter__total">{MAX_WORDS} selected</span>
@@ -147,7 +153,7 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
 
       {/* Selection island */}
       <SelectionIsland
-        selectedWords={selected.map(w => {
+        selectedWords={Array.from(selected).map(w => {
           const match = words.find(entry => entry.word === w);
           return { word: w, definition: match?.definition ?? '' };
         })}
@@ -161,7 +167,7 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
       {/* Word grid */}
       <div className="sw-grid" role="group" aria-label="Strength words">
         {words.map(({ word, definition }) => {
-          const isSelected = selected.includes(word);
+          const isSelected = selected.has(word);
           const isMaxed = !isSelected && maxReached;
           return (
             <button
@@ -188,11 +194,11 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
       {/* Footer */}
       <div className="sw-footer">
         <button
-          className={`sw-btn sw-btn--primary${selected.length === MAX_WORDS ? '' : ' sw-btn--inactive'}`}
+          className={`sw-btn sw-btn--primary${selected.size === MAX_WORDS ? '' : ' sw-btn--inactive'}`}
           onClick={handleContinue}
-          disabled={selected.length !== MAX_WORDS}
+          disabled={selected.size !== MAX_WORDS}
         >
-          {selected.length === MAX_WORDS ? 'CONTINUE →' : `SELECT ${MAX_WORDS - selected.length} MORE`}
+          {selected.size === MAX_WORDS ? 'CONTINUE →' : `SELECT ${MAX_WORDS - selected.size} MORE`}
         </button>
       </div>
     </div>

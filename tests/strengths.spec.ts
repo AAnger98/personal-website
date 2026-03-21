@@ -324,6 +324,69 @@ test.describe('Strengths Identifier — Definition Preview Bar', () => {
   });
 });
 
+// ─── Hover-to-Peek on Maxed Chips ────────────────────────────────────────
+
+test.describe('Strengths Identifier — Maxed Chip Hover Peek', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
+  });
+
+  test('hovering a maxed chip shows its definition in the definition bar', async ({ page }) => {
+    // Select 5 words to trigger the maxed state on remaining chips
+    const chips = await pickableChips(page, 5);
+    for (const chip of chips) {
+      await chip.click();
+    }
+
+    // Find a maxed chip
+    const maxedChip = page.locator('.sw-chip--maxed').first();
+    await expect(maxedChip).toBeVisible();
+
+    // Hover the maxed chip
+    await maxedChip.hover();
+
+    // Definition bar should show the word and its definition
+    const defWord = page.locator('.sw-definition-bar__word');
+    await expect(defWord).toBeVisible();
+
+    const defText = page.locator('.sw-definition-bar__text');
+    await expect(defText).toBeVisible();
+    const text = await defText.textContent();
+    expect(text?.trim().length).toBeGreaterThan(0);
+  });
+});
+
+// ─── Responsive Layout ──────────────────────────────────────────────────────
+
+test.describe('Strengths Identifier — Responsive Layout', () => {
+  test('grid renders differently at 600px viewport vs default', async ({ browser }) => {
+    // Default viewport (1280px)
+    const defaultContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+    const defaultPage = await defaultContext.newPage();
+    await defaultPage.goto('/strengths');
+    await defaultPage.waitForSelector('.sw-grid');
+    const defaultGrid = defaultPage.locator('.sw-grid');
+    const defaultBox = await defaultGrid.boundingBox();
+
+    // Narrow viewport (600px)
+    const narrowContext = await browser.newContext({ viewport: { width: 600, height: 720 } });
+    const narrowPage = await narrowContext.newPage();
+    await narrowPage.goto('/strengths');
+    await narrowPage.waitForSelector('.sw-grid');
+    const narrowGrid = narrowPage.locator('.sw-grid');
+    const narrowBox = await narrowGrid.boundingBox();
+
+    // The grid should be narrower at 600px
+    expect(defaultBox).toBeTruthy();
+    expect(narrowBox).toBeTruthy();
+    expect(narrowBox!.width).toBeLessThan(defaultBox!.width);
+
+    await defaultContext.close();
+    await narrowContext.close();
+  });
+});
+
 // ─── Timer ──────────────────────────────────────────────────────────────────
 
 test.describe('Strengths Identifier — Timer', () => {

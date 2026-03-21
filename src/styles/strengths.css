@@ -160,6 +160,11 @@
   background-color: color-mix(in srgb, var(--color-peach) 15%, transparent);
 }
 
+.sw-chip:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
 .sw-chip--maxed {
   opacity: 0.5;
   cursor: default;
@@ -409,6 +414,11 @@
   min-height: 44px;
   opacity: 0.6;
   transition: opacity steps(2), color steps(2);
+}
+
+.sw-island__chip-close:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
 }
 
 .sw-island__chip-close:hover {

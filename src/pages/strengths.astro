@@ -6,7 +6,12 @@ import StrengthsFlow from '../components/strengths/StrengthsFlow';
 import '../styles/strengths.css';
 
 const csvPath = fileURLToPath(new URL('../../strengths_temp/wordlist.csv', import.meta.url));
-const csvContent = readFileSync(csvPath, 'utf-8');
+let csvContent: string;
+try {
+  csvContent = readFileSync(csvPath, 'utf-8');
+} catch {
+  throw new Error('wordlist.csv not found at strengths_temp/wordlist.csv — see CLAUDE.md for setup instructions');
+}
 
 const words = csvContent
   .split('\n')
