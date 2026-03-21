@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import WordSelectionStep, { type Word } from './WordSelectionStep';
+import { DefinitionProvider } from './DefinitionContext';
 
 interface Props {
   words: Word[];
@@ -13,13 +14,15 @@ export default function StrengthsFlow({ words }: Props) {
 
   if (step === 'word-selection') {
     return (
-      <WordSelectionStep
-        words={words}
-        onComplete={selected => {
-          setSelections(selected);
-          setStep('reflection');
-        }}
-      />
+      <DefinitionProvider>
+        <WordSelectionStep
+          words={words}
+          onComplete={selected => {
+            setSelections(selected);
+            setStep('reflection');
+          }}
+        />
+      </DefinitionProvider>
     );
   }
 

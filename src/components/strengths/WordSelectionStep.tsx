@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { logEvent } from '../../lib/telemetry';
+import SelectionIsland from './SelectionIsland';
+import DefinitionPreviewBar from './DefinitionPreviewBar';
+import { useDefinition } from './DefinitionContext';
 
 export interface Word {
   word: string;
@@ -21,6 +24,7 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
   const [selected, setSelected] = useState<string[]>([]);
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
   const [phase, setPhase] = useState<Phase>('selecting');
+  const { showDefinition, hideDefinition } = useDefinition();
 
   // Telemetry refs — always current, no stale closure issues
   const startedAt = useRef(Date.now());
@@ -141,9 +145,22 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
         <span className="sw-counter__total">{MAX_WORDS} selected</span>
       </div>
 
+      {/* Selection island */}
+      <SelectionIsland
+        selectedWords={selected.map(w => {
+          const match = words.find(entry => entry.word === w);
+          return { word: w, definition: match?.definition ?? '' };
+        })}
+        maxSelections={MAX_WORDS}
+        onDeselect={toggleWord}
+      />
+
+      {/* Definition preview bar */}
+      <DefinitionPreviewBar />
+
       {/* Word grid */}
       <div className="sw-grid" role="group" aria-label="Strength words">
-        {words.map(({ word }) => {
+        {words.map(({ word, definition }) => {
           const isSelected = selected.includes(word);
           const isMaxed = !isSelected && maxReached;
           return (
@@ -157,6 +174,10 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
                 if (isMaxed) return;
                 toggleWord(word);
               }}
+              onMouseEnter={() => showDefinition(word, definition)}
+              onMouseLeave={() => hideDefinition()}
+              onFocus={() => showDefinition(word, definition)}
+              onBlur={() => hideDefinition()}
             >
               {isSelected ? '☑' : '☐'} {word}
             </button>
@@ -170,7 +191,6 @@ export default function WordSelectionStep({ words, onComplete }: Props) {
           className={`sw-btn sw-btn--primary${selected.length === MAX_WORDS ? '' : ' sw-btn--inactive'}`}
           onClick={handleContinue}
           disabled={selected.length !== MAX_WORDS}
-          aria-disabled={selected.length !== MAX_WORDS}
         >
           {selected.length === MAX_WORDS ? 'CONTINUE →' : `SELECT ${MAX_WORDS - selected.length} MORE`}
         </button>

@@ -1,5 +1,9 @@
 /* ─── Strengths Identifier — Step UI ──────────────────────────────────────── */
 
+/* ─── Z-index scale ──────────────────────────────────────────────────────── */
+/* --z-island: 10  (sticky selection island) */
+/* --z-modal:  100 (future modals/overlays)  */
+
 .sw-root {
   max-width: 72rem;
   margin: 0 auto;
@@ -360,7 +364,7 @@
   background-color: var(--color-bg);
   border-bottom: 4px double var(--color-gold);
   padding: var(--space-md);
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4); /* elevation shadow for sticky island */
 }
 
 .sw-island__slots {

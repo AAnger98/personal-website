@@ -20,7 +20,8 @@ const words = csvContent
       ? rawDef.slice(1, -1)
       : rawDef;
     return { word, definition };
-  });
+  })
+  .filter(({ word, definition }) => word.trim() !== '' && definition.trim() !== '');
 ---
 
 <BaseLayout
