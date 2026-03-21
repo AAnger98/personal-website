@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { logEvent } from '../../lib/telemetry';
 import WordSelectionStep, { type Word } from './WordSelectionStep';
+import { DefinitionProvider } from './DefinitionContext';
 import StepProgress from './StepProgress';
 import ReflectionStep from './ReflectionStep';
 import PitchStep from './PitchStep';
@@ -55,14 +56,16 @@ export default function StrengthsFlow({ words }: Props) {
       />
 
       {step === 'word-selection' && (
-        <WordSelectionStep
-          words={words}
-          initialSelected={selectedWords}
-          onComplete={selected => {
-            setSelectedWords(selected);
-            setStep('reflection');
-          }}
-        />
+        <DefinitionProvider>
+          <WordSelectionStep
+            words={words}
+            initialSelected={selectedWords}
+            onComplete={selected => {
+              setSelectedWords(selected);
+              setStep('reflection');
+            }}
+          />
+        </DefinitionProvider>
       )}
 
       {step === 'reflection' && (
