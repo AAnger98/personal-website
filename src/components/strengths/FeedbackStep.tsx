@@ -51,8 +51,8 @@ export default function FeedbackStep({ onComplete }: Props) {
 
       <div className="sfb-questions">
         <div className="sfb-question">
-          <p className="sfb-question-label">Did this exercise help clarify your strengths?</p>
-          <div className="sfb-rating">
+          <p id="sfb-rating-label" className="sfb-question-label">Did this exercise help clarify your strengths?</p>
+          <div className="sfb-rating" role="group" aria-labelledby="sfb-rating-label">
             {[1, 2, 3, 4, 5].map(n => (
               <button
                 key={n}
