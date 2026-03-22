@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { useDefinition } from './DefinitionContext';
 
 function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
+  );
 
   useEffect(() => {
     const mq = window.matchMedia('(hover: none)');
-    setIsMobile(mq.matches);
 
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     mq.addEventListener('change', handler);

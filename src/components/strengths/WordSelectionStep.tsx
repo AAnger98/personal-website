@@ -18,6 +18,9 @@ interface Props {
 const TIMER_SECONDS = 5 * 60;
 const WARN_SECONDS = 60;
 const MAX_WORDS = 5;
+const LONG_PRESS_DELAY_MS = 500;
+const REMOVE_ANIMATION_MS = 200;
+const GHOST_CLEANUP_MS = 400;
 
 type Phase = 'selecting' | 'timeout';
 
@@ -35,7 +38,6 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
   const selectedRef = useRef<Set<string>>(new Set(initialSelected));
   selectedRef.current = selected;
 
-  // Button refs for travel animation
   const buttonRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
 
   // Sync with parent-driven resets (e.g., restart from StrengthsFlow)
@@ -71,7 +73,6 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
     if (!btn) return;
 
     const srcRect = btn.getBoundingClientRect();
-    // Skip animation if element is not visible/rendered
     if (srcRect.width === 0 && srcRect.height === 0) return;
 
     const targetSlot = document.querySelector<HTMLElement>('.sw-island__slot--empty');
@@ -80,7 +81,6 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
     const tgtRect = targetSlot.getBoundingClientRect();
     if (tgtRect.width === 0 && tgtRect.height === 0) return;
 
-    // Create ghost chip at source position
     const ghost = document.createElement('span');
     ghost.className = 'sw-ghost-chip';
     ghost.textContent = `\u2611 ${word}`;
@@ -91,52 +91,24 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
 
     document.body.appendChild(ghost);
 
-    // Calculate delta to target slot
     const dx = tgtRect.left - srcRect.left;
     const dy = tgtRect.top - srcRect.top;
 
-    // Force a reflow so initial state is painted before transition starts
+    // Force a reflow so the initial position is painted before the transition starts
     void ghost.offsetWidth;
 
-    // Apply flying class and inline transform to trigger CSS transition
     ghost.classList.add('sw-ghost-chip--flying');
     ghost.style.transform = `translate(${dx}px, ${dy}px)`;
 
-    // Remove ghost after animation completes
-    const onEnd = () => {
-      ghost.removeEventListener('transitionend', onEnd);
-      if (ghost.parentNode) {
-        ghost.parentNode.removeChild(ghost);
-      }
-    };
-    ghost.addEventListener('transitionend', onEnd);
-    // Fallback removal in case transitionend doesn't fire
-    setTimeout(() => {
-      if (ghost.parentNode) {
-        ghost.parentNode.removeChild(ghost);
-      }
-    }, 400);
+    ghost.addEventListener('transitionend', () => ghost.remove(), { once: true });
+    setTimeout(() => ghost.remove(), GHOST_CLEANUP_MS);
   };
 
   const toggleWord = (word: string) => {
     const isCurrentlySelected = selectedRef.current.has(word);
 
     if (!isCurrentlySelected) {
-      // Word is being ADDED — trigger travel animation before state update
       triggerTravelAnimation(word);
-    } else {
-      // Word is being REMOVED — apply removing class to island chip
-      const islandChips = document.querySelectorAll<HTMLElement>('.sw-island__slot--filled');
-      islandChips.forEach(chip => {
-        const label = chip.querySelector('.sw-island__chip-label');
-        if (label && label.textContent?.includes(word)) {
-          chip.classList.add('sw-island__chip--removing');
-        }
-      });
-    }
-
-    if (!isCurrentlySelected) {
-      // Adding
       setSelected(prev => {
         if (prev.size >= MAX_WORDS) return prev;
         if (firstSelectedAt.current === null) {
@@ -151,7 +123,11 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
         return [...prev, word];
       });
     } else {
-      // Removing — delay state update to allow fade-out animation (200ms)
+      const chip = Array.from(
+        document.querySelectorAll<HTMLElement>('.sw-island__slot--filled')
+      ).find(c => c.querySelector('.sw-island__chip-label')?.textContent?.includes(word));
+      if (chip) chip.classList.add('sw-island__chip--removing');
+      // Delay state update to let the fade-out animation complete
       setTimeout(() => {
         setSelected(prev => {
           const next = new Set(prev);
@@ -159,7 +135,7 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
           return next;
         });
         setWordOrder(prev => prev.filter(w => w !== word));
-      }, 200);
+      }, REMOVE_ANIMATION_MS);
     }
   };
 
@@ -195,10 +171,16 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
 
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  useEffect(() => {
+    return () => {
+      if (longPressTimer.current !== null) clearTimeout(longPressTimer.current);
+    };
+  }, []);
+
   const handleTouchStart = useCallback((word: string, definition: string) => {
     longPressTimer.current = setTimeout(() => {
       showDefinition(word, definition);
-    }, 500);
+    }, LONG_PRESS_DELAY_MS);
   }, [showDefinition]);
 
   const handleTouchEnd = useCallback(() => {
