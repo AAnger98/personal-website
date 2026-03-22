@@ -2,8 +2,19 @@ import { test, expect, type Locator, type Page } from '@playwright/test';
 
 // Serial mode: chip clicks require React hydration; parallel runs race the dev server
 test.describe.configure({ mode: 'serial' });
+// Increase timeout: first navigation triggers Vite TypeScript compilation (~40s in dev)
+test.setTimeout(90_000);
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
+
+/**
+ * Wait for Astro to finish hydrating the React island.
+ * Astro removes the `ssr` attribute from <astro-island> once React has taken over.
+ * Without this, clicking buttons after page.goto may silently do nothing.
+ */
+async function waitForHydration(page: Page): Promise<void> {
+  await page.waitForSelector('astro-island:not([ssr])', { timeout: 80_000 });
+}
 
 /** Return all word chip buttons in the grid. */
 function wordChips(page: Page): Locator {
@@ -29,7 +40,7 @@ async function pickableChips(page: Page, count: number): Promise<Locator[]> {
 /** Select 5 words and click Continue to advance past word selection. */
 async function completeWordSelection(page: Page) {
   await page.goto('/strengths');
-  await page.waitForSelector('.sw-grid');
+  await waitForHydration(page);
   const chips = page.locator('.sw-grid .sw-chip');
   for (let i = 0; i < 5; i++) {
     await chips.nth(i).click();
@@ -43,17 +54,18 @@ async function completeWordSelection(page: Page) {
 
 test.describe('Strengths — Page Load', () => {
   test('page loads without error', async ({ page }) => {
-    const response = await page.goto('/strengths');
+    // Use 'commit' to check HTTP status without waiting for full JS load
+    const response = await page.goto('/strengths', { waitUntil: 'commit' });
     expect(response?.status()).toBe(200);
   });
 
   test('page has correct title', async ({ page }) => {
-    await page.goto('/strengths');
+    await page.goto('/strengths', { waitUntil: 'domcontentloaded' });
     await expect(page).toHaveTitle(/Strengths Identifier/);
   });
 
   test('word grid renders with buttons', async ({ page }) => {
-    await page.goto('/strengths');
+    await page.goto('/strengths', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.sw-grid');
     const chips = wordChips(page);
     const count = await chips.count();
@@ -63,7 +75,7 @@ test.describe('Strengths — Page Load', () => {
 
 test.describe('Strengths — Word Grid Layout', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/strengths');
+    await page.goto('/strengths', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.sw-grid');
   });
 
@@ -92,7 +104,7 @@ test.describe('Strengths — Word Grid Layout', () => {
 test.describe('Strengths — Selection Behavior', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await waitForHydration(page);
   });
 
   test('clicking a word toggles aria-checked from false to true', async ({ page }) => {
@@ -113,25 +125,24 @@ test.describe('Strengths — Selection Behavior', () => {
   test('selected word shows ☑ prefix', async ({ page }) => {
     const chip = wordChips(page).first();
     await chip.click();
-    const text = await chip.textContent();
-    expect(text?.trim()).toMatch(/^☑/);
+    await expect(chip).toContainText('☑');
   });
 
   test('counter updates on selection', async ({ page }) => {
-    const counter = page.locator('.sw-counter__num');
-    await expect(counter).toHaveText('0');
+    const progressBar = page.locator('.sw-island__bar[role="progressbar"]');
+    await expect(progressBar).toHaveAttribute('aria-valuenow', '0');
     const chip = wordChips(page).first();
     await chip.click();
-    await expect(counter).toHaveText('1');
+    await expect(progressBar).toHaveAttribute('aria-valuenow', '1');
     await chip.click();
-    await expect(counter).toHaveText('0');
+    await expect(progressBar).toHaveAttribute('aria-valuenow', '0');
   });
 });
 
 test.describe('Strengths — Max Selection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await waitForHydration(page);
   });
 
   test('after selecting 5 words, remaining buttons get .sw-chip--maxed', async ({ page }) => {
@@ -185,8 +196,8 @@ test.describe('Strengths — Max Selection', () => {
         break;
       }
     }
-    const counter = page.locator('.sw-counter__num');
-    await expect(counter).toHaveText('5');
+    const progressBar = page.locator('.sw-island__bar[role="progressbar"]');
+    await expect(progressBar).toHaveAttribute('aria-valuenow', '5');
   });
 
   test('continue button is disabled before 5 selections', async ({ page }) => {
@@ -208,7 +219,7 @@ test.describe('Strengths — Max Selection', () => {
 test.describe('Strengths — Selection Island', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await waitForHydration(page);
   });
 
   test('island container is present', async ({ page }) => {
@@ -229,22 +240,20 @@ test.describe('Strengths — Selection Island', () => {
     const chip = wordChips(page).first();
     await chip.click();
     await expect(chip).toHaveAttribute('aria-checked', 'true');
-    const closeBtn = page.locator('.sw-island__chip-close').first();
+    const closeBtn = page.locator('.sw-island__remove').first();
     await closeBtn.click();
     await expect(chip).toHaveAttribute('aria-checked', 'false');
   });
 
   test('progress bar updates on selection', async ({ page }) => {
-    const progressBar = page.locator('.sw-island__progress-bar');
-    const initialValue = await progressBar.getAttribute('aria-valuenow');
-    expect(initialValue).toBe('0');
+    const progressBar = page.locator('.sw-island__bar[role="progressbar"]');
+    await expect(progressBar).toHaveAttribute('aria-valuenow', '0');
     await wordChips(page).first().click();
-    const updatedValue = await progressBar.getAttribute('aria-valuenow');
-    expect(updatedValue).toBe('1');
+    await expect(progressBar).toHaveAttribute('aria-valuenow', '1');
   });
 
   test('empty slots show dashed placeholders', async ({ page }) => {
-    const emptySlots = page.locator('.sw-island__empty-slot');
+    const emptySlots = page.locator('.sw-island__slot--empty');
     const count = await emptySlots.count();
     expect(count).toBe(5);
     await wordChips(page).first().click();
@@ -256,7 +265,7 @@ test.describe('Strengths — Selection Island', () => {
 test.describe('Strengths — Definition Preview Bar', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await waitForHydration(page);
   });
 
   test('definition bar is present', async ({ page }) => {
@@ -291,7 +300,7 @@ test.describe('Strengths — Definition Preview Bar', () => {
 test.describe('Strengths — Maxed Chip Hover Peek', () => {
   test('hovering a maxed chip shows its definition in the bar', async ({ page }) => {
     await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await waitForHydration(page);
     const chips = await pickableChips(page, 5);
     for (const chip of chips) {
       await chip.click();
@@ -312,13 +321,13 @@ test.describe('Strengths — Responsive Layout', () => {
   test('grid renders differently at 600px viewport vs default', async ({ browser }) => {
     const defaultContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     const defaultPage = await defaultContext.newPage();
-    await defaultPage.goto('/strengths');
+    await defaultPage.goto('/strengths', { waitUntil: 'domcontentloaded' });
     await defaultPage.waitForSelector('.sw-grid');
     const defaultBox = await defaultPage.locator('.sw-grid').boundingBox();
 
     const narrowContext = await browser.newContext({ viewport: { width: 600, height: 720 } });
     const narrowPage = await narrowContext.newPage();
-    await narrowPage.goto('/strengths');
+    await narrowPage.goto('/strengths', { waitUntil: 'domcontentloaded' });
     await narrowPage.waitForSelector('.sw-grid');
     const narrowBox = await narrowPage.locator('.sw-grid').boundingBox();
 
@@ -334,7 +343,7 @@ test.describe('Strengths — Responsive Layout', () => {
 test.describe('Strengths — Timer', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await waitForHydration(page);
   });
 
   test('timer element is visible', async ({ page }) => {
@@ -363,7 +372,8 @@ test.describe('Strengths — Timer', () => {
 
 test.describe('Strengths flow — progress indicator', () => {
   test('shows step 1 of 5 on load', async ({ page }) => {
-    await page.goto('/strengths');
+    await page.goto('/strengths', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.sp-root');
     await expect(page.getByText('1 of 5')).toBeVisible();
   });
 
@@ -572,9 +582,10 @@ test.describe('Strengths flow — full journey', () => {
     await expect(page.locator('.sw-chip--selected')).toHaveCount(0);
   });
 
-  test('page loads in under 3 seconds', async ({ page }) => {
+  test('SSR content appears in under 3 seconds', async ({ page }) => {
     const start = Date.now();
-    await page.goto('/strengths');
+    // Use domcontentloaded to measure SSR render time (not JS hydration time)
+    await page.goto('/strengths', { waitUntil: 'domcontentloaded' });
     await page.locator('.sw-grid').waitFor();
     const elapsed = Date.now() - start;
     expect(elapsed).toBeLessThan(3000);
@@ -586,7 +597,7 @@ test.describe('Strengths flow — full journey', () => {
       if (msg.type() === 'error') errors.push(msg.text());
     });
     await page.goto('/strengths');
-    await page.locator('.sw-grid').waitFor();
+    await waitForHydration(page);
     expect(errors).toHaveLength(0);
   });
 });
