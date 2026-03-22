@@ -526,6 +526,100 @@ test.describe('Strengths flow — feedback step', () => {
   });
 });
 
+// ═══════════════════════════════════════════════════════════════════════════
+// Keyboard Navigation + Focus (ATR-21/27)
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Keyboard Navigation (ATR-21)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/strengths');
+    await waitForHydration(page);
+  });
+
+  test('Tab key can reach a word button', async ({ page }) => {
+    // Tab repeatedly until a word chip receives focus (up to 30 tabs)
+    let focusedRole: string | null = null;
+    for (let i = 0; i < 30; i++) {
+      await page.keyboard.press('Tab');
+      focusedRole = await page.evaluate(() => {
+        const el = document.activeElement;
+        return el ? el.getAttribute('role') : null;
+      });
+      if (focusedRole === 'checkbox') break;
+    }
+    expect(focusedRole).toBe('checkbox');
+  });
+
+  test('Space key selects a focused word button (aria-checked becomes true)', async ({ page }) => {
+    // Tab until a word chip is focused
+    for (let i = 0; i < 30; i++) {
+      await page.keyboard.press('Tab');
+      const role = await page.evaluate(() => document.activeElement?.getAttribute('role'));
+      if (role === 'checkbox') break;
+    }
+
+    // Capture which button is focused and its initial state
+    const initialChecked = await page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      return el?.getAttribute('aria-checked');
+    });
+    expect(initialChecked).toBe('false');
+
+    // Press Space to select
+    await page.keyboard.press('Space');
+
+    const afterChecked = await page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      return el?.getAttribute('aria-checked');
+    });
+    expect(afterChecked).toBe('true');
+  });
+
+  test('Space key deselects a focused word button that is already selected', async ({ page }) => {
+    // Tab until a word chip is focused
+    for (let i = 0; i < 30; i++) {
+      await page.keyboard.press('Tab');
+      const role = await page.evaluate(() => document.activeElement?.getAttribute('role'));
+      if (role === 'checkbox') break;
+    }
+
+    // Select with Space
+    await page.keyboard.press('Space');
+    const afterSelect = await page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      return el?.getAttribute('aria-checked');
+    });
+    expect(afterSelect).toBe('true');
+
+    // Deselect with Space (need brief wait for the 200ms deselect timeout)
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(300);
+    // After deselect the button may have lost focus (DOM update); check island count instead
+    const progressBar = page.locator('.sw-island__bar[role="progressbar"]');
+    await expect(progressBar).toHaveAttribute('aria-valuenow', '0');
+  });
+
+  test('focused word button has a visible focus-visible outline', async ({ page }) => {
+    // Tab until a word chip is focused
+    for (let i = 0; i < 30; i++) {
+      await page.keyboard.press('Tab');
+      const role = await page.evaluate(() => document.activeElement?.getAttribute('role'));
+      if (role === 'checkbox') break;
+    }
+
+    // Evaluate the computed outline style on the focused element
+    const outlineWidth = await page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      if (!el) return '0px';
+      return window.getComputedStyle(el).outlineWidth;
+    });
+
+    // A non-zero outline width confirms the focus-visible style is applied
+    expect(outlineWidth).not.toBe('0px');
+    expect(outlineWidth).not.toBe('');
+  });
+});
+
 test.describe('Strengths flow — full journey', () => {
   test('completes the full 5-step flow without errors', async ({ page }) => {
     await completeWordSelection(page);
