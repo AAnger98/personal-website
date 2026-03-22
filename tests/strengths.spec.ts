@@ -340,6 +340,77 @@ test.describe('Strengths — Responsive Layout', () => {
   });
 });
 
+test.describe('Strengths — Mobile Grid (ATR-19)', () => {
+  test('grid uses 2 columns at 375px viewport', async ({ browser }) => {
+    const mobileContext = await browser.newContext({ viewport: { width: 375, height: 812 } });
+    const mobilePage = await mobileContext.newPage();
+    await mobilePage.goto('/strengths', { waitUntil: 'domcontentloaded' });
+    await mobilePage.waitForSelector('.sw-grid');
+
+    const columns = await mobilePage.locator('.sw-grid').evaluate((el) => {
+      return getComputedStyle(el).gridTemplateColumns;
+    });
+
+    // At 375px (<=480px breakpoint), grid should be 2 columns
+    // gridTemplateColumns will be "Xpx Xpx" — two space-separated values
+    const parts = columns.trim().split(/\s+/);
+    expect(parts.length).toBe(2);
+
+    await mobileContext.close();
+  });
+
+  test('island is visible on mobile (375px) after page load', async ({ browser }) => {
+    const mobileContext = await browser.newContext({ viewport: { width: 375, height: 812 } });
+    const mobilePage = await mobileContext.newPage();
+    await mobilePage.goto('/strengths', { waitUntil: 'domcontentloaded' });
+    await mobilePage.waitForSelector('.sw-island');
+
+    const island = mobilePage.locator('.sw-island');
+    await expect(island).toBeVisible();
+
+    await mobileContext.close();
+  });
+});
+
+test.describe('Strengths — At-Max Click Noop (ATR-19)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/strengths');
+    await waitForHydration(page);
+  });
+
+  test('maxed buttons have opacity ~0.5', async ({ page }) => {
+    const chips = await pickableChips(page, 5);
+    for (const chip of chips) {
+      await chip.click();
+    }
+    const maxedChip = page.locator('.sw-chip--maxed').first();
+    await expect(maxedChip).toBeVisible();
+
+    const opacity = await maxedChip.evaluate((el) => getComputedStyle(el).opacity);
+    const opacityNum = parseFloat(opacity);
+    expect(opacityNum).toBeGreaterThanOrEqual(0.4);
+    expect(opacityNum).toBeLessThanOrEqual(0.6);
+  });
+
+  test('clicking a maxed button does not change the selection count', async ({ page }) => {
+    const chips = await pickableChips(page, 5);
+    for (const chip of chips) {
+      await chip.click();
+    }
+
+    const counter = page.locator('.sw-counter__num');
+    const countBefore = await counter.textContent();
+    expect(countBefore?.trim()).toBe('5');
+
+    // Click a maxed (unselected, disabled) button
+    const maxedChip = page.locator('.sw-chip--maxed').first();
+    await maxedChip.click({ force: true });
+
+    const countAfter = await counter.textContent();
+    expect(countAfter?.trim()).toBe('5');
+  });
+});
+
 test.describe('Strengths — Timer', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
