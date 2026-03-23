@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StrengthsFlow from '../components/strengths/StrengthsFlow';
 import '../styles/strengths.css';
+import '../styles/strengths-theme.css';
 
 const csvPath = fileURLToPath(new URL('../../strengths_temp/wordlist.csv', import.meta.url));
 let csvContent: string;
@@ -32,6 +33,7 @@ const words = csvContent
 <BaseLayout
   title="Strengths Identifier"
   description="Discover your core strengths through an instinct-driven word selection exercise."
+  bodyClass="strengths-page"
 >
   <StrengthsFlow words={words} client:load />
 </BaseLayout>

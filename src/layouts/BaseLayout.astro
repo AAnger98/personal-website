@@ -8,9 +8,10 @@ interface Props {
   title: string;
   description?: string;  // falls back to siteConfig.description
   canonical?: string;    // falls back to siteConfig.siteUrl + Astro.url.pathname
+  bodyClass?: string;    // optional class added to <body> for page-specific theming
 }
 
-const { title, description, canonical } = Astro.props;
+const { title, description, canonical, bodyClass } = Astro.props;
 const pageTitle = `${title} — ${siteConfig.name}`;
 const metaDescription = description ?? siteConfig.description;
 const canonicalUrl = canonical ?? `${siteConfig.siteUrl}${Astro.url.pathname}`;
@@ -36,7 +37,7 @@ const canonicalUrl = canonical ?? `${siteConfig.siteUrl}${Astro.url.pathname}`;
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content={siteConfig.name} />
   </head>
-  <body>
+  <body class={bodyClass}>
     <a href="#main-content" class="skip-to-content">Skip to content</a>
     <div class="page-wrapper">
       <Header />
