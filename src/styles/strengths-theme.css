@@ -497,6 +497,22 @@ html:has(body.strengths-page) {
   color: var(--st-text-muted);
 }
 
+/* -- Pitch examples (themed) -- */
+.strengths-page .spi-examples__toggle {
+  color: var(--st-accent);
+}
+.strengths-page .spi-example {
+  border-color: var(--st-border);
+  background: var(--st-surface);
+  border-radius: var(--st-radius);
+}
+.strengths-page .spi-example__strengths {
+  color: var(--st-text-secondary);
+}
+.strengths-page .spi-example__text {
+  color: var(--st-text-secondary);
+}
+
 /* ── PDF Preview Step ────────────────────────────────────────────────────── */
 
 .strengths-page .spdf-preview {
