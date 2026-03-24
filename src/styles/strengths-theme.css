@@ -44,7 +44,6 @@
   scroll-padding-top: 14rem;
 }
 
-html.strengths-page,
 html:has(body.strengths-page) {
   scroll-padding-top: 14rem;
 }

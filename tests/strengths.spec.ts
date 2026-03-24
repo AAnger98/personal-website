@@ -590,3 +590,87 @@ test.describe('Strengths flow — full journey', () => {
     expect(errors).toHaveLength(0);
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Mobile Responsiveness — Word Selection Step (ATR-19)
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Mobile (375px iPhone SE)', () => {
+  test.use({ viewport: { width: 375, height: 667 } });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
+  });
+
+  test('grid shows 2 columns at 375px width', async ({ page }) => {
+    const grid = page.locator('.sw-grid');
+    const gridColumns = await grid.evaluate(
+      (el) => window.getComputedStyle(el).gridTemplateColumns
+    );
+    // repeat(2, 1fr) resolves to two equal pixel values, e.g. "150px 150px"
+    const columnValues = gridColumns.trim().split(/\s+/);
+    expect(columnValues).toHaveLength(2);
+  });
+
+  test('word chips are clickable and toggle correctly at 375px', async ({ page }) => {
+    const chip = wordChips(page).first();
+
+    // Verify initial state
+    await expect(chip).toHaveAttribute('aria-checked', 'false');
+    const textBefore = await chip.textContent();
+    expect(textBefore?.trim()).toMatch(/^☐/);
+
+    // Click to select
+    await chip.click();
+    await expect(chip).toHaveAttribute('aria-checked', 'true');
+    const textAfter = await chip.textContent();
+    expect(textAfter?.trim()).toMatch(/^☑/);
+
+    // Click to deselect
+    await chip.click();
+    await expect(chip).toHaveAttribute('aria-checked', 'false');
+  });
+
+  test('sticky selection island is visible and functional at 375px', async ({ page }) => {
+    // Island should be visible
+    const island = page.locator('.sw-island');
+    await expect(island).toBeVisible();
+
+    // Select a word and verify it appears in the island
+    const chip = wordChips(page).first();
+    const chipText = await chip.textContent();
+    const wordName = chipText?.replace(/^[☐☑]\s*/, '').trim() ?? '';
+    await chip.click();
+
+    const islandChipLabel = page.locator('.sw-island__chip-label');
+    await expect(islandChipLabel.first()).toContainText(wordName);
+
+    // Counter should update
+    const counter = page.locator('.sw-counter__num');
+    await expect(counter).toHaveText('1');
+
+    // Remove via island close button
+    const closeBtn = page.locator('.sw-island__chip-close').first();
+    await closeBtn.click();
+    await expect(chip).toHaveAttribute('aria-checked', 'false');
+    await expect(counter).toHaveText('0');
+  });
+});
+
+test.describe('Strengths — Tablet (768px)', () => {
+  test.use({ viewport: { width: 768, height: 1024 } });
+
+  test('grid shows 3 columns at 768px width', async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
+
+    const grid = page.locator('.sw-grid');
+    const gridColumns = await grid.evaluate(
+      (el) => window.getComputedStyle(el).gridTemplateColumns
+    );
+    // repeat(3, 1fr) resolves to three equal pixel values
+    const columnValues = gridColumns.trim().split(/\s+/);
+    expect(columnValues).toHaveLength(3);
+  });
+});
