@@ -674,3 +674,138 @@ test.describe('Strengths — Tablet (768px)', () => {
     expect(columnValues).toHaveLength(3);
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Word Reordering — Move-up / Move-down buttons (ATR-18)
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Word Reordering', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
+  });
+
+  test('island chips have move-up and move-down buttons', async ({ page }) => {
+    // Select 3 words
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 3; i++) {
+      await chips.nth(i).click();
+    }
+
+    const moveUp = page.locator('.sw-island__chip-move-up');
+    const moveDown = page.locator('.sw-island__chip-move-down');
+
+    await expect(moveUp).toHaveCount(3);
+    await expect(moveDown).toHaveCount(3);
+
+    // First chip: move-up should be disabled
+    await expect(moveUp.first()).toBeDisabled();
+    // Last chip: move-down should be disabled
+    await expect(moveDown.last()).toBeDisabled();
+  });
+
+  test('clicking move-down swaps chip with next chip', async ({ page }) => {
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 3; i++) {
+      await chips.nth(i).click();
+    }
+
+    // Get initial order
+    const labels = page.locator('.sw-island__chip-label');
+    const initialFirst = await labels.nth(0).textContent();
+    const initialSecond = await labels.nth(1).textContent();
+
+    // Click move-down on the first chip
+    const moveDown = page.locator('.sw-island__chip-move-down');
+    await moveDown.first().click();
+
+    // After swap, first should now be what was second, and second should be what was first
+    const newFirst = await labels.nth(0).textContent();
+    const newSecond = await labels.nth(1).textContent();
+    expect(newFirst).toBe(initialSecond);
+    expect(newSecond).toBe(initialFirst);
+  });
+
+  test('clicking move-up swaps chip with previous chip', async ({ page }) => {
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 3; i++) {
+      await chips.nth(i).click();
+    }
+
+    // Get initial order
+    const labels = page.locator('.sw-island__chip-label');
+    const initialFirst = await labels.nth(0).textContent();
+    const initialSecond = await labels.nth(1).textContent();
+
+    // Click move-up on the second chip
+    const moveUp = page.locator('.sw-island__chip-move-up');
+    await moveUp.nth(1).click();
+
+    // Second chip should now be first
+    const newFirst = await labels.nth(0).textContent();
+    const newSecond = await labels.nth(1).textContent();
+    expect(newFirst).toBe(initialSecond);
+    expect(newSecond).toBe(initialFirst);
+  });
+
+  test('reordered words persist through to reflection step', async ({ page }) => {
+    // Select 5 words
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 5; i++) {
+      await chips.nth(i).click();
+    }
+
+    // Get initial first two labels
+    const labels = page.locator('.sw-island__chip-label');
+    const originalFirst = (await labels.nth(0).textContent())?.replace(/[☑☐]\s*/, '').trim();
+    const originalSecond = (await labels.nth(1).textContent())?.replace(/[☑☐]\s*/, '').trim();
+
+    // Swap first two via move-down on first
+    const moveDown = page.locator('.sw-island__chip-move-down');
+    await moveDown.first().click();
+
+    // Click CONTINUE to go to reflection step
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+
+    // Check reflection step headers show new order
+    const reflectionHeaders = page.locator('.sr-word-header');
+    const firstHeader = await reflectionHeaders.nth(0).textContent();
+    const secondHeader = await reflectionHeaders.nth(1).textContent();
+
+    // After swap: originalSecond should be first, originalFirst should be second
+    expect(firstHeader).toContain(originalSecond);
+    expect(secondHeader).toContain(originalFirst);
+  });
+
+  test('reorder buttons work on mobile viewport', async ({ page, browser }) => {
+    const mobileContext = await browser.newContext({ viewport: { width: 375, height: 812 } });
+    const mobilePage = await mobileContext.newPage();
+    await mobilePage.goto('/strengths');
+    await mobilePage.waitForSelector('.sw-grid');
+
+    // Select 2 words
+    const chips = mobilePage.locator('.sw-grid .sw-chip');
+    await chips.nth(0).click();
+    await chips.nth(1).click();
+
+    // Verify move-down is visible
+    const moveDown = mobilePage.locator('.sw-island__chip-move-down');
+    await expect(moveDown.first()).toBeVisible();
+
+    // Get initial order
+    const labels = mobilePage.locator('.sw-island__chip-label');
+    const initialFirst = await labels.nth(0).textContent();
+    const initialSecond = await labels.nth(1).textContent();
+
+    // Click move-down on first
+    await moveDown.first().click();
+
+    // Verify swap worked
+    const newFirst = await labels.nth(0).textContent();
+    const newSecond = await labels.nth(1).textContent();
+    expect(newFirst).toBe(initialSecond);
+    expect(newSecond).toBe(initialFirst);
+
+    await mobileContext.close();
+  });
+});
