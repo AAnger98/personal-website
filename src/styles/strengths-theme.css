@@ -1,0 +1,621 @@
+/* ─── Strengths Theme ────────────────────────────────────────────────────────
+   Clean, modern theme for the /strengths page.
+   Overrides Terminal Deco aesthetics — no gold borders, no scanlines, no
+   monospace body text, no Art Deco double-line borders.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* ── Theme custom properties (scoped to .strengths-page) ─────────────────── */
+
+.strengths-page {
+  --st-bg: #111827;
+  --st-surface: #1f2937;
+  --st-surface-hover: #374151;
+  --st-border: #374151;
+  --st-border-light: #4b5563;
+  --st-text: #f9fafb;
+  --st-text-secondary: #9ca3af;
+  --st-text-muted: #6b7280;
+  --st-accent: #6366f1;
+  --st-accent-hover: #818cf8;
+  --st-accent-subtle: rgba(99, 102, 241, 0.12);
+  --st-success: #34d399;
+  --st-success-subtle: rgba(52, 211, 153, 0.12);
+  --st-warning: #fbbf24;
+  --st-warning-subtle: rgba(251, 191, 36, 0.12);
+  --st-danger: #f87171;
+  --st-danger-subtle: rgba(248, 113, 113, 0.12);
+  --st-radius: 8px;
+  --st-radius-sm: 4px;
+  --st-radius-lg: 12px;
+  --st-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --st-font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --st-transition: 150ms ease;
+}
+
+/* ── Page-level overrides ────────────────────────────────────────────────── */
+
+.strengths-page {
+  background-color: var(--st-bg);
+  color: var(--st-text);
+  font-family: var(--st-font);
+  /* Account for sticky panel when browser scrolls elements into view */
+  scroll-padding-top: 14rem;
+}
+
+html:has(body.strengths-page) {
+  scroll-padding-top: 14rem;
+}
+
+/* Kill the CRT scanline overlay on this page */
+.strengths-page .page-wrapper::before {
+  display: none;
+}
+
+/* ── Header overrides — strip Terminal Deco from the site header ─────────── */
+
+.strengths-page .site-header {
+  border-bottom: 1px solid var(--st-border);
+  background-color: var(--st-bg);
+}
+
+.strengths-page .site-name {
+  font-family: var(--st-font-heading);
+  font-weight: 800;
+}
+
+.strengths-page .nav-toggle .bar {
+  background: var(--st-text-secondary);
+}
+
+/* ── Footer overrides ────────────────────────────────────────────────────── */
+
+.strengths-page .site-footer {
+  border-top: 1px solid var(--st-border);
+  background-color: var(--st-bg);
+}
+
+.strengths-page .footer-divider {
+  color: var(--st-text-muted);
+}
+
+.strengths-page .footer-text {
+  color: var(--st-text-secondary);
+}
+
+.strengths-page .footer-cta {
+  color: var(--st-text);
+}
+
+/* ── Step Progress bar ───────────────────────────────────────────────────── */
+
+.strengths-page .sp-root {
+  border-bottom: 1px solid var(--st-border);
+}
+
+.strengths-page .sp-step__num {
+  font-family: var(--st-font);
+  color: var(--st-text-muted);
+}
+
+.strengths-page .sp-step--current .sp-step__num {
+  color: var(--st-accent);
+}
+
+.strengths-page .sp-step--done .sp-step__num {
+  color: var(--st-success);
+}
+
+.strengths-page .sp-step__label {
+  font-family: var(--st-font);
+  color: var(--st-text-secondary);
+}
+
+.strengths-page .sp-restart {
+  font-family: var(--st-font);
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius-sm);
+  color: var(--st-text-secondary);
+  transition: all var(--st-transition);
+}
+
+.strengths-page .sp-restart:hover {
+  border-color: var(--st-danger);
+  color: var(--st-danger);
+  opacity: 1;
+}
+
+.strengths-page .sp-meta__count {
+  font-family: var(--st-font);
+  color: var(--st-text-secondary);
+}
+
+/* ── Word Selection header ───────────────────────────────────────────────── */
+
+.strengths-page .sw-header {
+  border-bottom: 1px solid var(--st-border);
+}
+
+.strengths-page .sw-label {
+  font-family: var(--st-font);
+  color: var(--st-accent);
+  letter-spacing: 0.08em;
+}
+
+.strengths-page .sw-title {
+  font-family: var(--st-font-heading);
+  font-weight: 800;
+}
+
+.strengths-page .sw-desc {
+  font-family: var(--st-font);
+  color: var(--st-text-secondary);
+}
+
+/* ── Timer ───────────────────────────────────────────────────────────────── */
+
+.strengths-page .sw-timer__label {
+  font-family: var(--st-font);
+  color: var(--st-text-secondary);
+}
+
+.strengths-page .sw-timer__display {
+  font-family: var(--st-font);
+  color: var(--st-text);
+  transition: color var(--st-transition);
+}
+
+.strengths-page .sw-timer--warn .sw-timer__label,
+.strengths-page .sw-timer--warn .sw-timer__display {
+  color: var(--st-warning);
+}
+
+.strengths-page .sw-timer__warning {
+  font-family: var(--st-font);
+  color: var(--st-warning);
+}
+
+/* ── Counter ─────────────────────────────────────────────────────────────── */
+
+.strengths-page .sw-counter {
+  font-family: var(--st-font);
+}
+
+.strengths-page .sw-counter__num {
+  color: var(--st-accent);
+}
+
+.strengths-page .sw-counter__num--full {
+  color: var(--st-success);
+}
+
+/* ── Word chips ──────────────────────────────────────────────────────────── */
+
+.strengths-page .sw-chip {
+  font-family: var(--st-font);
+  font-size: 1.15rem;
+  color: var(--st-text);
+  background: var(--st-surface);
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius);
+  padding: 1rem 1.5rem;
+  min-height: 56px;
+  transition: all var(--st-transition);
+}
+
+.strengths-page .sw-chip:hover {
+  border-color: var(--st-accent);
+  color: var(--st-text);
+  background-color: var(--st-accent-subtle);
+}
+
+.strengths-page .sw-chip--selected {
+  border: 2px solid var(--st-accent);
+  color: var(--st-text);
+  font-weight: 600;
+  background-color: var(--st-accent-subtle);
+}
+
+.strengths-page .sw-chip--selected:hover {
+  border-color: var(--st-danger);
+  color: var(--st-text);
+  background-color: var(--st-danger-subtle);
+}
+
+.strengths-page .sw-chip:focus-visible {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 2px;
+}
+
+.strengths-page .sw-chip--maxed {
+  opacity: 0.4;
+}
+
+.strengths-page .sw-chip--maxed:hover {
+  border-color: var(--st-border);
+  color: var(--st-text-muted);
+  background-color: var(--st-surface);
+}
+
+/* ── Footer / actions bar ────────────────────────────────────────────────── */
+
+.strengths-page .sw-footer {
+  border-top: 1px solid var(--st-border);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+
+.strengths-page .sw-btn {
+  font-family: var(--st-font);
+  font-weight: 600;
+  border: 2px solid var(--st-accent);
+  color: var(--st-accent);
+  border-radius: var(--st-radius);
+  transition: all var(--st-transition);
+}
+
+.strengths-page .sw-btn:hover {
+  background-color: var(--st-accent);
+  color: white;
+}
+
+.strengths-page .sw-btn--inactive {
+  border-color: var(--st-border);
+  color: var(--st-text-muted);
+  opacity: 0.5;
+}
+
+.strengths-page .sw-btn--inactive:hover {
+  background-color: transparent;
+  color: var(--st-text-muted);
+}
+
+.strengths-page .sw-btn--ghost {
+  border-color: var(--st-border);
+  color: var(--st-text-secondary);
+}
+
+.strengths-page .sw-btn--ghost:hover {
+  background-color: var(--st-surface-hover);
+  color: var(--st-text);
+}
+
+/* ── Timeout wall ────────────────────────────────────────────────────────── */
+
+.strengths-page .sw-timeout__frame {
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius-lg);
+  background-color: var(--st-surface);
+}
+
+.strengths-page .sw-timeout__title {
+  font-family: var(--st-font-heading);
+  font-weight: 800;
+  color: var(--st-warning);
+}
+
+.strengths-page .sw-timeout__message {
+  font-family: var(--st-font);
+}
+
+.strengths-page .sw-timeout__sub {
+  font-family: var(--st-font);
+  color: var(--st-text-secondary);
+}
+
+/* ── Definition preview bar ──────────────────────────────────────────────── */
+
+.strengths-page .sw-definition-bar {
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  background-color: var(--st-surface);
+  border: 1px solid var(--st-border);
+  border-radius: 0;
+  border-top: none;
+  height: auto;
+  min-height: 4rem;
+  padding: 1rem var(--space-md);
+  margin-bottom: 0;
+}
+
+.strengths-page .sw-definition-bar__content {
+  font-family: var(--st-font);
+  font-size: 1rem;
+  line-height: 1.5;
+  animation-timing-function: ease;
+}
+
+.strengths-page .sw-definition-bar__word {
+  color: var(--st-accent);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.strengths-page .sw-definition-bar__sep {
+  color: var(--st-text-muted);
+}
+
+.strengths-page .sw-definition-bar__text {
+  color: var(--st-text-secondary);
+  font-size: 1.05rem;
+}
+
+.strengths-page .sw-definition-bar__prompt {
+  color: var(--st-text-muted);
+  font-size: 1.05rem;
+}
+
+/* ── Selection island ────────────────────────────────────────────────────── */
+
+.strengths-page .sw-island {
+  background-color: var(--st-bg);
+  border-bottom: 1px solid var(--st-border);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.strengths-page .sw-island__chip {
+  font-family: var(--st-font);
+  color: var(--st-accent);
+  background-color: var(--st-accent-subtle);
+  border: 1px solid var(--st-accent);
+  border-radius: var(--st-radius-sm);
+  height: 44px;
+  box-sizing: border-box;
+}
+
+.strengths-page .sw-island__chip-close {
+  font-family: var(--st-font);
+  transition: all var(--st-transition);
+}
+
+.strengths-page .sw-island__chip-close:focus-visible {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 2px;
+}
+
+.strengths-page .sw-island__chip-close:hover {
+  color: var(--st-danger);
+}
+
+.strengths-page .sw-island__empty-slot {
+  border: 1px dashed var(--st-border);
+  border-radius: var(--st-radius-sm);
+  opacity: 0.3;
+  height: 44px;
+  box-sizing: border-box;
+}
+
+.strengths-page .sw-island__progress-bar {
+  background-color: var(--st-surface);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.strengths-page .sw-island__progress-bar::after {
+  background-color: var(--st-accent);
+  transition: width 200ms ease;
+  border-radius: 2px;
+}
+
+.strengths-page .sw-island__progress-text {
+  font-family: var(--st-font);
+  color: var(--st-text-secondary);
+}
+
+/* ── Reflection Step ─────────────────────────────────────────────────────── */
+
+.strengths-page .sr-word-block {
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius-lg);
+  background-color: var(--st-surface);
+}
+
+.strengths-page .sr-word-header {
+  font-family: var(--st-font-heading);
+  font-weight: 700;
+  color: var(--st-text);
+}
+
+.strengths-page .sr-word-num {
+  color: var(--st-accent);
+}
+
+.strengths-page .sr-label {
+  font-family: var(--st-font);
+  color: var(--st-text-secondary);
+}
+
+.strengths-page .sr-textarea {
+  font-family: var(--st-font);
+  color: var(--st-text);
+  background: var(--st-surface);
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius);
+  transition: border-color var(--st-transition);
+}
+
+.strengths-page .sr-textarea:focus {
+  border-color: var(--st-accent);
+}
+
+.strengths-page .sr-textarea::placeholder {
+  color: var(--st-text-muted);
+  opacity: 1;
+}
+
+.strengths-page .sr-nudge {
+  font-family: var(--st-font);
+  color: var(--st-warning);
+}
+
+/* ── Pitch Step ──────────────────────────────────────────────────────────── */
+
+.strengths-page .spi-anchor {
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius-lg);
+  background-color: var(--st-surface);
+}
+
+.strengths-page .spi-anchor-label {
+  font-family: var(--st-font);
+  color: var(--st-accent);
+  letter-spacing: 0.08em;
+}
+
+.strengths-page .spi-anchor-word {
+  font-family: var(--st-font-heading);
+  font-weight: 800;
+}
+
+.strengths-page .spi-label {
+  font-family: var(--st-font);
+  color: var(--st-text-secondary);
+}
+
+.strengths-page .spi-textarea {
+  font-family: var(--st-font);
+  color: var(--st-text);
+  background: var(--st-surface);
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius);
+  transition: border-color var(--st-transition);
+}
+
+.strengths-page .spi-textarea:focus {
+  border-color: var(--st-accent);
+}
+
+.strengths-page .spi-textarea::placeholder {
+  color: var(--st-text-muted);
+  opacity: 1;
+}
+
+.strengths-page .spi-char-count {
+  font-family: var(--st-font);
+  color: var(--st-text-muted);
+}
+
+/* -- Pitch examples (themed) -- */
+.strengths-page .spi-examples__toggle {
+  color: var(--st-accent);
+}
+.strengths-page .spi-example {
+  border-color: var(--st-border);
+  background: var(--st-surface);
+  border-radius: var(--st-radius);
+}
+.strengths-page .spi-example__strengths {
+  color: var(--st-text-secondary);
+}
+.strengths-page .spi-example__text {
+  color: var(--st-text-secondary);
+}
+
+/* ── PDF Preview Step ────────────────────────────────────────────────────── */
+
+.strengths-page .spdf-preview {
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius-lg);
+  background-color: var(--st-surface);
+}
+
+.strengths-page .spdf-section-title {
+  font-family: var(--st-font);
+  color: var(--st-accent);
+  letter-spacing: 0.08em;
+}
+
+.strengths-page .spdf-word {
+  font-family: var(--st-font);
+}
+
+.strengths-page .spdf-pitch {
+  font-family: var(--st-font);
+}
+
+.strengths-page .spdf-error {
+  font-family: var(--st-font);
+  color: var(--st-danger);
+}
+
+/* ── Feedback Step ───────────────────────────────────────────────────────── */
+
+.strengths-page .sfb-question-label {
+  font-family: var(--st-font);
+}
+
+.strengths-page .sfb-optional {
+  color: var(--st-text-muted);
+}
+
+.strengths-page .sfb-rating-btn {
+  font-family: var(--st-font);
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius-sm);
+  transition: all var(--st-transition);
+}
+
+.strengths-page .sfb-rating-btn:hover {
+  border-color: var(--st-accent);
+  color: var(--st-accent);
+}
+
+.strengths-page .sfb-rating-btn--selected {
+  border: 2px solid var(--st-accent);
+  color: var(--st-accent);
+  background-color: var(--st-accent-subtle);
+}
+
+.strengths-page .sfb-rating-labels {
+  font-family: var(--st-font);
+  color: var(--st-text-muted);
+}
+
+.strengths-page .sfb-textarea {
+  font-family: var(--st-font);
+  color: var(--st-text);
+  background: var(--st-surface);
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius);
+}
+
+.strengths-page .sfb-textarea:focus {
+  border-color: var(--st-accent);
+}
+
+.strengths-page .sfb-textarea::placeholder {
+  color: var(--st-text-muted);
+  opacity: 1;
+}
+
+/* ── Completion screen ───────────────────────────────────────────────────── */
+
+.strengths-page .sfb-complete {
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius-lg);
+  background-color: var(--st-surface);
+}
+
+.strengths-page .sfb-complete__title {
+  font-family: var(--st-font-heading);
+  font-weight: 800;
+  color: var(--st-success);
+}
+
+.strengths-page .sfb-complete__sub {
+  font-family: var(--st-font);
+  color: var(--st-text-secondary);
+}
+
+/* ── Selection Island — reorder buttons ────────────────────────────────── */
+
+.strengths-page .sw-island__chip-move-up,
+.strengths-page .sw-island__chip-move-down {
+  color: var(--st-text-secondary);
+}
+.strengths-page .sw-island__chip-move-up:hover:not(:disabled),
+.strengths-page .sw-island__chip-move-down:hover:not(:disabled) {
+  color: var(--st-accent);
+}

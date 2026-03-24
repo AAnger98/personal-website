@@ -2,12 +2,14 @@ interface SelectionIslandProps {
   selectedWords: Array<{ word: string; definition: string }>;
   maxSelections: number;
   onDeselect: (word: string) => void;
+  onReorder: (fromIndex: number, toIndex: number) => void;
 }
 
 export default function SelectionIsland({
   selectedWords,
   maxSelections,
   onDeselect,
+  onReorder,
 }: SelectionIslandProps) {
   const count = selectedWords.length;
   const isFull = count >= maxSelections;
@@ -23,9 +25,27 @@ export default function SelectionIsland({
   return (
     <div className="sw-island" aria-label="Selected words">
       <div className="sw-island__slots">
-        {selectedWords.map(({ word }) => (
+        {selectedWords.map(({ word }, index) => (
           <span key={word} className="sw-island__chip">
+            <button
+              className="sw-island__chip-move-up"
+              onClick={() => onReorder(index, index - 1)}
+              disabled={index === 0}
+              aria-label={`Move ${word} up`}
+              type="button"
+            >
+              {'\u25B2'}
+            </button>
             <span className="sw-island__chip-label">{'\u2611'} {word}</span>
+            <button
+              className="sw-island__chip-move-down"
+              onClick={() => onReorder(index, index + 1)}
+              disabled={index === selectedWords.length - 1}
+              aria-label={`Move ${word} down`}
+              type="button"
+            >
+              {'\u25BC'}
+            </button>
             <button
               className="sw-island__chip-close"
               onClick={() => onDeselect(word)}

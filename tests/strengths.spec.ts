@@ -37,6 +37,12 @@ async function completeWordSelection(page: Page) {
   await page.getByRole('button', { name: /CONTINUE/i }).click();
 }
 
+/** Navigate to the pitch step (step 3). */
+async function goToPitch(page: Page) {
+  await completeWordSelection(page);
+  await page.getByRole('button', { name: /CONTINUE/i }).click();
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // Word Selection Step — Grid, Toggle, Island, Definitions
 // ═══════════════════════════════════════════════════════════════════════════
@@ -422,11 +428,6 @@ test.describe('Strengths flow — reflection step', () => {
 });
 
 test.describe('Strengths flow — pitch step', () => {
-  async function goToPitch(page: Page) {
-    await completeWordSelection(page);
-    await page.getByRole('button', { name: /CONTINUE/i }).click();
-  }
-
   test('pitch step shows #1 strength word prominently', async ({ page }) => {
     await goToPitch(page);
     await expect(page.locator('.spi-anchor-word')).toBeVisible();
@@ -447,6 +448,34 @@ test.describe('Strengths flow — pitch step', () => {
     await goToPitch(page);
     await page.getByRole('button', { name: /CONTINUE/i }).click();
     await expect(page.getByText('4 of 5', { exact: true })).toBeVisible();
+  });
+});
+
+test.describe('Strengths — Pitch Examples', () => {
+  test('pitch step shows 2-3 example pitches', async ({ page }) => {
+    await goToPitch(page);
+    await expect(page.locator('.spi-examples')).toBeVisible();
+    const count = await page.locator('.spi-example').count();
+    expect(count).toBeGreaterThanOrEqual(2);
+    expect(count).toBeLessThanOrEqual(3);
+  });
+
+  test('each example has a label, strengths, and pitch text', async ({ page }) => {
+    await goToPitch(page);
+    const first = page.locator('.spi-example').first();
+    await expect(first.locator('.spi-example__label')).not.toBeEmpty();
+    await expect(first.locator('.spi-example__strengths')).not.toBeEmpty();
+    await expect(first.locator('.spi-example__text')).not.toBeEmpty();
+  });
+
+  test('examples can be collapsed and expanded via details/summary', async ({ page }) => {
+    await goToPitch(page);
+    const details = page.locator('details.spi-examples');
+    await expect(details).toHaveAttribute('open', '');
+    await page.locator('.spi-examples__toggle').click();
+    await expect(page.locator('.spi-examples__list')).toBeHidden();
+    await page.locator('.spi-examples__toggle').click();
+    await expect(page.locator('.spi-examples__list')).toBeVisible();
   });
 });
 
@@ -588,5 +617,224 @@ test.describe('Strengths flow — full journey', () => {
     await page.goto('/strengths');
     await page.locator('.sw-grid').waitFor();
     expect(errors).toHaveLength(0);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Mobile Responsiveness — Word Selection Step (ATR-19)
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Mobile (375px iPhone SE)', () => {
+  test.use({ viewport: { width: 375, height: 667 } });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
+  });
+
+  test('grid shows 2 columns at 375px width', async ({ page }) => {
+    const grid = page.locator('.sw-grid');
+    const gridColumns = await grid.evaluate(
+      (el) => window.getComputedStyle(el).gridTemplateColumns
+    );
+    // repeat(2, 1fr) resolves to two equal pixel values, e.g. "150px 150px"
+    const columnValues = gridColumns.trim().split(/\s+/);
+    expect(columnValues).toHaveLength(2);
+  });
+
+  test('word chips are clickable and toggle correctly at 375px', async ({ page }) => {
+    const chip = wordChips(page).first();
+
+    // Verify initial state
+    await expect(chip).toHaveAttribute('aria-checked', 'false');
+    const textBefore = await chip.textContent();
+    expect(textBefore?.trim()).toMatch(/^☐/);
+
+    // Click to select
+    await chip.click();
+    await expect(chip).toHaveAttribute('aria-checked', 'true');
+    const textAfter = await chip.textContent();
+    expect(textAfter?.trim()).toMatch(/^☑/);
+
+    // Click to deselect
+    await chip.click();
+    await expect(chip).toHaveAttribute('aria-checked', 'false');
+  });
+
+  test('sticky selection island is visible and functional at 375px', async ({ page }) => {
+    // Island should be visible
+    const island = page.locator('.sw-island');
+    await expect(island).toBeVisible();
+
+    // Select a word and verify it appears in the island
+    const chip = wordChips(page).first();
+    const chipText = await chip.textContent();
+    const wordName = chipText?.replace(/^[☐☑]\s*/, '').trim() ?? '';
+    await chip.click();
+
+    const islandChipLabel = page.locator('.sw-island__chip-label');
+    await expect(islandChipLabel.first()).toContainText(wordName);
+
+    // Counter should update
+    const counter = page.locator('.sw-counter__num');
+    await expect(counter).toHaveText('1');
+
+    // Remove via island close button
+    const closeBtn = page.locator('.sw-island__chip-close').first();
+    await closeBtn.click();
+    await expect(chip).toHaveAttribute('aria-checked', 'false');
+    await expect(counter).toHaveText('0');
+  });
+});
+
+test.describe('Strengths — Tablet (768px)', () => {
+  test.use({ viewport: { width: 768, height: 1024 } });
+
+  test('grid shows 3 columns at 768px width', async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
+
+    const grid = page.locator('.sw-grid');
+    const gridColumns = await grid.evaluate(
+      (el) => window.getComputedStyle(el).gridTemplateColumns
+    );
+    // repeat(3, 1fr) resolves to three equal pixel values
+    const columnValues = gridColumns.trim().split(/\s+/);
+    expect(columnValues).toHaveLength(3);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Word Reordering — Move-up / Move-down buttons (ATR-18)
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Word Reordering', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
+  });
+
+  test('island chips have move-up and move-down buttons', async ({ page }) => {
+    // Select 3 words
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 3; i++) {
+      await chips.nth(i).click();
+    }
+
+    const moveUp = page.locator('.sw-island__chip-move-up');
+    const moveDown = page.locator('.sw-island__chip-move-down');
+
+    await expect(moveUp).toHaveCount(3);
+    await expect(moveDown).toHaveCount(3);
+
+    // First chip: move-up should be disabled
+    await expect(moveUp.first()).toBeDisabled();
+    // Last chip: move-down should be disabled
+    await expect(moveDown.last()).toBeDisabled();
+  });
+
+  test('clicking move-down swaps chip with next chip', async ({ page }) => {
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 3; i++) {
+      await chips.nth(i).click();
+    }
+
+    // Get initial order
+    const labels = page.locator('.sw-island__chip-label');
+    const initialFirst = await labels.nth(0).textContent();
+    const initialSecond = await labels.nth(1).textContent();
+
+    // Click move-down on the first chip
+    const moveDown = page.locator('.sw-island__chip-move-down');
+    await moveDown.first().click();
+
+    // After swap, first should now be what was second, and second should be what was first
+    const newFirst = await labels.nth(0).textContent();
+    const newSecond = await labels.nth(1).textContent();
+    expect(newFirst).toBe(initialSecond);
+    expect(newSecond).toBe(initialFirst);
+  });
+
+  test('clicking move-up swaps chip with previous chip', async ({ page }) => {
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 3; i++) {
+      await chips.nth(i).click();
+    }
+
+    // Get initial order
+    const labels = page.locator('.sw-island__chip-label');
+    const initialFirst = await labels.nth(0).textContent();
+    const initialSecond = await labels.nth(1).textContent();
+
+    // Click move-up on the second chip
+    const moveUp = page.locator('.sw-island__chip-move-up');
+    await moveUp.nth(1).click();
+
+    // Second chip should now be first
+    const newFirst = await labels.nth(0).textContent();
+    const newSecond = await labels.nth(1).textContent();
+    expect(newFirst).toBe(initialSecond);
+    expect(newSecond).toBe(initialFirst);
+  });
+
+  test('reordered words persist through to reflection step', async ({ page }) => {
+    // Select 5 words
+    const chips = page.locator('.sw-grid .sw-chip');
+    for (let i = 0; i < 5; i++) {
+      await chips.nth(i).click();
+    }
+
+    // Get initial first two labels
+    const labels = page.locator('.sw-island__chip-label');
+    const originalFirst = (await labels.nth(0).textContent())?.replace(/[☑☐]\s*/, '').trim();
+    const originalSecond = (await labels.nth(1).textContent())?.replace(/[☑☐]\s*/, '').trim();
+
+    // Swap first two via move-down on first
+    const moveDown = page.locator('.sw-island__chip-move-down');
+    await moveDown.first().click();
+
+    // Click CONTINUE to go to reflection step
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+
+    // Check reflection step headers show new order
+    const reflectionHeaders = page.locator('.sr-word-header');
+    const firstHeader = await reflectionHeaders.nth(0).textContent();
+    const secondHeader = await reflectionHeaders.nth(1).textContent();
+
+    // After swap: originalSecond should be first, originalFirst should be second
+    expect(firstHeader).toContain(originalSecond);
+    expect(secondHeader).toContain(originalFirst);
+  });
+
+  test('reorder buttons work on mobile viewport', async ({ page, browser }) => {
+    const mobileContext = await browser.newContext({ viewport: { width: 375, height: 812 } });
+    const mobilePage = await mobileContext.newPage();
+    await mobilePage.goto('/strengths');
+    await mobilePage.waitForSelector('.sw-grid');
+
+    // Select 2 words
+    const chips = mobilePage.locator('.sw-grid .sw-chip');
+    await chips.nth(0).click();
+    await chips.nth(1).click();
+
+    // Verify move-down is visible
+    const moveDown = mobilePage.locator('.sw-island__chip-move-down');
+    await expect(moveDown.first()).toBeVisible();
+
+    // Get initial order
+    const labels = mobilePage.locator('.sw-island__chip-label');
+    const initialFirst = await labels.nth(0).textContent();
+    const initialSecond = await labels.nth(1).textContent();
+
+    // Click move-down on first
+    await moveDown.first().click();
+
+    // Verify swap worked
+    const newFirst = await labels.nth(0).textContent();
+    const newSecond = await labels.nth(1).textContent();
+    expect(newFirst).toBe(initialSecond);
+    expect(newSecond).toBe(initialFirst);
+
+    await mobileContext.close();
   });
 });
