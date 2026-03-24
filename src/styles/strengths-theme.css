@@ -194,13 +194,13 @@ html:has(body.strengths-page) {
 
 .strengths-page .sw-chip {
   font-family: var(--st-font);
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   color: var(--st-text);
   background: var(--st-surface);
   border: 1px solid var(--st-border);
   border-radius: var(--st-radius);
-  padding: 1rem 1.5rem;
-  min-height: 56px;
+  padding: 1.4rem 1.5rem;
+  min-height: 74px;
   transition: all var(--st-transition);
 }
 
@@ -618,4 +618,12 @@ html:has(body.strengths-page) {
 .strengths-page .sw-island__chip-move-up:hover:not(:disabled),
 .strengths-page .sw-island__chip-move-down:hover:not(:disabled) {
   color: var(--st-accent);
+}
+
+/* ── Responsive — small viewport chip padding ────────────────────────────── */
+
+@media (max-width: 480px) {
+  .strengths-page .sw-chip {
+    padding: 1.2rem 1rem;
+  }
 }
