@@ -978,11 +978,16 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0 0.25rem;
+  padding: 0.5rem;
   font-size: 0.65rem;
   line-height: 1;
   opacity: 0.6;
   transition: opacity 0.15s ease;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .sw-island__chip-move-up:hover:not(:disabled),
 .sw-island__chip-move-down:hover:not(:disabled) {
