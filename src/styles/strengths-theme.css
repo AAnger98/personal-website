@@ -379,6 +379,11 @@ html:has(body.strengths-page) {
   color: var(--st-danger);
 }
 
+.strengths-page .sw-island__chip-move-up:focus-visible,
+.strengths-page .sw-island__chip-move-down:focus-visible {
+  outline-color: var(--st-accent);
+}
+
 .strengths-page .sw-island__empty-slot {
   border: 1px dashed var(--st-border);
   border-radius: var(--st-radius-sm);

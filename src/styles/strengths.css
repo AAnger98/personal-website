@@ -998,6 +998,11 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
   opacity: 0.2;
   cursor: default;
 }
+.sw-island__chip-move-up:focus-visible,
+.sw-island__chip-move-down:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
 
 /* ─── Selection Island — responsive ─────────────────────────────────────── */
 
