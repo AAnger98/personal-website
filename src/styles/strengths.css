@@ -808,6 +808,9 @@
   opacity: 0.5;
 }
 
+/* ─── Sticky panel wrapper (themed pages make this sticky) ────────────── */
+/* In the base Terminal Deco theme, the island itself handles sticky */
+
 /* ─── Selection Island ──────────────────────────────────────────────────── */
 
 .sw-island {

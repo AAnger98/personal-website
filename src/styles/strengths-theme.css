@@ -40,6 +40,13 @@
   background-color: var(--st-bg);
   color: var(--st-text);
   font-family: var(--st-font);
+  /* Account for sticky panel when browser scrolls elements into view */
+  scroll-padding-top: 14rem;
+}
+
+html.strengths-page,
+html:has(body.strengths-page) {
+  scroll-padding-top: 14rem;
 }
 
 /* Kill the CRT scanline overlay on this page */
@@ -188,11 +195,13 @@
 
 .strengths-page .sw-chip {
   font-family: var(--st-font);
-  font-size: 1rem;
+  font-size: 1.15rem;
   color: var(--st-text);
   background: var(--st-surface);
   border: 1px solid var(--st-border);
   border-radius: var(--st-radius);
+  padding: 1rem 1.5rem;
+  min-height: 56px;
   transition: all var(--st-transition);
 }
 
@@ -299,18 +308,30 @@
 /* ── Definition preview bar ──────────────────────────────────────────────── */
 
 .strengths-page .sw-definition-bar {
+  position: sticky;
+  top: 0;
+  z-index: 9;
   background-color: var(--st-surface);
   border: 1px solid var(--st-border);
-  border-radius: var(--st-radius);
+  border-radius: 0;
+  border-top: none;
+  height: auto;
+  min-height: 4rem;
+  padding: 1rem var(--space-md);
+  margin-bottom: 0;
 }
 
 .strengths-page .sw-definition-bar__content {
   font-family: var(--st-font);
+  font-size: 1rem;
+  line-height: 1.5;
   animation-timing-function: ease;
 }
 
 .strengths-page .sw-definition-bar__word {
   color: var(--st-accent);
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .strengths-page .sw-definition-bar__sep {
@@ -319,10 +340,12 @@
 
 .strengths-page .sw-definition-bar__text {
   color: var(--st-text-secondary);
+  font-size: 1.05rem;
 }
 
 .strengths-page .sw-definition-bar__prompt {
   color: var(--st-text-muted);
+  font-size: 1.05rem;
 }
 
 /* ── Selection island ────────────────────────────────────────────────────── */
@@ -339,6 +362,8 @@
   background-color: var(--st-accent-subtle);
   border: 1px solid var(--st-accent);
   border-radius: var(--st-radius-sm);
+  height: 44px;
+  box-sizing: border-box;
 }
 
 .strengths-page .sw-island__chip-close {
@@ -359,6 +384,8 @@
   border: 1px dashed var(--st-border);
   border-radius: var(--st-radius-sm);
   opacity: 0.3;
+  height: 44px;
+  box-sizing: border-box;
 }
 
 .strengths-page .sw-island__progress-bar {
