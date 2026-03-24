@@ -806,23 +806,26 @@ test.describe('Strengths — Word Reordering', () => {
     expect(secondHeader).toContain(originalFirst);
   });
 
-  test('reorder buttons work on mobile viewport', async ({ page, browser }) => {
-    const mobileContext = await browser.newContext({ viewport: { width: 375, height: 812 } });
-    const mobilePage = await mobileContext.newPage();
-    await mobilePage.goto('/strengths');
-    await mobilePage.waitForSelector('.sw-grid');
+});
+
+test.describe('Strengths — Word Reordering (mobile)', () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+
+  test('reorder buttons work on mobile viewport', async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
 
     // Select 2 words
-    const chips = mobilePage.locator('.sw-grid .sw-chip');
+    const chips = page.locator('.sw-grid .sw-chip');
     await chips.nth(0).click();
     await chips.nth(1).click();
 
     // Verify move-down is visible
-    const moveDown = mobilePage.locator('.sw-island__chip-move-down');
+    const moveDown = page.locator('.sw-island__chip-move-down');
     await expect(moveDown.first()).toBeVisible();
 
     // Get initial order
-    const labels = mobilePage.locator('.sw-island__chip-label');
+    const labels = page.locator('.sw-island__chip-label');
     const initialFirst = await labels.nth(0).textContent();
     const initialSecond = await labels.nth(1).textContent();
 
@@ -834,7 +837,5 @@ test.describe('Strengths — Word Reordering', () => {
     const newSecond = await labels.nth(1).textContent();
     expect(newFirst).toBe(initialSecond);
     expect(newSecond).toBe(initialFirst);
-
-    await mobileContext.close();
   });
 });
