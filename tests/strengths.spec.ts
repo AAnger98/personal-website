@@ -37,6 +37,12 @@ async function completeWordSelection(page: Page) {
   await page.getByRole('button', { name: /CONTINUE/i }).click();
 }
 
+/** Navigate to the pitch step (step 3). */
+async function goToPitch(page: Page) {
+  await completeWordSelection(page);
+  await page.getByRole('button', { name: /CONTINUE/i }).click();
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // Word Selection Step — Grid, Toggle, Island, Definitions
 // ═══════════════════════════════════════════════════════════════════════════
@@ -422,11 +428,6 @@ test.describe('Strengths flow — reflection step', () => {
 });
 
 test.describe('Strengths flow — pitch step', () => {
-  async function goToPitch(page: Page) {
-    await completeWordSelection(page);
-    await page.getByRole('button', { name: /CONTINUE/i }).click();
-  }
-
   test('pitch step shows #1 strength word prominently', async ({ page }) => {
     await goToPitch(page);
     await expect(page.locator('.spi-anchor-word')).toBeVisible();
@@ -447,6 +448,34 @@ test.describe('Strengths flow — pitch step', () => {
     await goToPitch(page);
     await page.getByRole('button', { name: /CONTINUE/i }).click();
     await expect(page.getByText('4 of 5', { exact: true })).toBeVisible();
+  });
+});
+
+test.describe('Strengths — Pitch Examples', () => {
+  test('pitch step shows 2-3 example pitches', async ({ page }) => {
+    await goToPitch(page);
+    await expect(page.locator('.spi-examples')).toBeVisible();
+    const count = await page.locator('.spi-example').count();
+    expect(count).toBeGreaterThanOrEqual(2);
+    expect(count).toBeLessThanOrEqual(3);
+  });
+
+  test('each example has a label, strengths, and pitch text', async ({ page }) => {
+    await goToPitch(page);
+    const first = page.locator('.spi-example').first();
+    await expect(first.locator('.spi-example__label')).not.toBeEmpty();
+    await expect(first.locator('.spi-example__strengths')).not.toBeEmpty();
+    await expect(first.locator('.spi-example__text')).not.toBeEmpty();
+  });
+
+  test('examples can be collapsed and expanded via details/summary', async ({ page }) => {
+    await goToPitch(page);
+    const details = page.locator('details.spi-examples');
+    await expect(details).toHaveAttribute('open', '');
+    await page.locator('.spi-examples__toggle').click();
+    await expect(page.locator('.spi-examples__list')).toBeHidden();
+    await page.locator('.spi-examples__toggle').click();
+    await expect(page.locator('.spi-examples__list')).toBeVisible();
   });
 });
 
