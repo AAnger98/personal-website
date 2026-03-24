@@ -612,7 +612,7 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
 .spi-example {
   padding: 1rem;
   border: 1px solid;
-  border-radius: var(--st-radius);
+  border-radius: var(--st-radius, 8px);
 }
 .spi-example__header {
   display: flex;
