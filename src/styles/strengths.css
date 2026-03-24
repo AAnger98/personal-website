@@ -918,6 +918,29 @@
   opacity: 0.7;
 }
 
+/* ─── Selection Island — reorder buttons ────────────────────────────────── */
+
+.sw-island__chip-move-up,
+.sw-island__chip-move-down {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  font-size: 0.65rem;
+  line-height: 1;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+.sw-island__chip-move-up:hover:not(:disabled),
+.sw-island__chip-move-down:hover:not(:disabled) {
+  opacity: 1;
+}
+.sw-island__chip-move-up:disabled,
+.sw-island__chip-move-down:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
 /* ─── Selection Island — responsive ─────────────────────────────────────── */
 
 @media (max-width: 600px) {

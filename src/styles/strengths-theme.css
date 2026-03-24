@@ -592,3 +592,14 @@ html:has(body.strengths-page) {
   font-family: var(--st-font);
   color: var(--st-text-secondary);
 }
+
+/* ── Selection Island — reorder buttons ────────────────────────────────── */
+
+.strengths-page .sw-island__chip-move-up,
+.strengths-page .sw-island__chip-move-down {
+  color: var(--st-text-secondary);
+}
+.strengths-page .sw-island__chip-move-up:hover:not(:disabled),
+.strengths-page .sw-island__chip-move-down:hover:not(:disabled) {
+  color: var(--st-accent);
+}

@@ -76,6 +76,15 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
     });
   };
 
+  const handleReorder = (fromIndex: number, toIndex: number) => {
+    setSelected(prev => {
+      const next = [...prev];
+      const [moved] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, moved);
+      return next;
+    });
+  };
+
   const handleContinue = () => {
     if (selected.length !== MAX_WORDS) return;
     logEvent('strengths_selection_complete', {
@@ -163,6 +172,7 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
         })}
         maxSelections={MAX_WORDS}
         onDeselect={toggleWord}
+        onReorder={handleReorder}
       />
 
       {/* Definition preview bar */}
