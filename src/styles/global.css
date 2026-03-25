@@ -1,3 +1,12 @@
+/* ─── Self-hosted fonts ───────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Archivo Black';
+  src: url('/fonts/ArchivoBlack-Regular.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
+
 :root {
   /* ── Colors — Terminal Deco palette (confirmed, see CLAUDE.md) ───────── */
   --color-bg: #1b3022;
@@ -9,7 +18,7 @@
 
   /* ── Typography ──────────────────────────────────────────────────────── */
   --font-display: 'Archivo Black', 'Arial Black', sans-serif;
-  --font-body: 'JetBrains Mono', 'Courier New', Courier, monospace;
+  --font-body: 'Courier New', Courier, monospace;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
   --font-size-lg: 1.125rem;

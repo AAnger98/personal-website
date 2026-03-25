@@ -259,43 +259,48 @@ test.describe('Strengths — Selection Island', () => {
   });
 });
 
-test.describe('Strengths — Definition Preview Bar', () => {
+test.describe('Strengths — Definition Tooltip (desktop)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
   });
 
-  test('definition bar is present', async ({ page }) => {
+  test('definition bar is hidden on desktop (hover device)', async ({ page }) => {
     const bar = page.locator('.sw-definition-bar');
-    await expect(bar).toBeVisible();
+    await expect(bar).toBeHidden();
   });
 
-  test('idle state shows prompt text', async ({ page }) => {
-    const prompt = page.locator('.sw-definition-bar__prompt');
-    await expect(prompt).toHaveText('Hover over a word to see its definition');
-  });
-
-  test('hovering a word shows its definition', async ({ page }) => {
+  test('hovering a word shows a floating tooltip', async ({ page }) => {
     const chip = wordChips(page).first();
     await chip.hover();
-    const defWord = page.locator('.sw-definition-bar__word');
-    await expect(defWord).toBeVisible();
-    const defText = page.locator('.sw-definition-bar__text');
-    await expect(defText).toBeVisible();
+    const tooltip = page.locator('.sw-tooltip');
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toHaveAttribute('role', 'tooltip');
+    const tooltipWord = tooltip.locator('.sw-tooltip__word');
+    await expect(tooltipWord).toBeVisible();
+    const tooltipText = tooltip.locator('.sw-tooltip__text');
+    await expect(tooltipText).toBeVisible();
   });
 
-  test('moving away returns to idle prompt text', async ({ page }) => {
+  test('moving away hides the tooltip', async ({ page }) => {
     const chip = wordChips(page).first();
     await chip.hover();
-    await expect(page.locator('.sw-definition-bar__word')).toBeVisible();
+    await expect(page.locator('.sw-tooltip')).toBeVisible();
     await page.locator('.sw-header').hover();
-    const prompt = page.locator('.sw-definition-bar__prompt');
-    await expect(prompt).toBeVisible();
+    await expect(page.locator('.sw-tooltip')).toBeHidden();
+  });
+
+  test('tooltip has aria-describedby link from chip', async ({ page }) => {
+    const chip = wordChips(page).first();
+    await chip.hover();
+    const tooltipId = await page.locator('.sw-tooltip').getAttribute('id');
+    const describedBy = await chip.getAttribute('aria-describedby');
+    expect(describedBy).toBe(tooltipId);
   });
 });
 
 test.describe('Strengths — Maxed Chip Hover Peek', () => {
-  test('hovering a maxed chip shows its definition in the bar', async ({ page }) => {
+  test('hovering a maxed chip shows its definition in the tooltip', async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
     const chips = await pickableChips(page, 5);
@@ -305,11 +310,11 @@ test.describe('Strengths — Maxed Chip Hover Peek', () => {
     const maxedChip = page.locator('.sw-chip--maxed').first();
     await expect(maxedChip).toBeVisible();
     await maxedChip.hover();
-    const defWord = page.locator('.sw-definition-bar__word');
-    await expect(defWord).toBeVisible();
-    const defText = page.locator('.sw-definition-bar__text');
-    await expect(defText).toBeVisible();
-    const text = await defText.textContent();
+    const tooltip = page.locator('.sw-tooltip');
+    await expect(tooltip).toBeVisible();
+    const tooltipText = tooltip.locator('.sw-tooltip__text');
+    await expect(tooltipText).toBeVisible();
+    const text = await tooltipText.textContent();
     expect(text?.trim().length).toBeGreaterThan(0);
   });
 });

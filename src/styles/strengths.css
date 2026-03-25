@@ -1,3 +1,14 @@
+/* ─── Step transition fade ────────────────────────────────────────────────── */
+
+.sf-step-transition {
+  animation: sf-fade-in 0.25s ease-out;
+}
+
+@keyframes sf-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ─── Strengths Identifier — Step UI ──────────────────────────────────────── */
 
 .sw-root {
@@ -450,7 +461,8 @@
   margin-bottom: 0;
 }
 
-.sr-label {
+.sr-label,
+.spi-label {
   display: block;
   font-family: var(--font-body);
   font-size: var(--font-size-sm);
@@ -462,7 +474,9 @@
   margin-bottom: var(--space-xs);
 }
 
-.sr-textarea {
+.sr-textarea,
+.spi-textarea,
+.sfb-textarea {
   width: 100%;
   font-family: var(--font-body);
   font-size: var(--font-size-base);
@@ -475,12 +489,16 @@
   transition: border-color steps(2);
 }
 
-.sr-textarea:focus {
+.sr-textarea:focus,
+.spi-textarea:focus,
+.sfb-textarea:focus {
   outline: none;
   border-color: var(--color-blue);
 }
 
-.sr-textarea::placeholder {
+.sr-textarea::placeholder,
+.spi-textarea::placeholder,
+.sfb-textarea::placeholder {
   color: var(--color-text);
   opacity: 0.35;
 }
@@ -536,41 +554,6 @@
 
 .spi-field {
   margin-bottom: var(--space-lg);
-}
-
-.spi-label {
-  display: block;
-  font-family: var(--font-body);
-  font-size: var(--font-size-sm);
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-text);
-  opacity: 0.8;
-  margin-bottom: var(--space-xs);
-}
-
-.spi-textarea {
-  width: 100%;
-  font-family: var(--font-body);
-  font-size: var(--font-size-base);
-  color: var(--color-text);
-  background: transparent;
-  border: 1px solid var(--color-green);
-  padding: var(--space-sm);
-  resize: vertical;
-  line-height: var(--line-height-base);
-  transition: border-color steps(2);
-}
-
-.spi-textarea:focus {
-  outline: none;
-  border-color: var(--color-blue);
-}
-
-.spi-textarea::placeholder {
-  color: var(--color-text);
-  opacity: 0.35;
 }
 
 .spi-char-count {
@@ -764,28 +747,6 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
   margin-left: var(--space-sm);
 }
 
-.sfb-textarea {
-  width: 100%;
-  font-family: var(--font-body);
-  font-size: var(--font-size-base);
-  color: var(--color-text);
-  background: transparent;
-  border: 1px solid var(--color-green);
-  padding: var(--space-sm);
-  resize: vertical;
-  line-height: var(--line-height-base);
-}
-
-.sfb-textarea:focus {
-  outline: none;
-  border-color: var(--color-blue);
-}
-
-.sfb-textarea::placeholder {
-  color: var(--color-text);
-  opacity: 0.35;
-}
-
 /* ─── Completion screen ──────────────────────────────────────────────────── */
 
 .sfb-complete {
@@ -859,6 +820,56 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
   font-style: italic;
   color: var(--color-text);
   opacity: 0.5;
+}
+
+/* ─── Floating definition tooltip (desktop) ────────────────────────────── */
+
+.sw-tooltip {
+  position: fixed;
+  z-index: 100;
+  transform: translateX(-50%);
+  max-width: 360px;
+  padding: 0.6rem 1rem;
+  background-color: var(--color-bg);
+  border: 2px solid var(--color-gold);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  pointer-events: none;
+  animation: sw-tooltip-in 100ms steps(2) both;
+}
+
+.sw-tooltip__word {
+  font-weight: bold;
+  color: var(--color-gold);
+}
+
+.sw-tooltip__sep {
+  color: var(--color-text);
+  opacity: 0.5;
+}
+
+.sw-tooltip__text {
+  color: var(--color-text);
+}
+
+@keyframes sw-tooltip-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Desktop: show tooltip, hide bar */
+@media (hover: hover) {
+  .sw-definition-bar {
+    display: none;
+  }
+}
+
+/* Touch/mobile: show bar, hide tooltip */
+@media (hover: none) {
+  .sw-tooltip {
+    display: none;
+  }
 }
 
 /* ─── Sticky panel wrapper (themed pages make this sticky) ────────────── */

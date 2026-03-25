@@ -2,8 +2,6 @@
 import { useState, useEffect } from 'react';
 import { logEvent } from '../../lib/telemetry';
 import WordSelectionStep, { type Word } from './WordSelectionStep';
-import { DefinitionProvider } from './DefinitionContext';
-import StepProgress from './StepProgress';
 import ReflectionStep from './ReflectionStep';
 import PitchStep from './PitchStep';
 import PdfDownloadStep from './PdfDownloadStep';
@@ -19,6 +17,8 @@ export interface Reflection {
 }
 
 export type Step = 'word-selection' | 'reflection' | 'pitch' | 'pdf' | 'feedback';
+
+const STEP_LABELS = ['Select', 'Reflect', 'Pitch', 'Download', 'Feedback'];
 
 const STEP_NUMBER: Record<Step, number> = {
   'word-selection': 1,
@@ -49,23 +49,43 @@ export default function StrengthsFlow({ words }: Props) {
 
   return (
     <div>
-      <StepProgress
-        current={STEP_NUMBER[step]}
-        total={5}
-        onRestart={handleRestart}
-      />
+      <div className="sp-root">
+        <div className="sp-steps">
+          {STEP_LABELS.map((label, i) => {
+            const stepNum = i + 1;
+            const currentNum = STEP_NUMBER[step];
+            const isDone = stepNum < currentNum;
+            const isCurrent = stepNum === currentNum;
+            return (
+              <div
+                key={label}
+                className={`sp-step${isDone ? ' sp-step--done' : ''}${isCurrent ? ' sp-step--current' : ''}`}
+                aria-current={isCurrent ? 'step' : undefined}
+              >
+                <span className="sp-step__num">{isDone ? '✓' : stepNum}</span>
+                <span className="sp-step__label">{label}</span>
+              </div>
+            );
+          })}
+        </div>
+        <div className="sp-meta">
+          <span className="sp-meta__count">{STEP_NUMBER[step]} of 5</span>
+          <button className="sp-restart" onClick={handleRestart} type="button">
+            START OVER
+          </button>
+        </div>
+      </div>
 
+      <div key={step} className="sf-step-transition">
       {step === 'word-selection' && (
-        <DefinitionProvider>
-          <WordSelectionStep
-            words={words}
-            initialSelected={selectedWords}
-            onComplete={selected => {
-              setSelectedWords(selected);
-              setStep('reflection');
-            }}
-          />
-        </DefinitionProvider>
+        <WordSelectionStep
+          words={words}
+          initialSelected={selectedWords}
+          onComplete={selected => {
+            setSelectedWords(selected);
+            setStep('reflection');
+          }}
+        />
       )}
 
       {step === 'reflection' && (
@@ -103,6 +123,7 @@ export default function StrengthsFlow({ words }: Props) {
       {step === 'feedback' && (
         <FeedbackStep onComplete={handleRestart} />
       )}
+      </div>
     </div>
   );
 }

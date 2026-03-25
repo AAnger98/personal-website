@@ -14,7 +14,7 @@
   --st-border-light: #4b5563;
   --st-text: #f9fafb;
   --st-text-secondary: #9ca3af;
-  --st-text-muted: #6b7280;
+  --st-text-muted: #8b95a3;
   --st-accent: #6366f1;
   --st-accent-hover: #818cf8;
   --st-accent-subtle: rgba(99, 102, 241, 0.12);
@@ -307,9 +307,6 @@ html:has(body.strengths-page) {
 /* ── Definition preview bar ──────────────────────────────────────────────── */
 
 .strengths-page .sw-definition-bar {
-  position: sticky;
-  top: 0;
-  z-index: 9;
   background-color: var(--st-surface);
   border: 1px solid var(--st-border);
   border-radius: 0;
@@ -345,6 +342,30 @@ html:has(body.strengths-page) {
 .strengths-page .sw-definition-bar__prompt {
   color: var(--st-text-muted);
   font-size: 1.05rem;
+}
+
+/* ── Floating definition tooltip ─────────────────────────────────────────── */
+
+.strengths-page .sw-tooltip {
+  background-color: var(--st-bg);
+  border: 1px solid var(--st-accent);
+  border-radius: var(--st-radius-sm);
+  font-family: var(--st-font);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  animation-timing-function: ease;
+}
+
+.strengths-page .sw-tooltip__word {
+  color: var(--st-accent);
+  font-weight: 600;
+}
+
+.strengths-page .sw-tooltip__sep {
+  color: var(--st-text-muted);
+}
+
+.strengths-page .sw-tooltip__text {
+  color: var(--st-text-secondary);
 }
 
 /* ── Selection island ────────────────────────────────────────────────────── */
@@ -427,12 +448,15 @@ html:has(body.strengths-page) {
   color: var(--st-accent);
 }
 
-.strengths-page .sr-label {
+.strengths-page .sr-label,
+.strengths-page .spi-label {
   font-family: var(--st-font);
   color: var(--st-text-secondary);
 }
 
-.strengths-page .sr-textarea {
+.strengths-page .sr-textarea,
+.strengths-page .spi-textarea,
+.strengths-page .sfb-textarea {
   font-family: var(--st-font);
   color: var(--st-text);
   background: var(--st-surface);
@@ -441,11 +465,15 @@ html:has(body.strengths-page) {
   transition: border-color var(--st-transition);
 }
 
-.strengths-page .sr-textarea:focus {
+.strengths-page .sr-textarea:focus,
+.strengths-page .spi-textarea:focus,
+.strengths-page .sfb-textarea:focus {
   border-color: var(--st-accent);
 }
 
-.strengths-page .sr-textarea::placeholder {
+.strengths-page .sr-textarea::placeholder,
+.strengths-page .spi-textarea::placeholder,
+.strengths-page .sfb-textarea::placeholder {
   color: var(--st-text-muted);
   opacity: 1;
 }
@@ -472,29 +500,6 @@ html:has(body.strengths-page) {
 .strengths-page .spi-anchor-word {
   font-family: var(--st-font-heading);
   font-weight: 800;
-}
-
-.strengths-page .spi-label {
-  font-family: var(--st-font);
-  color: var(--st-text-secondary);
-}
-
-.strengths-page .spi-textarea {
-  font-family: var(--st-font);
-  color: var(--st-text);
-  background: var(--st-surface);
-  border: 1px solid var(--st-border);
-  border-radius: var(--st-radius);
-  transition: border-color var(--st-transition);
-}
-
-.strengths-page .spi-textarea:focus {
-  border-color: var(--st-accent);
-}
-
-.strengths-page .spi-textarea::placeholder {
-  color: var(--st-text-muted);
-  opacity: 1;
 }
 
 .strengths-page .spi-char-count {
@@ -576,23 +581,6 @@ html:has(body.strengths-page) {
 .strengths-page .sfb-rating-labels {
   font-family: var(--st-font);
   color: var(--st-text-muted);
-}
-
-.strengths-page .sfb-textarea {
-  font-family: var(--st-font);
-  color: var(--st-text);
-  background: var(--st-surface);
-  border: 1px solid var(--st-border);
-  border-radius: var(--st-radius);
-}
-
-.strengths-page .sfb-textarea:focus {
-  border-color: var(--st-accent);
-}
-
-.strengths-page .sfb-textarea::placeholder {
-  color: var(--st-text-muted);
-  opacity: 1;
 }
 
 /* ── Completion screen ───────────────────────────────────────────────────── */

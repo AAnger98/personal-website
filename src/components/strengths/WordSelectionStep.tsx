@@ -1,18 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { logEvent } from '../../lib/telemetry';
-import SelectionIsland from './SelectionIsland';
-import DefinitionPreviewBar from './DefinitionPreviewBar';
-import { useDefinition } from './DefinitionContext';
+import type { Word } from '../../data/wordlist';
 
-export interface Word {
-  word: string;
-  definition: string;
-}
+export type { Word };
 
 interface Props {
   words: Word[];
   initialSelected?: string[];
   onComplete: (selected: string[]) => void;
+}
+
+interface TooltipPos {
+  top: number;
+  left: number;
+  above: boolean;
 }
 
 const TIMER_SECONDS = 5 * 60;
@@ -25,7 +26,24 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
   const [selected, setSelected] = useState<string[]>([...initialSelected]);
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
   const [phase, setPhase] = useState<Phase>('selecting');
-  const { showDefinition, hideDefinition } = useDefinition();
+  const [activeDefinition, setActiveDefinition] = useState<{ word: string; definition: string } | null>(null);
+  const [tooltipPos, setTooltipPos] = useState<TooltipPos | null>(null);
+
+  const showDefinition = useCallback((target: HTMLElement, word: string, definition: string) => {
+    setActiveDefinition({ word, definition });
+    const rect = target.getBoundingClientRect();
+    const above = rect.top > 80;
+    setTooltipPos({
+      top: above ? rect.top - 8 : rect.bottom + 8,
+      left: Math.min(Math.max(rect.left + rect.width / 2, 180), window.innerWidth - 180),
+      above,
+    });
+  }, []);
+
+  const hideDefinition = useCallback(() => {
+    setActiveDefinition(null);
+    setTooltipPos(null);
+  }, []);
 
   // Telemetry refs — always current, no stale closure issues
   const startedAt = useRef(Date.now());
@@ -165,18 +183,107 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
       </div>
 
       {/* Selection island */}
-      <SelectionIsland
-        selectedWords={selected.map(w => {
+      {(() => {
+        const selectedWords = selected.map(w => {
           const match = words.find(entry => entry.word === w);
           return { word: w, definition: match?.definition ?? '' };
-        })}
-        maxSelections={MAX_WORDS}
-        onDeselect={toggleWord}
-        onReorder={handleReorder}
-      />
+        });
+        const count = selectedWords.length;
+        const isFull = count >= MAX_WORDS;
+        const progressPct = (count / MAX_WORDS) * 100;
+        const progressText =
+          count === 0
+            ? `Select ${MAX_WORDS} words that resonate with you`
+            : isFull
+              ? `${count} of ${MAX_WORDS} selected \u2014 deselect one to choose another`
+              : `${count} of ${MAX_WORDS} selected`;
 
-      {/* Definition preview bar */}
-      <DefinitionPreviewBar />
+        return (
+          <div className="sw-island" aria-label="Selected words">
+            <div className="sw-island__slots">
+              {selectedWords.map(({ word }, index) => (
+                <span key={word} className="sw-island__chip">
+                  <button
+                    className="sw-island__chip-move-up"
+                    onClick={() => handleReorder(index, index - 1)}
+                    disabled={index === 0}
+                    aria-label={`Move ${word} up`}
+                    type="button"
+                  >
+                    {'\u25B2'}
+                  </button>
+                  <span className="sw-island__chip-label">{'\u2611'} {word}</span>
+                  <button
+                    className="sw-island__chip-move-down"
+                    onClick={() => handleReorder(index, index + 1)}
+                    disabled={index === selectedWords.length - 1}
+                    aria-label={`Move ${word} down`}
+                    type="button"
+                  >
+                    {'\u25BC'}
+                  </button>
+                  <button
+                    className="sw-island__chip-close"
+                    onClick={() => toggleWord(word)}
+                    aria-label={`Deselect ${word}`}
+                    type="button"
+                  >
+                    {'\u2715'}
+                  </button>
+                </span>
+              ))}
+              {Array.from({ length: MAX_WORDS - count }, (_, i) => (
+                <span key={`empty-${i}`} className="sw-island__empty-slot" aria-hidden="true" />
+              ))}
+            </div>
+
+            <div className="sw-island__progress">
+              <div
+                className="sw-island__progress-bar"
+                role="progressbar"
+                aria-valuenow={count}
+                aria-valuemin={0}
+                aria-valuemax={MAX_WORDS}
+                style={{ '--island-progress': `${progressPct}%` } as React.CSSProperties}
+              />
+              <span className="sw-island__progress-text" aria-live="polite">{progressText}</span>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Definition preview bar (mobile/touch fallback) */}
+      <div className="sw-definition-bar" aria-live="polite">
+        {activeDefinition ? (
+          <div className="sw-definition-bar__content sw-definition-bar__content--active">
+            <span className="sw-definition-bar__word">{activeDefinition.word}</span>
+            <span className="sw-definition-bar__sep"> — </span>
+            <span className="sw-definition-bar__text">{activeDefinition.definition}</span>
+          </div>
+        ) : (
+          <div className="sw-definition-bar__content sw-definition-bar__content--idle">
+            <span className="sw-definition-bar__prompt">Tap a word to see its definition</span>
+          </div>
+        )}
+      </div>
+
+      {/* Floating tooltip (desktop hover/keyboard) */}
+      {tooltipPos && activeDefinition && (
+        <div
+          className={`sw-tooltip${tooltipPos.above ? ' sw-tooltip--above' : ' sw-tooltip--below'}`}
+          role="tooltip"
+          id="sw-definition-tooltip"
+          style={{
+            top: tooltipPos.above ? undefined : `${tooltipPos.top}px`,
+            bottom: tooltipPos.above ? `${window.innerHeight - tooltipPos.top}px` : undefined,
+            left: `${tooltipPos.left}px`,
+          }}
+        >
+          <span className="sw-tooltip__word">{activeDefinition.word}</span>
+          <span className="sw-tooltip__sep"> — </span>
+          <span className="sw-tooltip__text">{activeDefinition.definition}</span>
+        </div>
+      )}
 
       {/* Word grid */}
       <div className="sw-grid" role="group" aria-label="Strength words">
@@ -194,10 +301,11 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
                 if (isMaxed) return;
                 toggleWord(word);
               }}
-              onMouseEnter={() => showDefinition(word, definition)}
-              onMouseLeave={() => hideDefinition()}
-              onFocus={() => showDefinition(word, definition)}
-              onBlur={() => hideDefinition()}
+              onMouseEnter={(e) => showDefinition(e.currentTarget, word, definition)}
+              onMouseLeave={hideDefinition}
+              onFocus={(e) => showDefinition(e.currentTarget, word, definition)}
+              onBlur={hideDefinition}
+              aria-describedby={activeDefinition?.word === word ? 'sw-definition-tooltip' : undefined}
             >
               {isSelected ? '☑' : '☐'} {word}
             </button>

@@ -1,33 +1,9 @@
 ---
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StrengthsFlow from '../components/strengths/StrengthsFlow';
+import { wordlist } from '../data/wordlist';
 import '../styles/strengths.css';
 import '../styles/strengths-theme.css';
-
-const csvPath = join(process.cwd(), 'src', 'data', 'wordlist.csv');
-let csvContent: string;
-try {
-  csvContent = readFileSync(csvPath, 'utf-8');
-} catch {
-  throw new Error('wordlist.csv not found at src/data/wordlist.csv');
-}
-
-const words = csvContent
-  .split('\n')
-  .slice(1) // skip header row
-  .filter(line => line.trim())
-  .map(line => {
-    const commaIdx = line.indexOf(',');
-    const word = line.slice(0, commaIdx).trim();
-    const rawDef = line.slice(commaIdx + 1).trim();
-    const definition = rawDef.startsWith('"') && rawDef.endsWith('"')
-      ? rawDef.slice(1, -1)
-      : rawDef;
-    return { word, definition };
-  })
-  .filter(({ word, definition }) => word.trim() !== '' && definition.trim() !== '');
 ---
 
 <BaseLayout
@@ -35,5 +11,5 @@ const words = csvContent
   description="Discover your core strengths through an instinct-driven word selection exercise."
   bodyClass="strengths-page"
 >
-  <StrengthsFlow words={words} client:load />
+  <StrengthsFlow words={wordlist} client:load />
 </BaseLayout>

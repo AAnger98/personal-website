@@ -10,9 +10,9 @@ test.describe('Design system', () => {
     expect(bg).toBe('rgb(27, 48, 34)');
   });
 
-  test('Google Fonts stylesheet is referenced in document head', async ({ page }) => {
+  test('Archivo Black is self-hosted (no Google Fonts link in head)', async ({ page }) => {
     await page.goto('/');
-    const fontLink = page.locator('link[href*="Archivo+Black"]');
-    await expect(fontLink).toHaveCount(1);
+    const googleFontsLink = page.locator('link[href*="fonts.googleapis.com"]');
+    await expect(googleFontsLink).toHaveCount(0);
   });
 });
