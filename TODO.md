@@ -4,199 +4,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 
 ---
 
-## Phase 1 — Project Setup & Infrastructure
-
-### 1.1 Tooling & Environment
-- [x] Initialize Astro project (`npm create astro@latest`)
-- [x] Configure TypeScript strict mode (`tsconfig.json`)
-- [x] Set up Prettier with agreed-upon config
-- [x] Set up ESLint for TypeScript + Astro
-- [x] Add `.gitignore` (node_modules, dist, .env, playwright artifacts)
-- [x] Initialize git repository
-- [x] Create initial commit
-
-### 1.2 Testing Infrastructure
-- [x] Install and configure Playwright (`npm init playwright@latest`)
-- [x] Write a smoke test: home page returns 200 and has a `<title>`
-- [x] Confirm `npx playwright test` runs and passes
-- [x] Add test script to `package.json`
-- [x] Document how to run tests in README
-
-### 1.3 Project Structure
-- [x] Establish folder structure (`src/components/`, `src/pages/`, `src/styles/`, `tests/`)
-- [x] Create base layout component (`src/layouts/BaseLayout.astro`)
-- [x] Create site config file (`src/config.ts`) for name, tagline, nav links, contact info
-
----
-
-## Phase 2 — Design System & Foundations
-
-### 2.1 CSS Foundation
-- [x] Define CSS custom properties for color palette (owner to provide values)
-- [x] Define typography scale (font sizes, line heights, weights)
-- [x] Choose and load typeface(s) — using system font stack; owner to confirm or swap
-- [x] Define spacing scale (margin/padding tokens)
-- [x] Write global reset / base styles
-- [x] **Update CSS custom properties with confirmed palette values** (see CLAUDE.md Color Palette)
-- [x] **Load Google Fonts** — Archivo Black + Major Mono Display (via `<link>` in BaseLayout)
-- [x] **Apply dark background** — set `--color-bg` (#1B3022) as `body` background; update text defaults
-- [x] Confirm styles look correct on mobile, tablet, desktop
-
-### 2.3 Terminal Deco Visual System
-- [x] Build Art Deco double-border frame component or mixin — `DecoBorder.astro` (4px double `--color-gold`)
-- [x] Build geometric corner accent decoration — ◆ corners in `DecoBorder.astro`
-- [x] Build CRT scanline overlay — `::before` pseudo-element on `.page-wrapper`
-- [x] Define ASCII divider pattern (`━━━━━ ❈ ━━━━━`) — `AsciiDivider.astro`
-- [x] Define nav button style — double-border treatment with stepped hover transition (`steps(4)`)
-- [-] Document block element icon usage (█ ▓ ▒ ░) — deferred; no current usage to document
-- [x] Write Playwright test: page has dark background (computed bg color matches `--color-bg`)
-
-### 2.2 Core Components
-- [x] Build `<Header>` component with site name and navigation
-- [x] Build `<Footer>` component with minimal info (name, year, optional links)
-- [x] Build `<PageTitle>` component for consistent heading style across pages
-- [x] Write Playwright tests for Header (nav links present and correct)
-- [x] Write Playwright tests for Footer (renders, no broken links)
-
----
-
-## Phase 3 — Page Development (TDD: test → build → pass)
-
-### 3.1 Home Page (`/`)
-- [x] Write Playwright test: page loads, has headline, has CTA link
-- [x] Draft copy: one-line positioning statement (owner to approve)
-- [x] Draft copy: 2–3 sentence intro (owner to approve)
-- [x] Build home page layout
-- [x] Add clear CTA linking to `/contact`
-- [x] Confirm Playwright test passes
-
-### 3.2 About Page (`/about`)
-- [x] Write Playwright test: page loads, has heading, has body content
-- [x] Draft copy: background, expertise, what makes you worth hiring (owner to approve)
-- [x] Build about page layout
-- [x] Confirm Playwright test passes
-
-### 3.3 Work Page (`/work`)
-- [~] Decide format with owner: roles list implemented; owner to confirm or request different format
-- [x] Write Playwright test: page loads, has at least one work entry
-- [x] Draft work entries (owner to approve)
-- [x] Build work page layout
-- [x] Confirm Playwright test passes
-
-### 3.4 Contact Page (`/contact`)
-- [~] Decide contact method with owner: mailto link implemented; owner to confirm or request form
-- [x] Write Playwright test: page loads, contact method is visible and functional
-- [x] Build contact page layout
-- [x] Confirm all Contact tests pass
-
----
-
-## Phase 4 — Accessibility & Quality
-
-### 4.1 Accessibility
-- [x] Add `lang` attribute to `<html>`
-- [-] Ensure all images have `alt` text — no images on site at launch
-- [x] Verify heading hierarchy is correct on all pages (h1 → h2 → h3)
-- [ ] Check color contrast ratios meet WCAG AA — manual / post-deploy Lighthouse
-- [ ] Confirm keyboard navigation works across all pages — manual testing
-- [x] Add skip-to-content link
-
-### 4.2 Performance
-- [-] Deferred — moved to Phase 5.2 (requires production deploy and real domain)
-
-### 4.3 SEO & Meta
-- [x] Add `<meta>` description to every page
-- [x] Add Open Graph tags (title, description, image) for link previews
-- [x] Add `<link rel="canonical">` tags
-- [x] Create `robots.txt`
-- [x] Create `sitemap.xml` (via @astrojs/sitemap — generated at build time)
-
----
-
-## Phase 4.5 — Content Population
-
-### Pre-session: what you need to have ready
-- [ ] Resume finalized and ready to share
-- [ ] Real name confirmed (for `config.ts` and home page title)
-- [ ] Real email confirmed (for `config.ts` and contact page)
-- [ ] LinkedIn URL — captured: `https://www.linkedin.com/in/adam-angerami/`
-- [ ] Domain name decided (needed to replace placeholder `siteUrl` in `config.ts` and `robots.txt`)
-- [ ] List of roles to include — with notes on which need to be anonymized
-- [ ] List of advisory/project entries to include (if any)
-
-### Session — Config & wiring
-- [ ] Update `config.ts`: real name, email, tagline, `siteUrl`, site `description`
-- [ ] Add LinkedIn URL field to `config.ts` (used by contact page and footer)
-- [ ] Update `robots.txt` sitemap URL once domain is set
-
-### Session — Code changes (structure, not copy)
-- [ ] Update Work page entry data structure to support bullet-point accomplishments
-- [ ] Update Work page template to render accomplishment bullets
-- [ ] Add Advisory / Projects section below roles on Work page
-- [ ] Add LinkedIn link to Contact page alongside email
-- [ ] Update Playwright tests for structural changes to Work and Contact pages
-
-### Session — Copy: Home page
-- [ ] Write tagline (1-line positioning statement — gold uppercase under name)
-- [ ] Write intro paragraph (2–3 sentences — who you are and what you bring)
-- [ ] Update home page `PageTitle` from "Your Name" to real name
-- [ ] Write home meta description (SEO)
-- [ ] **Owner approval: home copy**
-
-### Session — Copy: About page
-- [ ] Write Background section (career arc, domains — tech / finance / consumer)
-- [ ] Write Expertise section (what problems you solve as a strategist / advisor)
-- [ ] Write "Why work together" section (honest paragraph, no jargon)
-- [ ] Write about meta description (SEO)
-- [ ] **Owner approval: about copy**
-
-### Session — Copy: Work page
-- [ ] Write each role entry: title, org, period, 2–4 bullet accomplishments
-- [ ] Flag and anonymize any sensitive entries (confidential client treatment)
-- [ ] Write each Advisory / Projects entry: title, org/context, period, brief description
-- [ ] Decide final cut — curated highlights vs. full history
-- [ ] Write work meta description (SEO)
-- [ ] **Owner approval: work copy**
-
-### Session — Copy: Contact page
-- [ ] Write contact intro copy (1–2 sentences above the links)
-- [ ] Write contact meta description (SEO)
-- [ ] **Owner approval: contact copy**
-
-### Post-session review
-- [ ] Read every page out loud — check for typos and awkward phrasing
-- [ ] Verify name appears consistently everywhere (header, footer, page titles, OG tags)
-- [ ] Run full Playwright test suite — confirm all tests pass
-- [ ] Commit all content changes
-
----
-
-## Phase 5 — Pre-Launch
-
-### 5.1 Domain & Hosting
-- [ ] Choose and register domain name
-- [ ] Choose hosting platform (Vercel / Netlify / GitHub Pages)
-- [ ] Configure deployment pipeline (push to main → auto deploy)
-- [ ] Point domain DNS to host
-- [ ] Confirm HTTPS is active
-
-### 5.2 Final Review (includes deferred Phase 4.2 performance items)
-- [ ] Audit with Lighthouse: target 95+ on Performance, Accessibility, Best Practices, SEO
-- [ ] Verify fast load on mobile (throttled connection)
-- [ ] Check color contrast ratios meet WCAG AA
-- [ ] Confirm keyboard navigation works across all pages
-- [ ] Full Playwright test run against production URL
-- [ ] Read every page out loud — check for typos, awkward phrasing
-- [ ] Owner final sign-off on all copy
-- [ ] Check site on real mobile device
-- [ ] Check site in Chrome, Firefox, Safari
-
-### 5.3 Launch
-- [ ] Merge to main / trigger production deploy
-- [ ] Confirm live site loads correctly
-- [ ] Share with a trusted person for a fresh-eyes review
-
----
+# Main Page
 
 ## Phase 6 — Post-Launch (Backlog)
 
@@ -208,12 +16,78 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 
 ---
 
+## Strengths Identifier — `/strengths`
+
+### Completed (branch: `feature/strengths-epics-2-6`, merged via PR #1)
+
+Epics 1–6 merged to main via PR #1. 29 Playwright tests.
+
+- [x] Epic 1 — Word Selection Step (200 words from CSV, 5-minute timer, select exactly 5)
+- [x] Epic 2 — Reflection Step (2 prompts per word, soft character nudge, back-nav)
+- [x] Epic 3 — Elevator Pitch Step (textarea with char count, #1 strength anchor)
+- [x] Epic 4 — PDF Download Step (jsPDF client-side generation, print fallback)
+- [x] Epic 5 — Feedback Survey (1–5 rating, optional text, completion screen)
+- [x] Epic 6 — Flow Infrastructure (5-step progress bar, back-nav, restart, full E2E tests)
+
+### Completed: Word Grid Redesign + Theme + Reorder + Pitches (merged via PR #4)
+
+Full redesign merged to main via PR #4. 127 Playwright tests (57 main + 70 strengths).
+
+- [x] Selection Island component (sticky, 5 slots, progress bar) — ATR-32
+- [x] Checkbox toggle state on word buttons (☐/☑ + fill + weight) — ATR-34
+- [x] Definition Preview Bar component (hover/long-press to see definition) — ATR-35
+- [x] At-max dimming with hover-still-active behavior — ATR-36
+- [x] DefinitionProvider abstraction (swappable display strategy) — ATR-37
+- [x] Resize word buttons — bigger with larger text — ATR-15
+- [x] Rewrite word grid to CSS grid with 4 columns — ATR-16
+- [x] Remove rank-ordering of selected words — ATR-17
+- [x] New page theme (clean dark, not Terminal Deco) — ATR-5, ATR-11, ATR-12, ATR-13, ATR-14
+- [x] Word reordering via move-up/move-down buttons — ATR-18
+- [x] Mobile responsiveness tests (375px, 768px) — ATR-19
+- [x] Elevator pitch examples (3 collapsible, draft copy pending owner approval) — ATR-22, ATR-23, ATR-24
+- [x] Merge `feature/strengths-redesign` → `main` via PR #4 — ATR-30
+
+### Pending: Cleanup
+
+- [ ] Remove worktree after merge — ATR-31
+
+### Completed: Polish Pass (branch: `feature/strengths-polish`)
+
+- [x] Enlarge word buttons — font-size 1.3rem, padding 1.4rem, min-height 74px — ATR-43
+- [x] Replace hardcoded `border-radius: 8px` on `.spi-example` with `var(--st-radius)` — ATR-39
+- [x] Increase reorder button touch targets to 44px minimum — ATR-40
+- [x] Add `focus-visible` outlines to reorder buttons — ATR-41
+- [x] Refactor mobile reorder test to use `test.use({ viewport })` — ATR-42
+
+### Pending: Strengths Page — remaining work
+
+#### S2 — Word selection layout — remaining
+- [ ] Implement travel animation (ghost copy from grid to island) — ATR-33
+
+#### S3 — Definition hover (NEEDS DECISION) — ATR-7
+- [x] Definition Preview Bar built and working — ATR-35
+- [x] DefinitionProvider abstraction created — ATR-37
+- [ ] Prototype 2–3 tooltip/hover options for owner decision — ATR-20
+- [ ] Accessibility review of chosen tooltip approach — ATR-21
+- [ ] Code review: swappable definition architecture — ATR-38
+
+#### S4 — Elevator pitch examples — remaining
+- [ ] Owner approval on draft pitch example copy (3 examples in PitchStep.tsx)
+
+#### S5 — General polish — ATR-9 [Backlog]
+- [ ] Review all step transitions for smoothness — ATR-25
+- [ ] Mobile UX pass with new button sizing — ATR-26
+- [ ] Accessibility pass on new theme (contrast ratios, focus states) — ATR-27
+- [ ] Update full E2E test suite for redesigned flow — ATR-28
+- [ ] Final code review before merge — ATR-29
+
+---
+
 ## Decisions Pending Owner Input
 
 | # | Decision | Notes |
 |---|---|---|
-| 1 | Domain name | Not yet registered |
-| 2 | Hosting platform | Vercel, Netlify, or GitHub Pages |
+| 3 | Strengths: definition hover | Show word definition on hover/tooltip? Owner undecided (ATR-7) |
 
 ## Decisions Resolved
 
@@ -229,3 +103,8 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 | Work page format | Roles with bullet-point accomplishments + separate Advisory/Projects section |
 | Contact method | Email + LinkedIn link (no form) |
 | Photo | Text-only site — no headshot at launch |
+| Strengths: page theme | NOT Terminal Deco — needs its own clean white/dark theme (2026-03-20) |
+| Strengths: button layout | Rows of 4, bigger buttons, bigger text (2026-03-20) — implemented ATR-15,16 |
+| Strengths: word ordering | NOT rank-ordered by selection; allow reordering (2026-03-20) — implemented ATR-17 |
+| Strengths: pitch examples | Show 2–3 examples on the pitch step (2026-03-20) |
+| Strengths: branch consolidation | Canonical branch is `feature/strengths-redesign`; old worktree cleaned up (2026-03-23) |

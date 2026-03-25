@@ -33,3 +33,9 @@ strengths_temp/
 
 # git worktrees
 .worktrees/
+
+# Claude Code
+.claude/
+
+# debug screenshots
+*.png
