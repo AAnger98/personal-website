@@ -48,6 +48,11 @@ html:has(body.strengths-page) {
   scroll-padding-top: 14rem;
 }
 
+.strengths-page .sf-step-transition {
+  animation-duration: 0.35s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* Kill the CRT scanline overlay on this page */
 .strengths-page .page-wrapper::before {
   display: none;
