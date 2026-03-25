@@ -1,17 +1,17 @@
 ---
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StrengthsFlow from '../components/strengths/StrengthsFlow';
 import '../styles/strengths.css';
 import '../styles/strengths-theme.css';
 
-const csvPath = fileURLToPath(new URL('../../strengths_temp/wordlist.csv', import.meta.url));
+const csvPath = join(process.cwd(), 'src', 'data', 'wordlist.csv');
 let csvContent: string;
 try {
   csvContent = readFileSync(csvPath, 'utf-8');
 } catch {
-  throw new Error('wordlist.csv not found at strengths_temp/wordlist.csv — see CLAUDE.md for setup instructions');
+  throw new Error('wordlist.csv not found at src/data/wordlist.csv');
 }
 
 const words = csvContent
