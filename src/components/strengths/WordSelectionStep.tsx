@@ -91,7 +91,6 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
     if (!islandSlots) return;
 
     const sourceRect = chipEl.getBoundingClientRect();
-    const targetRect = islandSlots.getBoundingClientRect();
 
     const ghost = document.createElement('div');
     ghost.className = 'sw-chip-ghost';
@@ -109,9 +108,12 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
     // Double-rAF ensures initial position is painted before animating
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
+        // Read target rect here — React may have re-rendered the island after toggleWord
+        const targetRect = islandSlots.getBoundingClientRect();
         const dx = targetRect.left - sourceRect.left;
         const dy = targetRect.top - sourceRect.top;
         const scaleX = Math.max(0.3, targetRect.width / sourceRect.width);
+        // On first selection there are no island chips yet; fall back to source height
         const islandChip = islandSlots.querySelector('.sw-island__chip');
         const targetH = islandChip ? islandChip.getBoundingClientRect().height : sourceRect.height;
         const scaleY = Math.max(0.3, targetH / sourceRect.height);
@@ -121,7 +123,7 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
     });
 
     let cleaned = false;
-    const timerId = setTimeout(cleanup, 600);
+    const timerId = setTimeout(cleanup, 800);
 
     function cleanup() {
       if (cleaned) return;
@@ -134,7 +136,7 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
     ghost.addEventListener('transitionend', (e) => {
       if ((e as TransitionEvent).propertyName === 'transform') cleanup();
     });
-  }, []);
+  }, []); // Refs only — stable across renders
 
   // Clean up orphaned ghosts on unmount
   useEffect(() => {

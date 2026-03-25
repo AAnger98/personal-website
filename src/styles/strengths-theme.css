@@ -614,6 +614,7 @@ html:has(body.strengths-page) {
 }
 
 /* ── Ghost chip (travel animation) ──────────────────────────────────────── */
+/* Override stepped Terminal Deco transition with smooth easing for clean theme */
 
 .strengths-page .sw-chip-ghost {
   font-family: var(--st-font, inherit);

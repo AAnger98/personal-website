@@ -570,8 +570,10 @@ test.describe('Strengths — Travel Animation (ATR-33)', () => {
 
   test('ghost chip is removed after animation completes', async ({ page }) => {
     const chip = wordChips(page).first();
+    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: 1000 });
     await chip.click();
-    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 1500 }).catch(() => {});
+    await ghostPromise;
+    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 1500 });
     const ghosts = await page.locator('.sw-chip-ghost').count();
     expect(ghosts).toBe(0);
   });
