@@ -259,43 +259,48 @@ test.describe('Strengths — Selection Island', () => {
   });
 });
 
-test.describe('Strengths — Definition Preview Bar', () => {
+test.describe('Strengths — Definition Tooltip (desktop)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
   });
 
-  test('definition bar is present', async ({ page }) => {
+  test('definition bar is hidden on desktop (hover device)', async ({ page }) => {
     const bar = page.locator('.sw-definition-bar');
-    await expect(bar).toBeVisible();
+    await expect(bar).toBeHidden();
   });
 
-  test('idle state shows prompt text', async ({ page }) => {
-    const prompt = page.locator('.sw-definition-bar__prompt');
-    await expect(prompt).toHaveText('Hover over a word to see its definition');
-  });
-
-  test('hovering a word shows its definition', async ({ page }) => {
+  test('hovering a word shows a floating tooltip', async ({ page }) => {
     const chip = wordChips(page).first();
     await chip.hover();
-    const defWord = page.locator('.sw-definition-bar__word');
-    await expect(defWord).toBeVisible();
-    const defText = page.locator('.sw-definition-bar__text');
-    await expect(defText).toBeVisible();
+    const tooltip = page.locator('.sw-tooltip');
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toHaveAttribute('role', 'tooltip');
+    const tooltipWord = tooltip.locator('.sw-tooltip__word');
+    await expect(tooltipWord).toBeVisible();
+    const tooltipText = tooltip.locator('.sw-tooltip__text');
+    await expect(tooltipText).toBeVisible();
   });
 
-  test('moving away returns to idle prompt text', async ({ page }) => {
+  test('moving away hides the tooltip', async ({ page }) => {
     const chip = wordChips(page).first();
     await chip.hover();
-    await expect(page.locator('.sw-definition-bar__word')).toBeVisible();
+    await expect(page.locator('.sw-tooltip')).toBeVisible();
     await page.locator('.sw-header').hover();
-    const prompt = page.locator('.sw-definition-bar__prompt');
-    await expect(prompt).toBeVisible();
+    await expect(page.locator('.sw-tooltip')).toBeHidden();
+  });
+
+  test('tooltip has aria-describedby link from chip', async ({ page }) => {
+    const chip = wordChips(page).first();
+    await chip.hover();
+    const tooltipId = await page.locator('.sw-tooltip').getAttribute('id');
+    const describedBy = await chip.getAttribute('aria-describedby');
+    expect(describedBy).toBe(tooltipId);
   });
 });
 
 test.describe('Strengths — Maxed Chip Hover Peek', () => {
-  test('hovering a maxed chip shows its definition in the bar', async ({ page }) => {
+  test('hovering a maxed chip shows its definition in the tooltip', async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
     const chips = await pickableChips(page, 5);
@@ -305,11 +310,11 @@ test.describe('Strengths — Maxed Chip Hover Peek', () => {
     const maxedChip = page.locator('.sw-chip--maxed').first();
     await expect(maxedChip).toBeVisible();
     await maxedChip.hover();
-    const defWord = page.locator('.sw-definition-bar__word');
-    await expect(defWord).toBeVisible();
-    const defText = page.locator('.sw-definition-bar__text');
-    await expect(defText).toBeVisible();
-    const text = await defText.textContent();
+    const tooltip = page.locator('.sw-tooltip');
+    await expect(tooltip).toBeVisible();
+    const tooltipText = tooltip.locator('.sw-tooltip__text');
+    await expect(tooltipText).toBeVisible();
+    const text = await tooltipText.textContent();
     expect(text?.trim().length).toBeGreaterThan(0);
   });
 });
@@ -542,6 +547,77 @@ test.describe('Strengths flow — feedback step', () => {
     await goToFeedback(page);
     await page.getByRole('button', { name: /SKIP/i }).click();
     await expect(page.locator('.sfb-complete')).toBeVisible();
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Travel Animation — Ghost chip flies from grid to island (ATR-33)
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Travel Animation (ATR-33)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
+  });
+
+  test('clicking a word chip creates a ghost chip element', async ({ page }) => {
+    const chip = wordChips(page).first();
+    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: 1000 });
+    await chip.click();
+    const ghost = await ghostPromise;
+    expect(ghost).toBeTruthy();
+  });
+
+  test('ghost chip is removed after animation completes', async ({ page }) => {
+    const chip = wordChips(page).first();
+    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: 1000 });
+    await chip.click();
+    await ghostPromise;
+    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 1500 });
+    const ghosts = await page.locator('.sw-chip-ghost').count();
+    expect(ghosts).toBe(0);
+  });
+
+  test('ghost chip has aria-hidden=true', async ({ page }) => {
+    const chip = wordChips(page).first();
+    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: 1000 });
+    await chip.click();
+    const ghost = await ghostPromise;
+    expect(await ghost.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  test('rapid clicks on different words do not cause errors', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
+    const chips = wordChips(page);
+    await chips.nth(0).click();
+    await chips.nth(1).click();
+    await chips.nth(2).click();
+    await page.waitForTimeout(700);
+    expect(errors).toHaveLength(0);
+    const counter = page.locator('.sw-counter__num');
+    await expect(counter).toHaveText('3');
+  });
+
+  test('deselecting a word does not leave orphaned ghost chips', async ({ page }) => {
+    const chip = wordChips(page).first();
+    await chip.click();
+    await chip.click();
+    await page.waitForTimeout(700);
+    const ghosts = await page.locator('.sw-chip-ghost').count();
+    expect(ghosts).toBe(0);
+  });
+
+  test('ghost chip does not animate on deselect', async ({ page }) => {
+    const chip = wordChips(page).first();
+    await chip.click();
+    await expect(chip).toHaveAttribute('aria-checked', 'true');
+    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 1500 }).catch(() => {});
+    await chip.click();
+    await page.waitForTimeout(50);
+    expect(await page.locator('.sw-chip-ghost').count()).toBe(0);
   });
 });
 
