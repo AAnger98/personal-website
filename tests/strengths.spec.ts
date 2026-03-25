@@ -43,6 +43,14 @@ async function goToPitch(page: Page) {
   await page.getByRole('button', { name: /CONTINUE/i }).click();
 }
 
+/** Timeout for observing transient ghost chip attach (resolves instantly on success). */
+const GHOST_ATTACH_TIMEOUT = 5000;
+
+/** Wait for all in-flight ghost chips to clear (no-op if none were created). */
+async function waitForGhostToClear(page: Page): Promise<void> {
+  await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 1500 }).catch(() => {});
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // Word Selection Step — Grid, Toggle, Island, Definitions
 // ═══════════════════════════════════════════════════════════════════════════
@@ -300,9 +308,12 @@ test.describe('Strengths — Definition Tooltip (desktop)', () => {
 });
 
 test.describe('Strengths — Tooltip Accessibility', () => {
-  test('focusing a word chip via keyboard shows the tooltip', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
+  });
+
+  test('focusing a word chip via keyboard shows the tooltip', async ({ page }) => {
     const chip = page.locator('.sw-chip').first();
     await chip.scrollIntoViewIfNeeded();
     await chip.focus();
@@ -311,8 +322,6 @@ test.describe('Strengths — Tooltip Accessibility', () => {
   });
 
   test('definition bar has aria-live="polite"', async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
     const bar = page.locator('.sw-definition-bar');
     await expect(bar).toHaveAttribute('aria-live', 'polite');
   });
@@ -577,22 +586,19 @@ test.describe('Strengths — Travel Animation (ATR-33)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
-    // Verify React hydration is complete — SSR renders the HTML but event
-    // handlers only attach after hydration. Under parallel test load the dev
-    // server can be slow, so we probe a chip click and confirm React responds
-    // before running ghost-chip assertions.
+    // Hydration probe — Astro SSR renders HTML before React attaches handlers,
+    // and no hydration event is exposed, so we confirm a chip responds to click.
     const probe = page.locator('.sw-chip').last();
     await probe.click();
     await expect(probe).toHaveAttribute('aria-checked', 'true');
     await probe.click();
     await expect(probe).toHaveAttribute('aria-checked', 'false');
-    // Wait for any ghost from the probe click to clear
-    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 3000 }).catch(() => {});
+    await waitForGhostToClear(page);
   });
 
   test('clicking a word chip creates a ghost chip element', async ({ page }) => {
     const chip = wordChips(page).first();
-    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: 5000 });
+    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: GHOST_ATTACH_TIMEOUT });
     await chip.click();
     const ghost = await ghostPromise;
     expect(ghost).toBeTruthy();
@@ -600,17 +606,17 @@ test.describe('Strengths — Travel Animation (ATR-33)', () => {
 
   test('ghost chip is removed after animation completes', async ({ page }) => {
     const chip = wordChips(page).first();
-    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: 5000 });
+    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: GHOST_ATTACH_TIMEOUT });
     await chip.click();
     await ghostPromise;
-    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 3000 });
+    await waitForGhostToClear(page);
     const ghosts = await page.locator('.sw-chip-ghost').count();
     expect(ghosts).toBe(0);
   });
 
   test('ghost chip has aria-hidden=true', async ({ page }) => {
     const chip = wordChips(page).first();
-    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: 5000 });
+    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: GHOST_ATTACH_TIMEOUT });
     await chip.click();
     const ghost = await ghostPromise;
     expect(await ghost.getAttribute('aria-hidden')).toBe('true');
@@ -625,7 +631,7 @@ test.describe('Strengths — Travel Animation (ATR-33)', () => {
     await chips.nth(0).click();
     await chips.nth(1).click();
     await chips.nth(2).click();
-    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 3000 }).catch(() => {});
+    await waitForGhostToClear(page);
     expect(errors).toHaveLength(0);
     const counter = page.locator('.sw-counter__num');
     await expect(counter).toHaveText('3');
@@ -635,7 +641,7 @@ test.describe('Strengths — Travel Animation (ATR-33)', () => {
     const chip = wordChips(page).first();
     await chip.click();
     await chip.click();
-    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 3000 }).catch(() => {});
+    await waitForGhostToClear(page);
     const ghosts = await page.locator('.sw-chip-ghost').count();
     expect(ghosts).toBe(0);
   });
@@ -644,9 +650,9 @@ test.describe('Strengths — Travel Animation (ATR-33)', () => {
     const chip = wordChips(page).first();
     await chip.click();
     await expect(chip).toHaveAttribute('aria-checked', 'true');
-    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 3000 }).catch(() => {});
+    await waitForGhostToClear(page);
     await chip.click();
-    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 3000 }).catch(() => {});
+    await waitForGhostToClear(page);
     expect(await page.locator('.sw-chip-ghost').count()).toBe(0);
   });
 });

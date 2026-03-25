@@ -347,7 +347,7 @@ html:has(body.strengths-page) {
 .strengths-page .sw-definition-bar__prompt {
   color: var(--st-text-muted);
   font-size: 1.05rem;
-  opacity: 1;
+  opacity: 1; /* reset base rule (strengths.css ~line 858) which sets 0.5 */
 }
 
 /* ── Floating definition tooltip ─────────────────────────────────────────── */
