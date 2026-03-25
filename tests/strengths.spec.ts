@@ -299,6 +299,25 @@ test.describe('Strengths — Definition Tooltip (desktop)', () => {
   });
 });
 
+test.describe('Strengths — Tooltip Accessibility', () => {
+  test('focusing a word chip via keyboard shows the tooltip', async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
+    const chip = page.locator('.sw-chip').first();
+    await chip.scrollIntoViewIfNeeded();
+    await chip.focus();
+    const tooltip = page.locator('#sw-definition-tooltip');
+    await expect(tooltip).toBeVisible();
+  });
+
+  test('definition bar has aria-live="polite"', async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
+    const bar = page.locator('.sw-definition-bar');
+    await expect(bar).toHaveAttribute('aria-live', 'polite');
+  });
+});
+
 test.describe('Strengths — Maxed Chip Hover Peek', () => {
   test('hovering a maxed chip shows its definition in the tooltip', async ({ page }) => {
     await page.goto('/strengths');
