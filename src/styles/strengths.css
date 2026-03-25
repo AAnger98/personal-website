@@ -187,6 +187,30 @@
   background-color: transparent;
 }
 
+/* ─── Ghost chip (travel animation) ─────────────────────────────────────── */
+
+.sw-chip-ghost {
+  position: fixed;
+  z-index: 999;
+  pointer-events: none;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-gold);
+  background-color: color-mix(in srgb, var(--color-green) 25%, transparent);
+  border: 2px solid var(--color-gold);
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+  transition: transform 300ms steps(6), opacity 300ms steps(4);
+}
+
 /* ─── Footer / actions ───────────────────────────────────────────────────── */
 
 .sw-footer {
@@ -207,7 +231,8 @@
   border: 2px solid var(--color-gold);
   background: transparent;
   color: var(--color-gold);
-  padding: 0.6rem 1.5rem;
+  padding: 0.75rem 1.5rem;
+  min-height: 44px;
   cursor: pointer;
   transition: background-color steps(2), color steps(2);
 }
@@ -716,8 +741,8 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
   font-family: var(--font-body);
   font-size: var(--font-size-base);
   font-weight: bold;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border: 1px solid var(--color-green);
   background: transparent;
   color: var(--color-text);
@@ -745,6 +770,18 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
   opacity: 0.5;
   width: 14rem;
   margin-left: var(--space-sm);
+}
+
+@media (max-width: 480px) {
+  .sfb-rating {
+    flex-wrap: wrap;
+  }
+
+  .sfb-rating-labels {
+    width: 100%;
+    margin-left: 0;
+    margin-top: var(--space-xs);
+  }
 }
 
 /* ─── Completion screen ──────────────────────────────────────────────────── */

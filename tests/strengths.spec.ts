@@ -550,6 +550,75 @@ test.describe('Strengths flow — feedback step', () => {
   });
 });
 
+// ═══════════════════════════════════════════════════════════════════════════
+// Travel Animation — Ghost chip flies from grid to island (ATR-33)
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Travel Animation (ATR-33)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/strengths');
+    await page.waitForSelector('.sw-grid');
+  });
+
+  test('clicking a word chip creates a ghost chip element', async ({ page }) => {
+    const chip = wordChips(page).first();
+    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: 1000 });
+    await chip.click();
+    const ghost = await ghostPromise;
+    expect(ghost).toBeTruthy();
+  });
+
+  test('ghost chip is removed after animation completes', async ({ page }) => {
+    const chip = wordChips(page).first();
+    await chip.click();
+    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 1500 }).catch(() => {});
+    const ghosts = await page.locator('.sw-chip-ghost').count();
+    expect(ghosts).toBe(0);
+  });
+
+  test('ghost chip has aria-hidden=true', async ({ page }) => {
+    const chip = wordChips(page).first();
+    const ghostPromise = page.waitForSelector('.sw-chip-ghost', { state: 'attached', timeout: 1000 });
+    await chip.click();
+    const ghost = await ghostPromise;
+    expect(await ghost.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  test('rapid clicks on different words do not cause errors', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
+    const chips = wordChips(page);
+    await chips.nth(0).click();
+    await chips.nth(1).click();
+    await chips.nth(2).click();
+    await page.waitForTimeout(700);
+    expect(errors).toHaveLength(0);
+    const counter = page.locator('.sw-counter__num');
+    await expect(counter).toHaveText('3');
+  });
+
+  test('deselecting a word does not leave orphaned ghost chips', async ({ page }) => {
+    const chip = wordChips(page).first();
+    await chip.click();
+    await chip.click();
+    await page.waitForTimeout(700);
+    const ghosts = await page.locator('.sw-chip-ghost').count();
+    expect(ghosts).toBe(0);
+  });
+
+  test('ghost chip does not animate on deselect', async ({ page }) => {
+    const chip = wordChips(page).first();
+    await chip.click();
+    await expect(chip).toHaveAttribute('aria-checked', 'true');
+    await page.waitForSelector('.sw-chip-ghost', { state: 'detached', timeout: 1500 }).catch(() => {});
+    await chip.click();
+    await page.waitForTimeout(50);
+    expect(await page.locator('.sw-chip-ghost').count()).toBe(0);
+  });
+});
+
 test.describe('Strengths flow — full journey', () => {
   test('completes the full 5-step flow without errors', async ({ page }) => {
     await completeWordSelection(page);

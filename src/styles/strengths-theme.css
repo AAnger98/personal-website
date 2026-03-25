@@ -613,6 +613,17 @@ html:has(body.strengths-page) {
   color: var(--st-accent);
 }
 
+/* ── Ghost chip (travel animation) ──────────────────────────────────────── */
+
+.strengths-page .sw-chip-ghost {
+  font-family: var(--st-font, inherit);
+  color: var(--st-accent);
+  background-color: var(--st-accent-subtle);
+  border: 1px solid var(--st-accent);
+  border-radius: var(--st-radius, 8px);
+  transition: transform 300ms ease, opacity 300ms ease;
+}
+
 /* ── Responsive — small viewport chip padding ────────────────────────────── */
 
 @media (max-width: 480px) {

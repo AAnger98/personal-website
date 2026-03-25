@@ -45,6 +45,10 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
     setTooltipPos(null);
   }, []);
 
+  // Animation refs — track in-flight ghost chips
+  const animatingRef = useRef<Set<string>>(new Set());
+  const islandSlotsRef = useRef<HTMLDivElement | null>(null);
+
   // Telemetry refs — always current, no stale closure issues
   const startedAt = useRef(Date.now());
   const firstSelectedAt = useRef<number | null>(null);
@@ -78,6 +82,67 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
 
     return () => clearInterval(tick);
   }, [phase]);
+
+  /** Animate a ghost chip from the grid chip to the selection island. */
+  const animateChipToIsland = useCallback((chipEl: HTMLButtonElement, word: string) => {
+    if (animatingRef.current.has(word)) return;
+
+    const islandSlots = islandSlotsRef.current;
+    if (!islandSlots) return;
+
+    const sourceRect = chipEl.getBoundingClientRect();
+    const targetRect = islandSlots.getBoundingClientRect();
+
+    const ghost = document.createElement('div');
+    ghost.className = 'sw-chip-ghost';
+    ghost.textContent = word;
+    ghost.setAttribute('aria-hidden', 'true');
+
+    ghost.style.left = `${sourceRect.left}px`;
+    ghost.style.top = `${sourceRect.top}px`;
+    ghost.style.width = `${sourceRect.width}px`;
+    ghost.style.height = `${sourceRect.height}px`;
+
+    document.body.appendChild(ghost);
+    animatingRef.current.add(word);
+
+    // Double-rAF ensures initial position is painted before animating
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const dx = targetRect.left - sourceRect.left;
+        const dy = targetRect.top - sourceRect.top;
+        const scaleX = Math.max(0.3, targetRect.width / sourceRect.width);
+        const islandChip = islandSlots.querySelector('.sw-island__chip');
+        const targetH = islandChip ? islandChip.getBoundingClientRect().height : sourceRect.height;
+        const scaleY = Math.max(0.3, targetH / sourceRect.height);
+        ghost.style.transform = `translate(${dx}px, ${dy}px) scale(${scaleX}, ${scaleY})`;
+        ghost.style.opacity = '0';
+      });
+    });
+
+    let cleaned = false;
+    const timerId = setTimeout(cleanup, 600);
+
+    function cleanup() {
+      if (cleaned) return;
+      cleaned = true;
+      clearTimeout(timerId);
+      if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+      animatingRef.current.delete(word);
+    }
+
+    ghost.addEventListener('transitionend', (e) => {
+      if ((e as TransitionEvent).propertyName === 'transform') cleanup();
+    });
+  }, []);
+
+  // Clean up orphaned ghosts on unmount
+  useEffect(() => {
+    return () => {
+      document.querySelectorAll('.sw-chip-ghost').forEach(el => el.remove());
+      animatingRef.current.clear();
+    };
+  }, []);
 
   const toggleWord = (word: string) => {
     setSelected(prev => {
@@ -200,7 +265,7 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
 
         return (
           <div className="sw-island" aria-label="Selected words">
-            <div className="sw-island__slots">
+            <div className="sw-island__slots" ref={islandSlotsRef}>
               {selectedWords.map(({ word }, index) => (
                 <span key={word} className="sw-island__chip">
                   <button
@@ -297,8 +362,11 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
               aria-checked={isSelected}
               aria-disabled={isMaxed || undefined}
               className={`sw-chip${isSelected ? ' sw-chip--selected' : ''}${isMaxed ? ' sw-chip--maxed' : ''}`}
-              onClick={() => {
+              onClick={(e) => {
                 if (isMaxed) return;
+                if (!isSelected) {
+                  animateChipToIsland(e.currentTarget, word);
+                }
                 toggleWord(word);
               }}
               onMouseEnter={(e) => showDefinition(e.currentTarget, word, definition)}
