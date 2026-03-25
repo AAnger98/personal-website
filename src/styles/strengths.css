@@ -612,7 +612,7 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
 .spi-example {
   padding: 1rem;
   border: 1px solid;
-  border-radius: 8px;
+  border-radius: var(--st-radius, 8px);
 }
 .spi-example__header {
   display: flex;
@@ -978,11 +978,16 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0 0.25rem;
+  padding: 0.5rem;
   font-size: 0.65rem;
   line-height: 1;
   opacity: 0.6;
   transition: opacity 0.15s ease;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .sw-island__chip-move-up:hover:not(:disabled),
 .sw-island__chip-move-down:hover:not(:disabled) {
@@ -992,6 +997,11 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
 .sw-island__chip-move-down:disabled {
   opacity: 0.2;
   cursor: default;
+}
+.sw-island__chip-move-up:focus-visible,
+.sw-island__chip-move-down:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
 }
 
 /* ─── Selection Island — responsive ─────────────────────────────────────── */
