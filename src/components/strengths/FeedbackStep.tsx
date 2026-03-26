@@ -3,9 +3,10 @@ import { logEvent } from '../../lib/telemetry';
 
 interface Props {
   onComplete: () => void;
+  onBack: () => void;
 }
 
-export default function FeedbackStep({ onComplete }: Props) {
+export default function FeedbackStep({ onComplete, onBack }: Props) {
   const [rating, setRating] = useState<number | null>(null);
   const [comment, setComment] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -87,12 +88,17 @@ export default function FeedbackStep({ onComplete }: Props) {
       </div>
 
       <div className="sw-footer sw-footer--with-back">
-        <button className="sw-btn sw-btn--ghost" onClick={handleSkip} type="button">
-          SKIP
+        <button className="sw-btn sw-btn--ghost" onClick={onBack} type="button">
+          ← BACK
         </button>
-        <button className="sw-btn" onClick={handleSubmit} type="button">
-          SUBMIT
-        </button>
+        <div className="sfb-footer-actions">
+          <button className="sw-btn sw-btn--ghost" onClick={handleSkip} type="button">
+            SKIP
+          </button>
+          <button className="sw-btn" onClick={handleSubmit} type="button">
+            SUBMIT
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -96,6 +96,7 @@ export default function StrengthsFlow({ words }: Props) {
             setStep('pitch');
           }}
           onBack={() => setStep('word-selection')}
+          onReorder={newOrder => setSelectedWords(newOrder)}
         />
       )}
 
@@ -121,7 +122,7 @@ export default function StrengthsFlow({ words }: Props) {
       )}
 
       {step === 'feedback' && (
-        <FeedbackStep onComplete={handleRestart} />
+        <FeedbackStep onComplete={handleRestart} onBack={() => setStep('pdf')} />
       )}
       </div>
     </div>
