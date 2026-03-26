@@ -149,6 +149,7 @@
   cursor: pointer;
   transition: border-color steps(2), color steps(2), background-color steps(2);
   user-select: none;
+  white-space: nowrap;
 }
 
 .sw-chip:hover {
@@ -1017,39 +1018,6 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
   letter-spacing: 0.15em;
   color: var(--color-text);
   opacity: 0.7;
-}
-
-/* ─── Selection Island — reorder buttons ────────────────────────────────── */
-
-.sw-island__chip-move-up,
-.sw-island__chip-move-down {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  font-size: 0.65rem;
-  line-height: 1;
-  opacity: 0.6;
-  transition: opacity 0.15s ease;
-  min-width: 44px;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.sw-island__chip-move-up:hover:not(:disabled),
-.sw-island__chip-move-down:hover:not(:disabled) {
-  opacity: 1;
-}
-.sw-island__chip-move-up:disabled,
-.sw-island__chip-move-down:disabled {
-  opacity: 0.2;
-  cursor: default;
-}
-.sw-island__chip-move-up:focus-visible,
-.sw-island__chip-move-down:focus-visible {
-  outline: 2px solid var(--color-gold);
-  outline-offset: 2px;
 }
 
 /* ─── Selection Island — responsive ─────────────────────────────────────── */

@@ -161,15 +161,6 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
     });
   };
 
-  const handleReorder = (fromIndex: number, toIndex: number) => {
-    setSelected(prev => {
-      const next = [...prev];
-      const [moved] = next.splice(fromIndex, 1);
-      next.splice(toIndex, 0, moved);
-      return next;
-    });
-  };
-
   const handleContinue = () => {
     if (selected.length !== MAX_WORDS) return;
     logEvent('strengths_selection_complete', {
@@ -270,25 +261,7 @@ export default function WordSelectionStep({ words, initialSelected = [], onCompl
             <div className="sw-island__slots" ref={islandSlotsRef}>
               {selectedWords.map(({ word }, index) => (
                 <span key={word} className="sw-island__chip">
-                  <button
-                    className="sw-island__chip-move-up"
-                    onClick={() => handleReorder(index, index - 1)}
-                    disabled={index === 0}
-                    aria-label={`Move ${word} up`}
-                    type="button"
-                  >
-                    {'\u25B2'}
-                  </button>
                   <span className="sw-island__chip-label">{'\u2611'} {word}</span>
-                  <button
-                    className="sw-island__chip-move-down"
-                    onClick={() => handleReorder(index, index + 1)}
-                    disabled={index === selectedWords.length - 1}
-                    aria-label={`Move ${word} down`}
-                    type="button"
-                  >
-                    {'\u25BC'}
-                  </button>
                   <button
                     className="sw-island__chip-close"
                     onClick={() => toggleWord(word)}
