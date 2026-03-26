@@ -817,137 +817,164 @@ test.describe('Strengths — Tablet (768px)', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Word Reordering — Move-up / Move-down buttons (ATR-18)
+// Selection Screen — No Reorder Buttons (reorder moved to reflection)
 // ═══════════════════════════════════════════════════════════════════════════
 
-test.describe('Strengths — Word Reordering', () => {
-  test.beforeEach(async ({ page }) => {
+test.describe('Strengths — Selection Screen Has No Reorder Buttons', () => {
+  test('selection island does not have move-up / move-down buttons', async ({ page }) => {
     await page.goto('/strengths');
     await page.waitForSelector('.sw-grid');
-  });
 
-  test('island chips have move-up and move-down buttons', async ({ page }) => {
     // Select 3 words
     const chips = page.locator('.sw-grid .sw-chip');
     for (let i = 0; i < 3; i++) {
       await chips.nth(i).click();
     }
 
-    const moveUp = page.locator('.sw-island__chip-move-up');
-    const moveDown = page.locator('.sw-island__chip-move-down');
-
-    await expect(moveUp).toHaveCount(3);
-    await expect(moveDown).toHaveCount(3);
-
-    // First chip: move-up should be disabled
-    await expect(moveUp.first()).toBeDisabled();
-    // Last chip: move-down should be disabled
-    await expect(moveDown.last()).toBeDisabled();
+    await expect(page.locator('.sw-island__chip-move-up')).toHaveCount(0);
+    await expect(page.locator('.sw-island__chip-move-down')).toHaveCount(0);
   });
-
-  test('clicking move-down swaps chip with next chip', async ({ page }) => {
-    const chips = page.locator('.sw-grid .sw-chip');
-    for (let i = 0; i < 3; i++) {
-      await chips.nth(i).click();
-    }
-
-    // Get initial order
-    const labels = page.locator('.sw-island__chip-label');
-    const initialFirst = await labels.nth(0).textContent();
-    const initialSecond = await labels.nth(1).textContent();
-
-    // Click move-down on the first chip
-    const moveDown = page.locator('.sw-island__chip-move-down');
-    await moveDown.first().click();
-
-    // After swap, first should now be what was second, and second should be what was first
-    const newFirst = await labels.nth(0).textContent();
-    const newSecond = await labels.nth(1).textContent();
-    expect(newFirst).toBe(initialSecond);
-    expect(newSecond).toBe(initialFirst);
-  });
-
-  test('clicking move-up swaps chip with previous chip', async ({ page }) => {
-    const chips = page.locator('.sw-grid .sw-chip');
-    for (let i = 0; i < 3; i++) {
-      await chips.nth(i).click();
-    }
-
-    // Get initial order
-    const labels = page.locator('.sw-island__chip-label');
-    const initialFirst = await labels.nth(0).textContent();
-    const initialSecond = await labels.nth(1).textContent();
-
-    // Click move-up on the second chip
-    const moveUp = page.locator('.sw-island__chip-move-up');
-    await moveUp.nth(1).click();
-
-    // Second chip should now be first
-    const newFirst = await labels.nth(0).textContent();
-    const newSecond = await labels.nth(1).textContent();
-    expect(newFirst).toBe(initialSecond);
-    expect(newSecond).toBe(initialFirst);
-  });
-
-  test('reordered words persist through to reflection step', async ({ page }) => {
-    // Select 5 words
-    const chips = page.locator('.sw-grid .sw-chip');
-    for (let i = 0; i < 5; i++) {
-      await chips.nth(i).click();
-    }
-
-    // Get initial first two labels
-    const labels = page.locator('.sw-island__chip-label');
-    const originalFirst = (await labels.nth(0).textContent())?.replace(/[☑☐]\s*/, '').trim();
-    const originalSecond = (await labels.nth(1).textContent())?.replace(/[☑☐]\s*/, '').trim();
-
-    // Swap first two via move-down on first
-    const moveDown = page.locator('.sw-island__chip-move-down');
-    await moveDown.first().click();
-
-    // Click CONTINUE to go to reflection step
-    await page.getByRole('button', { name: /CONTINUE/i }).click();
-
-    // Check reflection step headers show new order
-    const reflectionHeaders = page.locator('.sr-word-header');
-    const firstHeader = await reflectionHeaders.nth(0).textContent();
-    const secondHeader = await reflectionHeaders.nth(1).textContent();
-
-    // After swap: originalSecond should be first, originalFirst should be second
-    expect(firstHeader).toContain(originalSecond);
-    expect(secondHeader).toContain(originalFirst);
-  });
-
 });
 
-test.describe('Strengths — Word Reordering (mobile)', () => {
-  test.use({ viewport: { width: 375, height: 812 } });
+// ═══════════════════════════════════════════════════════════════════════════
+// Reflection Step — Reordering, Contextual Placeholders (ATR-18 / ATR-29)
+// ═══════════════════════════════════════════════════════════════════════════
 
-  test('reorder buttons work on mobile viewport', async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+test.describe('Strengths — Reflection Reordering', () => {
+  test('reflection cards have ▲/▼ reorder buttons', async ({ page }) => {
+    await completeWordSelection(page);
 
-    // Select 2 words
-    const chips = page.locator('.sw-grid .sw-chip');
-    await chips.nth(0).click();
-    await chips.nth(1).click();
+    const reorderBtns = page.locator('.sr-reorder-btn');
+    // 5 cards × 2 buttons each = 10
+    await expect(reorderBtns).toHaveCount(10);
+  });
 
-    // Verify move-down is visible
-    const moveDown = page.locator('.sw-island__chip-move-down');
-    await expect(moveDown.first()).toBeVisible();
+  test('first card ▲ is disabled, last card ▼ is disabled', async ({ page }) => {
+    await completeWordSelection(page);
 
-    // Get initial order
-    const labels = page.locator('.sw-island__chip-label');
-    const initialFirst = await labels.nth(0).textContent();
-    const initialSecond = await labels.nth(1).textContent();
+    // First card's move-up button should be disabled
+    const firstUp = page.locator('.sr-reorder-btn').first();
+    await expect(firstUp).toBeDisabled();
 
-    // Click move-down on first
-    await moveDown.first().click();
+    // Last card's move-down button (last of all reorder buttons)
+    const lastDown = page.locator('.sr-reorder-btn').last();
+    await expect(lastDown).toBeDisabled();
+  });
 
-    // Verify swap worked
-    const newFirst = await labels.nth(0).textContent();
-    const newSecond = await labels.nth(1).textContent();
-    expect(newFirst).toBe(initialSecond);
-    expect(newSecond).toBe(initialFirst);
+  test('clicking ▼ on first card swaps it with second', async ({ page }) => {
+    await completeWordSelection(page);
+
+    const headers = page.locator('.sr-word-header');
+    // Extract just the word (strip "N. " prefix since numbers are index-based)
+    const stripNum = (s: string | null) => s?.replace(/^\d+\.\s*/, '').trim();
+    const initialFirstWord = stripNum(await headers.nth(0).textContent());
+    const initialSecondWord = stripNum(await headers.nth(1).textContent());
+
+    // Click move-down (▼) on first card
+    const firstCardDown = page.getByRole('button', { name: /Move .+ down/i }).first();
+    await firstCardDown.click();
+
+    const newFirstWord = stripNum(await headers.nth(0).textContent());
+    const newSecondWord = stripNum(await headers.nth(1).textContent());
+    expect(newFirstWord).toBe(initialSecondWord);
+    expect(newSecondWord).toBe(initialFirstWord);
+  });
+
+  test('textarea content is preserved after reorder', async ({ page }) => {
+    await completeWordSelection(page);
+
+    // Fill textarea on the first card
+    const firstTextarea = page.locator('.sr-field textarea').first();
+    await firstTextarea.fill('My test reflection text');
+
+    // Get the first word (strip number prefix)
+    const headers = page.locator('.sr-word-header');
+    const stripNum = (s: string | null) => s?.replace(/^\d+\.\s*/, '').trim();
+    const initialFirstWord = stripNum(await headers.nth(0).textContent());
+
+    // Click move-down on first card to swap with second
+    const firstCardDown = page.getByRole('button', { name: /Move .+ down/i }).first();
+    await firstCardDown.click();
+
+    // The first card's word should now be in the second position
+    const newSecondWord = stripNum(await headers.nth(1).textContent());
+    expect(newSecondWord).toBe(initialFirstWord);
+
+    // The textarea for that card (now second) should still have the text
+    // Each card has 2 textareas, so the second card's first textarea is index 2
+    const movedTextarea = page.locator('.sr-field textarea').nth(2);
+    await expect(movedTextarea).toHaveValue('My test reflection text');
+  });
+
+  test('reordered words carry through to pitch step', async ({ page }) => {
+    await completeWordSelection(page);
+
+    const headers = page.locator('.sr-word-header');
+    const initialSecond = await headers.nth(1).textContent();
+    // Extract just the word (strip "2. " prefix)
+    const secondWord = initialSecond?.replace(/^\d+\.\s*/, '').trim();
+
+    // Move second card up to first position
+    const secondCardUp = page.getByRole('button', { name: /Move .+ up/i }).nth(1);
+    await secondCardUp.click();
+
+    // Continue to pitch step
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+
+    // The anchor word in pitch should be the new first word
+    const anchorWord = await page.locator('.spi-anchor-word').textContent();
+    expect(anchorWord?.trim()).toBe(secondWord);
+  });
+
+  test('ARIA live region announces position changes', async ({ page }) => {
+    await completeWordSelection(page);
+
+    // Click move-down on first card
+    const firstCardDown = page.getByRole('button', { name: /Move .+ down/i }).first();
+    await firstCardDown.click();
+
+    // Check the live region text
+    const liveRegion = page.locator('.sr-visually-hidden[aria-live="assertive"]');
+    await expect(liveRegion).toContainText('moved to position');
+  });
+});
+
+test.describe('Strengths — Reflection Contextual Placeholders', () => {
+  test('textarea placeholders contain the lowercased word', async ({ page }) => {
+    await completeWordSelection(page);
+
+    // Get the first word from the header
+    const firstHeader = await page.locator('.sr-word-header').first().textContent();
+    const word = firstHeader?.replace(/^\d+\.\s*/, '').trim() ?? '';
+    const lowerWord = word.toLowerCase();
+
+    // First card has two textareas: "why" and "moment"
+    const firstWhyTextarea = page.locator('.sr-field textarea').nth(0);
+    const firstMomentTextarea = page.locator('.sr-field textarea').nth(1);
+
+    const whyPlaceholder = await firstWhyTextarea.getAttribute('placeholder');
+    const momentPlaceholder = await firstMomentTextarea.getAttribute('placeholder');
+
+    expect(whyPlaceholder).toContain(`I am at my best when I'm ${lowerWord}`);
+    expect(momentPlaceholder).toContain(`A time my ${lowerWord} made a difference`);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Feedback Step — Back Navigation
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Feedback Back Navigation', () => {
+  test('back button on feedback step returns to PDF step (step 4)', async ({ page }) => {
+    await completeWordSelection(page);
+    // Advance to feedback (step 5): reflection → pitch → pdf → feedback
+    for (let i = 0; i < 3; i++) {
+      await page.getByRole('button', { name: /CONTINUE/i }).click();
+    }
+    await expect(page.getByText('5 of 5', { exact: true })).toBeVisible();
+
+    // Click BACK
+    await page.getByRole('button', { name: /BACK/i }).click();
+    await expect(page.getByText('4 of 5', { exact: true })).toBeVisible();
   });
 });
