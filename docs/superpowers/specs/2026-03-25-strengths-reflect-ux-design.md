@@ -7,7 +7,7 @@
 
 ## Summary
 
-Five changes to the strengths workflow improving the reflect step's usability: drag-and-drop card reordering on the reflection screen, back navigation across all steps, contextual placeholder text in reflection textareas, a mobile checkbox wrapping fix, and removal of the now-unnecessary reorder buttons from the selection screen.
+Five changes to the strengths workflow improving the reflect step's usability: drag-and-drop card reordering on the reflection screen, back navigation on the feedback step, contextual placeholder text in reflection textareas, a mobile checkbox wrapping fix, and removal of the now-unnecessary reorder buttons from the selection screen.
 
 ---
 
@@ -44,34 +44,41 @@ Each reflection card (word + two textareas) is draggable. Users reorder their 5 
 - Drop indicator: a 2px `--color-gold` horizontal line between cards at the insertion point
 - Transitions use `steps(4)` for Terminal Deco aesthetic consistency
 
+**Keyboard accessibility:**
+- Drag handle is focusable (`tabIndex={0}`)
+- `Space` or `Enter` on a focused handle enters "keyboard drag mode" — announce via `aria-live` region
+- `ArrowUp` / `ArrowDown` moves the card; `Escape` cancels; `Space` or `Enter` confirms the drop
+- This replaces the accessibility provided by the removed up/down buttons on the selection screen
+
+**Edge cases:**
+- Dropping a card back on its original position: no-op, no state mutation
+- `Escape` key during drag: cancel drag, snap card back to original position
+- Auto-scroll: if the card list extends beyond the viewport during drag, scroll the container when the drag position nears the top or bottom edge
+
 **State management:**
-- Reorder mutates `selectedWords` array in `StrengthsFlow.tsx` via a callback prop passed to `ReflectionStep`
+- `StrengthsFlow.tsx` adds an `onReorder: (reordered: string[]) => void` callback prop passed to `ReflectionStep`
+- `onReorder` calls `setSelectedWords(reordered)` in the parent, keeping the source of truth in StrengthsFlow
 - Reflection content keyed by word string, so reordering the array preserves all textarea content
 - Reordered position carries through to Pitch (`topWord = selectedWords[0]`) and PDF generation
 
 ---
 
-## Change 2: Back Navigation Across All Steps
+## Change 2: Add Back Navigation to Feedback Step
 
 ### Current behavior
-Each step has only forward navigation (continue/complete) and a "START OVER" reset. No way to return to a previous step.
+Back buttons already exist on Reflection (→ Word Selection), Pitch (→ Reflection), and PDF (→ Pitch). However, the Feedback step has no back button — once you reach it, you can only submit or skip.
 
 ### New behavior
-A "BACK" button on every step after Word Selection:
-- Reflection → Word Selection
-- Pitch → Reflection
-- PDF → Pitch
-- Feedback → PDF
+Add a "BACK" button to the Feedback step that returns to the PDF/Download step.
 
 ### Implementation details
 
-**Button placement:** Bottom-left of each step's action area, alongside existing forward buttons.
+**Pattern:** Follow the existing `onBack` prop pattern used by ReflectionStep, PitchStep, and PdfDownloadStep.
 
-**Styling:** Courier New, uppercase, bold — matching existing button patterns. Secondary visual weight (outline or muted) so the primary action (continue) remains dominant.
-
-**State preservation:** All state is preserved when navigating backward. Returning to Reflection from Pitch keeps all reflection text intact. Returning to Word Selection from Reflection keeps selections and any partial reflections.
-
-**Step setter:** `StrengthsFlow.tsx` passes a `onBack` callback to each step component. Each step calls `onBack()` which sets the step state to the previous step value.
+- Add `onBack: () => void` to FeedbackStep's Props interface
+- Pass `onBack={() => setStep('pdf')}` from StrengthsFlow
+- Render a "BACK" button using the same `sw-btn sw-btn--ghost` class used on other steps
+- Back button should be available both before and after submission (user may want to re-download the PDF)
 
 ---
 
@@ -85,17 +92,17 @@ All textareas use the same generic placeholder text regardless of which word is 
 ### New behavior
 Placeholders are contextual to the selected word. Examples for "Analyzing":
 - Why: `"I am at my best when I'm analyzing..."`
-- Moment: `"A time my analyzing made a difference was..."`
+- Moment: `"A time when analyzing made a real difference was..."`
 
 ### Implementation details
 
 **Placeholder generation:**
 - Template functions that interpolate the word:
   - Why: `"I am at my best when I'm ${word.toLowerCase()}..."`
-  - Moment: `"A time my ${word.toLowerCase()} made a difference was..."`
+  - Moment: `"A time when ${word.toLowerCase()} made a real difference was..."`
 - Words in the wordlist are gerunds (e.g. "Analyzing", "Strategizing", "Leading"), so lowercase insertion reads naturally
 
-**Location:** Update the `PROMPTS` definition in `ReflectionStep.tsx` to accept the word and generate dynamic placeholders, or compute placeholders inline when rendering each word's textareas.
+**Location:** Change `PROMPTS` from a static array to a function that accepts the word and returns the prompt tuples with interpolated placeholders.
 
 ---
 
@@ -130,23 +137,23 @@ Remove the up/down buttons and the `handleReorder` function from `WordSelectionS
 
 | File | Changes |
 |---|---|
-| `src/components/strengths/ReflectionStep.tsx` | Drag-and-drop logic, contextual placeholders, back button |
-| `src/components/strengths/StrengthsFlow.tsx` | Reorder callback prop, back navigation state, onBack props |
+| `src/components/strengths/ReflectionStep.tsx` | Drag-and-drop logic, contextual placeholders, onReorder callback |
+| `src/components/strengths/StrengthsFlow.tsx` | `onReorder` prop, `onBack` for FeedbackStep |
 | `src/components/strengths/WordSelectionStep.tsx` | Remove reorder buttons and handleReorder |
-| `src/components/strengths/PitchStep.tsx` | Add back button |
-| `src/components/strengths/PdfDownloadStep.tsx` | Add back button |
-| `src/components/strengths/FeedbackStep.tsx` | Add back button |
+| `src/components/strengths/FeedbackStep.tsx` | Add `onBack` prop and back button |
 | `src/styles/strengths.css` | Drag handle styles, drop indicator, remove reorder button CSS, nowrap fix |
 | `src/styles/strengths-theme.css` | Drag handle theme overrides if needed |
-| `tests/strengths.spec.ts` | Update reorder tests, add back nav tests, update placeholder assertions |
+| `tests/strengths.spec.ts` | Replace selection-screen reorder tests with reflection-screen drag tests, add feedback back nav test, update placeholder assertions |
 
 ---
 
 ## Testing requirements
 
 - Drag-and-drop reorder on reflection step changes card order and preserves textarea content
+- Keyboard reorder (Space to grab, ArrowUp/Down to move, Space to drop) works equivalently
 - Reordered words carry through to pitch (top word) and PDF
-- Back button on each step returns to previous step with state preserved
-- Contextual placeholders display the correct word
+- Feedback step back button returns to PDF step
+- Contextual placeholders display the correct word for each strength
 - Checkbox and word text stay on same line on mobile viewports
 - Selection screen no longer shows reorder buttons
+- Existing selection-screen reorder tests are replaced (not just deleted) with reflection-screen equivalents

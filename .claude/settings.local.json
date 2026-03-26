@@ -24,7 +24,28 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4321/)",
       "WebFetch(domain:www.linkedin.com)",
       "Bash(python3 -c \":*)",
-      "Bash(python -c \":*)"
+      "Bash(python -c \":*)",
+      "Bash(where.exe gh:*)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" --version)",
+      "Bash(\"/c/Program Files \\(x86\\)/GitHub CLI/gh.exe\" --version)",
+      "Bash(\"$LOCALAPPDATA/Programs/GitHub CLI/gh.exe\" --version)",
+      "Bash(cmd.exe //c \"gh --version\")",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" pr view 6 2>&1)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" pr diff 6 2>&1)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" pr diff 6 -- ':\\(exclude\\)package-lock.json')",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" pr diff 6)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" pr merge 6 --merge 2>&1)",
+      "mcp__claude_ai_Linear__list_teams",
+      "mcp__claude_ai_Linear__list_issues",
+      "mcp__claude_ai_Linear__save_issue",
+      "Bash(jq --version)",
+      "mcp__plugin_playwright_playwright__browser_resize",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "mcp__plugin_playwright_playwright__browser_evaluate",
+      "mcp__plugin_playwright_playwright__browser_click",
+      "mcp__plugin_playwright_playwright__browser_close",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" pr list and can you commit the location of the gh cli into your memory moving forward?)",
+      "Bash(grep -r logEvent /c/Users/adama/OneDrive/Documents/projects/personal-website/src/lib --include=*.ts --include=*.tsx)"
     ]
   }
 }
