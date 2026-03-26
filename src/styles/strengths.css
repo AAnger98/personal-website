@@ -477,7 +477,6 @@
 .sr-word-block--touch-dragging {
   opacity: 0.85;
   border-color: var(--color-gold);
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
 }
 
 .sr-word-block--drop-target {

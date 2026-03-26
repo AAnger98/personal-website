@@ -110,8 +110,15 @@ export default function ReflectionStep({ selectedWords, onComplete, onBack, onRe
     setLiveMessage(`${selectedWords[index]} moved to position ${index + 2} of ${selectedWords.length}`);
   }, [selectedWords, onReorder]);
 
+  // Track whether drag was initiated from the handle
+  const dragFromHandle = useRef(false);
+
   // HTML5 Drag handlers
   const handleDragStart = (e: React.DragEvent, index: number) => {
+    if (!dragFromHandle.current) {
+      e.preventDefault();
+      return;
+    }
     setDragIndex(index);
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', String(index));
@@ -126,10 +133,6 @@ export default function ReflectionStep({ selectedWords, onComplete, onBack, onRe
     e.dataTransfer.dropEffect = 'move';
     if (dragIndex === null) return;
     setDropTarget(index);
-  };
-
-  const handleDragLeave = () => {
-    // Only clear if we're leaving the container area
   };
 
   const handleDrop = (e: React.DragEvent, targetIndex: number) => {
@@ -147,6 +150,7 @@ export default function ReflectionStep({ selectedWords, onComplete, onBack, onRe
   };
 
   const handleDragEnd = () => {
+    dragFromHandle.current = false;
     cleanupDrag();
   };
 
@@ -264,7 +268,6 @@ export default function ReflectionStep({ selectedWords, onComplete, onBack, onRe
               draggable
               onDragStart={e => handleDragStart(e, wordIndex)}
               onDragOver={e => handleDragOver(e, wordIndex)}
-              onDragLeave={handleDragLeave}
               onDrop={e => handleDrop(e, wordIndex)}
               onDragEnd={handleDragEnd}
               aria-roledescription="reorderable item"
@@ -278,6 +281,8 @@ export default function ReflectionStep({ selectedWords, onComplete, onBack, onRe
                 <span
                   className="sr-drag-handle"
                   aria-hidden="true"
+                  onMouseDown={() => { dragFromHandle.current = true; }}
+                  onMouseUp={() => { dragFromHandle.current = false; }}
                   onTouchStart={e => handleTouchStart(e, wordIndex)}
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleTouchEnd}
