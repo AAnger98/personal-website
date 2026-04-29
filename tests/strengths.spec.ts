@@ -5,6 +5,15 @@ test.describe.configure({ mode: 'serial' });
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
+/**
+ * Dismiss the intro step and wait for the word-selection grid.
+ * Use after `page.goto('/strengths')` whenever a test needs the grid.
+ */
+async function dismissIntro(page: Page): Promise<void> {
+  await page.getByRole('button', { name: /^BEGIN/i }).click();
+  await page.waitForSelector('.sw-grid');
+}
+
 /** Return all word chip buttons in the grid. */
 function wordChips(page: Page): Locator {
   return page.locator('.sw-grid button[role="checkbox"]');
@@ -29,7 +38,7 @@ async function pickableChips(page: Page, count: number): Promise<Locator[]> {
 /** Select 5 words and click Continue to advance past word selection. */
 async function completeWordSelection(page: Page) {
   await page.goto('/strengths');
-  await page.waitForSelector('.sw-grid');
+  await dismissIntro(page);
   const chips = page.locator('.sw-grid .sw-chip');
   for (let i = 0; i < 5; i++) {
     await chips.nth(i).click();
@@ -67,8 +76,8 @@ test.describe('Strengths — Page Load', () => {
   });
 
   test('word grid renders with buttons', async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
     const chips = wordChips(page);
     const count = await chips.count();
     expect(count).toBeGreaterThan(0);
@@ -77,8 +86,8 @@ test.describe('Strengths — Page Load', () => {
 
 test.describe('Strengths — Word Grid Layout', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
   });
 
   test('grid contains word buttons with role="checkbox"', async ({ page }) => {
@@ -105,8 +114,8 @@ test.describe('Strengths — Word Grid Layout', () => {
 
 test.describe('Strengths — Selection Behavior', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
   });
 
   test('clicking a word toggles aria-checked from false to true', async ({ page }) => {
@@ -144,8 +153,8 @@ test.describe('Strengths — Selection Behavior', () => {
 
 test.describe('Strengths — Max Selection', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
   });
 
   test('after selecting 5 words, remaining buttons get .sw-chip--maxed', async ({ page }) => {
@@ -221,8 +230,8 @@ test.describe('Strengths — Max Selection', () => {
 
 test.describe('Strengths — Selection Island', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
   });
 
   test('island container is present', async ({ page }) => {
@@ -269,8 +278,8 @@ test.describe('Strengths — Selection Island', () => {
 
 test.describe('Strengths — Definition Tooltip (desktop)', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
   });
 
   test('definition bar is hidden on desktop (hover device)', async ({ page }) => {
@@ -309,8 +318,8 @@ test.describe('Strengths — Definition Tooltip (desktop)', () => {
 
 test.describe('Strengths — Tooltip Accessibility', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
   });
 
   test('focusing a word chip via keyboard shows the tooltip', async ({ page }) => {
@@ -329,8 +338,8 @@ test.describe('Strengths — Tooltip Accessibility', () => {
 
 test.describe('Strengths — Maxed Chip Hover Peek', () => {
   test('hovering a maxed chip shows its definition in the tooltip', async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
     const chips = await pickableChips(page, 5);
     for (const chip of chips) {
       await chip.click();
@@ -352,13 +361,13 @@ test.describe('Strengths — Responsive Layout', () => {
     const defaultContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     const defaultPage = await defaultContext.newPage();
     await defaultPage.goto('/strengths');
-    await defaultPage.waitForSelector('.sw-grid');
+    await dismissIntro(defaultPage);
     const defaultBox = await defaultPage.locator('.sw-grid').boundingBox();
 
     const narrowContext = await browser.newContext({ viewport: { width: 600, height: 720 } });
     const narrowPage = await narrowContext.newPage();
     await narrowPage.goto('/strengths');
-    await narrowPage.waitForSelector('.sw-grid');
+    await dismissIntro(narrowPage);
     const narrowBox = await narrowPage.locator('.sw-grid').boundingBox();
 
     expect(defaultBox).toBeTruthy();
@@ -372,8 +381,8 @@ test.describe('Strengths — Responsive Layout', () => {
 
 test.describe('Strengths — Timer', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
   });
 
   test('timer element is visible', async ({ page }) => {
@@ -401,8 +410,14 @@ test.describe('Strengths — Timer', () => {
 // ═══════════════════════════════════════════════════════════════════════════
 
 test.describe('Strengths flow — progress indicator', () => {
-  test('shows step 1 of 5 on load', async ({ page }) => {
+  test('progress indicator is hidden on intro step', async ({ page }) => {
     await page.goto('/strengths');
+    await expect(page.locator('.sp-meta__count')).toHaveCount(0);
+  });
+
+  test('shows step 1 of 5 after dismissing intro', async ({ page }) => {
+    await page.goto('/strengths');
+    await dismissIntro(page);
     await expect(page.getByText('1 of 5')).toBeVisible();
   });
 
@@ -413,11 +428,11 @@ test.describe('Strengths flow — progress indicator', () => {
 });
 
 test.describe('Strengths flow — restart', () => {
-  test('restart button resets to step 1', async ({ page }) => {
+  test('restart button resets to intro step', async ({ page }) => {
     await completeWordSelection(page);
     await page.getByRole('button', { name: /START OVER/i }).click();
-    await expect(page.getByText('1 of 5')).toBeVisible();
-    await expect(page.locator('.sw-chip--selected')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /^BEGIN/i })).toBeVisible();
+    await expect(page.locator('.sp-meta__count')).toHaveCount(0);
   });
 });
 
@@ -584,8 +599,8 @@ test.describe('Strengths flow — feedback step', () => {
 
 test.describe('Strengths — Travel Animation (ATR-33)', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
     // Hydration probe — Astro SSR renders HTML before React attaches handlers,
     // and no hydration event is exposed, so we confirm a chip responds to click.
     const probe = page.locator('.sw-chip').last();
@@ -701,7 +716,7 @@ test.describe('Strengths flow — full journey', () => {
     await expect(page.getByText('3 of 5', { exact: true })).toBeVisible();
   });
 
-  test('START OVER from completion screen resets to step 1', async ({ page }) => {
+  test('START OVER from completion screen resets to intro', async ({ page }) => {
     await completeWordSelection(page);
     for (let i = 0; i < 3; i++) {
       await page.getByRole('button', { name: /CONTINUE/i }).click();
@@ -709,14 +724,13 @@ test.describe('Strengths flow — full journey', () => {
     await page.getByRole('button', { name: /SKIP/i }).click();
     await expect(page.locator('.sfb-complete')).toBeVisible();
     await page.locator('.sfb-complete').getByRole('button', { name: /START OVER/i }).click();
-    await expect(page.getByText('1 of 5', { exact: true })).toBeVisible();
-    await expect(page.locator('.sw-chip--selected')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /^BEGIN/i })).toBeVisible();
   });
 
   test('page loads in under 3 seconds', async ({ page }) => {
     const start = Date.now();
     await page.goto('/strengths');
-    await page.locator('.sw-grid').waitFor();
+    await dismissIntro(page);
     const elapsed = Date.now() - start;
     expect(elapsed).toBeLessThan(3000);
   });
@@ -727,7 +741,7 @@ test.describe('Strengths flow — full journey', () => {
       if (msg.type() === 'error') errors.push(msg.text());
     });
     await page.goto('/strengths');
-    await page.locator('.sw-grid').waitFor();
+    await dismissIntro(page);
     expect(errors).toHaveLength(0);
   });
 });
@@ -740,8 +754,8 @@ test.describe('Strengths — Mobile (375px iPhone SE)', () => {
   test.use({ viewport: { width: 375, height: 667 } });
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
   });
 
   test('grid shows 2 columns at 375px width', async ({ page }) => {
@@ -803,8 +817,8 @@ test.describe('Strengths — Tablet (768px)', () => {
   test.use({ viewport: { width: 768, height: 1024 } });
 
   test('grid shows 3 columns at 768px width', async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
 
     const grid = page.locator('.sw-grid');
     const gridColumns = await grid.evaluate(
@@ -822,8 +836,8 @@ test.describe('Strengths — Tablet (768px)', () => {
 
 test.describe('Strengths — Selection Screen Has No Reorder Buttons', () => {
   test('selection island does not have move-up / move-down buttons', async ({ page }) => {
-    await page.goto('/strengths');
-    await page.waitForSelector('.sw-grid');
+    await page.goto("/strengths");
+    await dismissIntro(page);
 
     // Select 3 words
     const chips = page.locator('.sw-grid .sw-chip');
@@ -976,5 +990,124 @@ test.describe('Strengths — Feedback Back Navigation', () => {
     // Click BACK
     await page.getByRole('button', { name: /BACK/i }).click();
     await expect(page.getByText('4 of 5', { exact: true })).toBeVisible();
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Intro Step
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Intro Step', () => {
+  test('intro renders before word selection grid', async ({ page }) => {
+    await page.goto('/strengths');
+    await expect(page.getByRole('button', { name: /^BEGIN/i })).toBeVisible();
+    await expect(page.locator('.sw-grid')).toHaveCount(0);
+  });
+
+  test('intro lists all four exercise steps', async ({ page }) => {
+    await page.goto('/strengths');
+    const steps = page.locator('.si-step');
+    await expect(steps).toHaveCount(4);
+  });
+
+  test('intro flags the timer on Step 1', async ({ page }) => {
+    await page.goto('/strengths');
+    await expect(page.locator('.si-timer-warning')).toBeVisible();
+    await expect(page.locator('.si-timer-warning')).toContainText(/timer/i);
+  });
+
+  test('clicking BEGIN transitions to word selection (timer not running before)', async ({ page }) => {
+    await page.goto('/strengths');
+    // Timer must not exist yet
+    await expect(page.locator('.sw-timer__display')).toHaveCount(0);
+    await dismissIntro(page);
+    // Timer is present and starts at 5:00
+    await expect(page.locator('.sw-timer__display')).toHaveText('5:00');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Reflection Step — Strength-ranking callout
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Rank-by-strongest callout', () => {
+  test('reflect step shows a prominent rank callout', async ({ page }) => {
+    await completeWordSelection(page);
+    const callout = page.locator('.sr-order-callout');
+    await expect(callout).toBeVisible();
+    await expect(callout).toContainText(/rank/i);
+    await expect(callout).toContainText(/strongest/i);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Pitch Step — Definition under chosen word
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — Pitch anchor definition', () => {
+  test('pitch step displays the definition of the #1 word', async ({ page }) => {
+    await completeWordSelection(page);
+
+    // Capture the top word from the reflect step before continuing
+    const topWord = (await page.locator('.sr-word-header').first().textContent())
+      ?.replace(/^\d+\.\s*/, '')
+      .trim();
+    expect(topWord).toBeTruthy();
+
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+
+    const definition = page.locator('.spi-anchor-definition');
+    await expect(definition).toBeVisible();
+    const text = (await definition.textContent())?.trim() ?? '';
+    expect(text.length).toBeGreaterThan(20);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PDF Step — Reflection text reaches the print/download output
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe('Strengths — PDF includes reflection text', () => {
+  test('print-only block contains why and moment text for each word', async ({ page }) => {
+    await completeWordSelection(page);
+
+    // Fill reflections on every card
+    const textareas = page.locator('.sr-field textarea');
+    const count = await textareas.count();
+    for (let i = 0; i < count; i++) {
+      await textareas.nth(i).fill(`Reflection text ${i} — here is some content for the field.`);
+    }
+
+    // Advance: reflection → pitch
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await page.locator('.spi-textarea').fill('My elevator pitch goes here.');
+    // pitch → pdf
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+
+    await expect(page.getByText('4 of 5', { exact: true })).toBeVisible();
+
+    // The print-only block is hidden visually but present in the DOM
+    const printBlock = page.locator('.spdf-print-only');
+    await expect(printBlock).toHaveCount(1);
+    const html = await printBlock.innerHTML();
+    expect(html).toContain('Reflection text 0');
+    expect(html).toContain('Reflection text 1');
+    expect(html).toContain('Why:');
+    expect(html).toContain('Moment:');
+  });
+
+  test('on-screen preview does NOT show reflection text', async ({ page }) => {
+    await completeWordSelection(page);
+
+    const textareas = page.locator('.sr-field textarea');
+    await textareas.first().fill('Preview-should-not-show-this-string');
+
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+    await page.locator('.spi-textarea').fill('Pitch text');
+    await page.getByRole('button', { name: /CONTINUE/i }).click();
+
+    const preview = page.locator('.spdf-preview');
+    const previewText = (await preview.textContent()) ?? '';
+    expect(previewText).not.toContain('Preview-should-not-show-this-string');
   });
 });

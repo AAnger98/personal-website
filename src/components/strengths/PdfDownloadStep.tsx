@@ -118,6 +118,33 @@ export default function PdfDownloadStep({ selectedWords, reflections, pitch, onC
         )}
       </div>
 
+      {/* Print-only: full content (including reflections) for window.print(). Hidden on screen. */}
+      <div className="spdf-print-only" aria-hidden="true">
+        <h2>My Top Strengths</h2>
+        <ol>
+          {selectedWords.map(word => {
+            const r = reflections[word];
+            return (
+              <li key={word}>
+                <strong>{word}</strong>
+                {r?.why?.trim() && (
+                  <p><strong>Why:</strong> {r.why.trim()}</p>
+                )}
+                {r?.moment?.trim() && (
+                  <p><strong>Moment:</strong> {r.moment.trim()}</p>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+        {pitch.trim() && (
+          <>
+            <h2>My Elevator Pitch</h2>
+            <p>{pitch}</p>
+          </>
+        )}
+      </div>
+
       {pdfError && <p className="spdf-error" role="alert">{pdfError}</p>}
 
       <div className="spdf-actions">

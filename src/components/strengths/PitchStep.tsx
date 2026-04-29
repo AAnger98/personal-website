@@ -22,11 +22,12 @@ const PITCH_EXAMPLES = [
 
 interface Props {
   topWord: string;
+  topWordDefinition: string;
   onComplete: (pitch: string) => void;
   onBack: () => void;
 }
 
-export default function PitchStep({ topWord, onComplete, onBack }: Props) {
+export default function PitchStep({ topWord, topWordDefinition, onComplete, onBack }: Props) {
   const [pitch, setPitch] = useState('');
   const startedAt = useRef(Date.now());
 
@@ -54,6 +55,9 @@ export default function PitchStep({ topWord, onComplete, onBack }: Props) {
       <div className="spi-anchor">
         <span className="spi-anchor-label">YOUR #1 STRENGTH</span>
         <span className="spi-anchor-word">{topWord}</span>
+        {topWordDefinition && (
+          <p className="spi-anchor-definition">{topWordDefinition}</p>
+        )}
       </div>
 
       <details className="spi-examples" open>

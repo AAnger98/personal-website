@@ -238,10 +238,17 @@ export default function ReflectionStep({ selectedWords, onComplete, onBack, onRe
           <h1 className="sw-title">Reflect</h1>
           <p className="sw-desc">
             For each strength, answer the two prompts. Don&apos;t edit yourself — write what comes naturally.
-            <br />
-            <span className="sr-reorder-hint">Drag cards or use ▲▼ buttons to reorder your strengths by priority.</span>
           </p>
         </div>
+      </div>
+
+      <div className="sr-order-callout" role="note">
+        <strong className="sr-order-callout__heading">Rank your strengths.</strong>
+        <span className="sr-order-callout__body">
+          Drag the cards (or use the ▲▼ buttons) so the ability you&apos;re <em>strongest</em> at sits at
+          the top, your second-strongest below that, and so on. Your #1 strength becomes the foundation
+          of your elevator pitch in the next step.
+        </span>
       </div>
 
       {/* ARIA live region for reorder announcements */}

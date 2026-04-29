@@ -805,6 +805,145 @@ details.spi-examples:not([open]) .spi-examples__toggle::before {
   }
 }
 
+/* Print-only block: hidden on screen, visible to window.print(). */
+.spdf-print-only {
+  display: none;
+}
+
+@media print {
+  .spdf-preview,
+  .spdf-actions,
+  .sw-footer,
+  .sp-root {
+    display: none !important;
+  }
+  .spdf-print-only {
+    display: block;
+    color: #000;
+    font-family: var(--font-body);
+    line-height: var(--line-height-base);
+  }
+  .spdf-print-only h2 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    margin: 1rem 0 0.5rem;
+  }
+  .spdf-print-only ol {
+    padding-left: 1.5rem;
+    margin: 0 0 1rem;
+  }
+  .spdf-print-only li {
+    margin-bottom: 0.75rem;
+  }
+  .spdf-print-only p {
+    margin: 0.25rem 0;
+  }
+}
+
+/* ─── Intro Step ─────────────────────────────────────────────────────────── */
+
+.si-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.si-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border: 4px double var(--color-green);
+}
+
+.si-step__num {
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  color: var(--color-gold);
+  line-height: 1;
+  min-width: 2rem;
+  text-align: center;
+}
+
+.si-step__body {
+  flex: 1;
+}
+
+.si-step__title {
+  font-family: var(--font-body);
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-text);
+  margin: 0 0 var(--space-xs);
+}
+
+.si-step__desc {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  line-height: var(--line-height-base);
+  margin: 0;
+}
+
+.si-timer-warning {
+  border: 4px double var(--color-peach);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  line-height: var(--line-height-base);
+}
+
+.si-timer-warning strong {
+  color: var(--color-peach);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-right: var(--space-xs);
+}
+
+/* ─── Reflect step: order callout ────────────────────────────────────────── */
+
+.sr-order-callout {
+  border: 4px double var(--color-gold);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
+}
+
+.sr-order-callout__heading {
+  display: block;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.sr-order-callout__body {
+  display: block;
+}
+
+/* ─── Pitch step: anchor definition ──────────────────────────────────────── */
+
+.spi-anchor-definition {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
+  opacity: 0.85;
+  margin: var(--space-xs) 0 0;
+}
+
 /* ─── Feedback Step ──────────────────────────────────────────────────────── */
 
 .sfb-questions {
